@@ -22,8 +22,8 @@
 3. Formalized Business Rules & System Constraints
 To guarantee structural database integrity and clean business logic, the system must strictly adhere to the following domain rules, organized by operational module:
 👤 3.1 Organiser Rules
-•	3.1.1 Profile Retention: The system must permanently capture and store each organizer’s unique identifier, legal first name, and surname.
-•	3.1.2 Operational Capacity: A single organizer is permitted to create, host, and manage an unrestricted number of distinct multi-race events.
+3.1.1 Profile Retention: The system must permanently capture and store each organizer’s unique identifier, legal first name, and surname.
+3.1.2 Operational Capacity: A single organizer is permitted to create, host, and manage an unrestricted number of distinct multi-race events.
 📅 3.2 Event & Category Rules
 •	3.2.1 Mandatory Profile Attributes: Every event profile compiled on the platform must explicitly store a title, a comprehensive description, and the designated host city.
 •	3.2.2 Categorization Constraint: Every event must map to exactly one primary sporting classification archetype (e.g., Running, Walking, or Cycling).
