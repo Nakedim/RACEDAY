@@ -29,7 +29,7 @@ jobs:
 
       # Check if the ERD/database SQL file exists
       - name: Check ERD
-        run: test -f RacedayDb.sql
+        run: test -f Projectfiles/RacedayDb.sql
 
       # Runs multiple commands
       - name: Run a multi-line script
