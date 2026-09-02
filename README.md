@@ -83,6 +83,17 @@ step 4: Testing the database
 Data Queries Sample records in the database
 <img width="784" height="331" alt="image" src="https://github.com/user-attachments/assets/b94f5bdf-1782-4236-81d5-8edd4f2c0bec" />
 
+Cardinality & Relationships 
+Organiser ➔ Event: One-to-Many (1-1 to 1*).An organizer creates one or many events; an event is created by exactly one organizer.
+Categories ➔ Event: One-to-Many (1-1 to 1*). A category belongs to/contains one or many events.
+Event ➔ Races: One-to-Many (1-1 to 1*). An event hosts one or many races.
+Participant ➔ RaceEntries: One-to-Many (1 to 1*). A participant registers for one or many race entries.
+Races ➔ RaceEntries: One-to-Many (1-1 to 1*). A race enters into one or many race entries.
+Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many race entries.
+<img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
+
+
+
 
 
 
