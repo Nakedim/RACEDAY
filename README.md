@@ -77,5 +77,13 @@ INSERT sample records
 <img width="940" height="279" alt="image" src="https://github.com/user-attachments/assets/e15a4b84-66a9-4b4a-8439-adafe6fecdf2" />
 <img width="940" height="262" alt="image" src="https://github.com/user-attachments/assets/1e588423-4f02-49f8-a87b-259d9e0180ef" />
 
+step 4: Testing the database
+
+<img width="940" height="638" alt="image" src="https://github.com/user-attachments/assets/e55b37e7-9e39-459d-9007-3ec22a2bba5b" />
+Data Queries Sample records in the database
+<img width="784" height="331" alt="image" src="https://github.com/user-attachments/assets/b94f5bdf-1782-4236-81d5-8edd4f2c0bec" />
+
+
+
 
 
