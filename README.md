@@ -9,6 +9,7 @@
 •	Event Lifecycle Management: Tools to conceptualize, schedule, and edit multi-race sporting events.
 •	Roster & Field Management: Live tracking of athlete fields, categories, and event participation limits.
 👥 For Participants
+• create own profile and then login using password and username
 •	Discovery Engine: A localized search and filter interface to browse upcoming South African races by city, sport type, and date.
 •	Athlete Portfolio: A personalized dashboard tracking historical finishes, personal bests, and active event statuses.
 •	Race-Day Readiness Toolkit: Integration of live interactive route maps coupled with real-time weather tracking to optimize race preparation
@@ -21,6 +22,7 @@ ER
  An organiser can create and manage multiple events.
 • Each organiser's name and surname must be stored in the database.
 • An organiser can create multiple race events.
+• participant must register their profile using password,username,email before being allowed to enter event. 
 • A participant may enter only one race at a time, as races within an event may take place simultaneously.
 • Each participant's name, surname, age, and location must be stored in the database.
 • Each event can contain multiple races. • Each event must include a title, description, and city must be stored in the database.
@@ -93,7 +95,18 @@ Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many ra
 
 
 <img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
+Update to ERD: 
+ participant must register their profile using password,username,email before being allowed to enter event. 
+ NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
+ NB: a new and updated SQL Script will be uploaded
 
+ Additional entities for login details of the participant
+ <img width="342" height="189" alt="image" src="https://github.com/user-attachments/assets/753c4637-284a-4afe-82a2-f6d0d4fe1c83" />
+ <img width="371" height="183" alt="image" src="https://github.com/user-attachments/assets/1e07902e-4ea9-446c-8f7f-4d45fb270cce" />
+<img width="325" height="528" alt="image" src="https://github.com/user-attachments/assets/81d66541-8b93-45db-9566-dce0604ae945" />
+
+The update statement for main ERD
+<img width="251" height="156" alt="image" src="https://github.com/user-attachments/assets/309d2982-df44-4651-81da-053c7e0cd2d5" />
 
 
 
