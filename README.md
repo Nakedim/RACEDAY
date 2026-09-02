@@ -90,6 +90,8 @@ Event ➔ Races: One-to-Many (1-1 to 1*). An event hosts one or many races.
 Participant ➔ RaceEntries: One-to-Many (1 to 1*). A participant registers for one or many race entries.
 Races ➔ RaceEntries: One-to-Many (1-1 to 1*). A race enters into one or many race entries.
 Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many race entries.
+
+
 <img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
 
 
