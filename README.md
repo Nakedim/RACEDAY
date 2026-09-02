@@ -71,5 +71,11 @@ List of Entities and their attributes
     CONSTRAINT FK_RaceEntries_Race FOREIGN KEY (RaceID) REFERENCES Races(RaceID),
 
 
+Step 3 : Seed Data 
+
+INSERT sample records
+<img width="940" height="279" alt="image" src="https://github.com/user-attachments/assets/e15a4b84-66a9-4b4a-8439-adafe6fecdf2" />
+<img width="940" height="262" alt="image" src="https://github.com/user-attachments/assets/1e588423-4f02-49f8-a87b-259d9e0180ef" />
+
 
 
