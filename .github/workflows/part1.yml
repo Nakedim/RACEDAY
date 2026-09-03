@@ -27,9 +27,13 @@ jobs:
       - name: Check documentation folder
         run: test -d Projectfiles
 
-      # Check if the ERD/database SQL file exists
+      # Check if the ERD/database SQL file exists - this was deleted and replace with final
       - name: Check ERD
         run: test -f Projectfiles/RacedayDb.sql
+        
+      # Check if the updated ERD/database SQL file exists
+      - name: Check ERD
+        run: test -f Projectfiles/Finalupdated.sql
 
       # Runs multiple commands
       - name: Run a multi-line script
