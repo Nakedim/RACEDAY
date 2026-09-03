@@ -35,7 +35,6 @@ jobs:
          # Check ERD Document
       - name: Check API Document
         run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
-
       # Runs multiple commands
       - name: Run a multi-line script
         run: |
