@@ -9,14 +9,11 @@
 •	Event Lifecycle Management: Tools to conceptualize, schedule, and edit multi-race sporting events.
 •	Roster & Field Management: Live tracking of athlete fields, categories, and event participation limits.
 👥 For Participants
-• create own profile and then login using password and username
+• create own profile and then login using password, username and email
 •	Discovery Engine: A localized search and filter interface to browse upcoming South African races by city, sport type, and date.
 •	Athlete Portfolio: A personalized dashboard tracking historical finishes, personal bests, and active event statuses.
 •	Race-Day Readiness Toolkit: Integration of live interactive route maps coupled with real-time weather tracking to optimize race preparation
 
-
-
-ER
 
 4. Business rules:
  An organiser can create and manage multiple events.
@@ -28,25 +25,39 @@ ER
 • Each event can contain multiple races. • Each event must include a title, description, and city must be stored in the database.
 • Each Event must belong to one category, such as cycling, walking and running.
 • Each event takes place in a specific city
-<img width="940" height="716" alt="image" src="https://github.com/user-attachments/assets/b9526368-1b29-473d-a6ec-8a39a47f8b48" />
+
+ERD
+<img width="940" height="952" alt="image" src="https://github.com/user-attachments/assets/af562667-efee-44d9-bc6a-66867a11488e" />
+
+
+tables
+<img width="940" height="829" alt="image" src="https://github.com/user-attachments/assets/5237b7ba-22d9-46c7-afed-c3eb2526cf3b" />
+
 
 Step 2: Define keys and constraints
 List of Entities and their attributes
-1.	Organiser
-  OrganiserID PRIMARY KEY,
-  FirstName varchar(20) NOT NULL,
-  Surname varchar(20) NOT NULL,
-2.	Participant
-  participantID PRIMARY KEY,
-  FirstName varchar(20) NOT NULL,
-  Surname varchar(20) NOT NULL,
-  Age int NOT NULL,
-  Location varchar(20) NOT NULL,
-3.	Categories
-  CategoryID PRIMARY KEY,
-  CategoryName VARCHAR(50) NOT NULL,
-4.	Events
-  	[Event]
+1.	AuthUsers ( UserID PRIMARY KEY,
+Username VARCHAR(50) NOT NULL, 
+PasswordHash VARCHAR (255) NOT NULL,
+ Email VARCHAR (100) NOT NULL,
+ CONSTRAINT PK_AuthUsers PRIMARY KEY (UserID) );
+
+2.	Organiser
+OrganiserID PRIMARY KEY,
+FirstName VARCHAR (20) NOT NULL,
+Surname VARCHAR (20) NOT NULL,
+3.	Participant
+participantID PRIMARY KEY,
+FirstName VARCHAR (20) NOT NULL,
+Surname VARCHAR 20) NOT NULL,
+Age int NOT NULL,
+Location VARCHAR (20) NOT NULL,
+4.	Categories
+CategoryID PRIMARY KEY,
+CategoryName VARCHAR(50) NOT NULL,
+5.	Events[NM1.1]
+
+•	[Event]
     EventID INT IDENTITY(1,1) PRIMARY KEY,
     [Description] VARCHAR(255) NOT NULL,
     Title VARCHAR(90) NOT NULL,
@@ -57,13 +68,13 @@ List of Entities and their attributes
     CONSTRAINT FK_Event_Category FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
-5.	Races 
+6.	Races 
     RaceID INT IDENTITY(1,1) PRIMARY KEY,
     RaceName VARCHAR(50) NOT NULL,
     StartTime DATETIME NOT NULL,
     EventID INT NOT NULL,
 
-6.	RaceEntries 
+7.	RaceEntries 
     EntryID INT IDENTITY(1,1) PRIMARY KEY,
     ParticipantID INT NOT NULL,
     RaceID INT NOT NULL,
@@ -71,25 +82,27 @@ List of Entities and their attributes
     EntryDate DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_RaceEntries_Participant FOREIGN KEY (ParticipantID)      REFERENCES Participant(ParticipantID),
     CONSTRAINT FK_RaceEntries_Race FOREIGN KEY (RaceID) REFERENCES Races(RaceID),
-
+    CONSTRAINT FK_RaceEntries_Event FOREIGN KEY (EventID) REFERENCES [Event](EventID) ON DELETE CASCADE,
+    
+    -- Enforces: "A participant may enter only one race per event at a time "
+    CONSTRAINT UQ_Participant_Single_Race_Per_Event UNIQUE (ParticipantID, EventID)
 
 Step 3 : Seed Data 
 
 INSERT sample records
-<img width="940" height="279" alt="image" src="https://github.com/user-attachments/assets/e15a4b84-66a9-4b4a-8439-adafe6fecdf2" />
+<img width="940" height="576" alt="image" src="https://github.com/user-attachments/assets/e331d33b-4dfd-4195-b7bb-062c6bf39933" />
+<img width="940" height="247" alt="image" src="https://github.com/user-attachments/assets/47a42752-7109-4bbe-a0bd-8e44d74d967e" />
 
 
-<img width="940" height="262" alt="image" src="https://github.com/user-attachments/assets/1e588423-4f02-49f8-a87b-259d9e0180ef" />
 
-step 4: Testing the database
 
-<img width="940" height="638" alt="image" src="https://github.com/user-attachments/assets/e55b37e7-9e39-459d-9007-3ec22a2bba5b" />
+step 4: Testing the database and output: records
+<img width="940" height="717" alt="image" src="https://github.com/user-attachments/assets/e56f1a79-d6ae-408c-a887-81fad3d3a683" />
+<img width="940" height="332" alt="image" src="https://github.com/user-attachments/assets/88af9a11-a3f6-4881-b969-bd769780b904" />
 
-Data Queries Sample records in the database
-
-<img width="784" height="331" alt="image" src="https://github.com/user-attachments/assets/b94f5bdf-1782-4236-81d5-8edd4f2c0bec" />
 
 Cardinality & Relationships 
+Users ➔ Paricipant: One-to-one (1-1 to 1). Users must create user account and this will be linked with participant 
 Organiser ➔ Event: One-to-Many (1-1 to 1*).An organizer creates one or many events; an event is created by exactly one organizer.
 Categories ➔ Event: One-to-Many (1-1 to 1*). A category belongs to/contains one or many events.
 Event ➔ Races: One-to-Many (1-1 to 1*). An event hosts one or many races.
@@ -105,19 +118,6 @@ Update to ERD:
  Organiser are the company's employees, There are using company login details to login into the system. there are authenticated using companies information system.
  NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
  NB: a new and updated SQL Script will be uploaded
-
- Additional entities for login details of the participant
- <img width="342" height="189" alt="image" src="https://github.com/user-attachments/assets/753c4637-284a-4afe-82a2-f6d0d4fe1c83" />
- 
- <img width="371" height="183" alt="image" src="https://github.com/user-attachments/assets/1e07902e-4ea9-446c-8f7f-4d45fb270cce" />
- 
-<img width="325" height="528" alt="image" src="https://github.com/user-attachments/assets/81d66541-8b93-45db-9566-dce0604ae945" />
-
-The update statement for main ERD
-
-<img width="251" height="156" alt="image" src="https://github.com/user-attachments/assets/309d2982-df44-4651-81da-053c7e0cd2d5" />
-
-
 
 
 
