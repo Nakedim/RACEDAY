@@ -31,10 +31,10 @@ jobs:
         run: test -f Projectfiles/Finalupdated.sql
       # Check API document
       - name: Check API Document
-        run: test -f Projectfiles/POE Part 1 API Endpoint table.pdf
+        run: test -f Projectfiles/POEPart1APIEndpointtable.pdf
          # Check ERD Document
       - name: Check API Document
-        run: test -f Projectfiles/Raceday POE Part 1 ERD.pdf
+        run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
 
       # Runs multiple commands
       - name: Run a multi-line script
