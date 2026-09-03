@@ -77,12 +77,16 @@ Step 3 : Seed Data
 
 INSERT sample records
 <img width="940" height="279" alt="image" src="https://github.com/user-attachments/assets/e15a4b84-66a9-4b4a-8439-adafe6fecdf2" />
+
+
 <img width="940" height="262" alt="image" src="https://github.com/user-attachments/assets/1e588423-4f02-49f8-a87b-259d9e0180ef" />
 
 step 4: Testing the database
 
 <img width="940" height="638" alt="image" src="https://github.com/user-attachments/assets/e55b37e7-9e39-459d-9007-3ec22a2bba5b" />
+
 Data Queries Sample records in the database
+
 <img width="784" height="331" alt="image" src="https://github.com/user-attachments/assets/b94f5bdf-1782-4236-81d5-8edd4f2c0bec" />
 
 Cardinality & Relationships 
@@ -95,17 +99,22 @@ Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many ra
 
 
 <img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
+
 Update to ERD: 
- participant must register their profile using password,username,email before being allowed to enter event. 
+ participant must register their profile using password,username,email before being allowed to enter event.
+ Organiser are the company's employees, There are using company login details to login into the system. there are authenticated using companies information system.
  NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
  NB: a new and updated SQL Script will be uploaded
 
  Additional entities for login details of the participant
  <img width="342" height="189" alt="image" src="https://github.com/user-attachments/assets/753c4637-284a-4afe-82a2-f6d0d4fe1c83" />
+ 
  <img width="371" height="183" alt="image" src="https://github.com/user-attachments/assets/1e07902e-4ea9-446c-8f7f-4d45fb270cce" />
+ 
 <img width="325" height="528" alt="image" src="https://github.com/user-attachments/assets/81d66541-8b93-45db-9566-dce0604ae945" />
 
 The update statement for main ERD
+
 <img width="251" height="156" alt="image" src="https://github.com/user-attachments/assets/309d2982-df44-4651-81da-053c7e0cd2d5" />
 
 
