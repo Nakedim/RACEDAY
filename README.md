@@ -30,6 +30,37 @@ ERD
 <img width="940" height="952" alt="image" src="https://github.com/user-attachments/assets/af562667-efee-44d9-bc6a-66867a11488e" />
 
 
+RESTFUL API
+The restful api will enable organiser to create profile by registering themselves to the system
+Once login the organiser can create events, delete events, update events and view events
+He can also view participant’s information, events they have entered, delete and update participants. The workflow can be created to send email to notify participant of changes 
+Participants must be able to Register own accounts then login
+A RESTful API specification table
+1 Organiser endpoint
+HTTP methods	Route	description	Role required	Request body	response
+GET	api/event/{eventI}	View event	organiser	{ title, description, date, location}	200 (OK), 404 (No Found)
+POST	api/event	Create event,	Organiser	{ title, description, date, location}	200 (Created), 400 Bad Request
+PUT	api/event/{eventId}	Update event 	Organiser	{ eventId}	201 Ok; 400 not found
+DELETE	api/event/{eventId}	Delete event 	Organiser		204 (No Content) ,404 (No Found)
+					
+GET	api/categories/{categoryId}	View Category	Organiser	{categoryId, categoryname}	200 (Ok),400 (not found)
+POST	/api/categories	Create Category	Organiser	{categoryname}	200 (Created)  400 Bad Request
+Delete	/api/categories/{categoryId}	Delete Category	Organiser		204 (No Content) ,404 (No Found)
+					
+					
+					
+GET	/api/profiles/{participantId}	Capture participant results	Participant	{participantId, FirstName, Surname}	200 (Ok), 204 (No Found)
+GET	/api/profiles/{participantId}	View profile	Participant	{participantId}	200 (Ok), 204 No Found
+POST	/api/auth/users	Create profile account	Participant	{ username, password, email}	201 Created (Success)
+400 (Bad Request (invalidate credentials)
+POST	/api/auth/tokens	login	participant	{ username, password,}	200 OK (returns token), 401 Unauthorized
+POST	api/event/{eventId}	View Events	Participant	{ title, description, date, location}	200(OK),404 (Not Found)
+GET	/api/participants/{participantId}/registrations	View own entries	Participant	{ entriesId }	200 OK, 404 (Not Found), 204 (No Content)
+GET	/api/participants/{participantIId}/results	Track own results	Participant	{participantId}	200 (Ok), 404 (Not Found), 204 (No Content)
+
+
+- SQL Database Script
+
 tables
 <img width="940" height="829" alt="image" src="https://github.com/user-attachments/assets/5237b7ba-22d9-46c7-afed-c3eb2526cf3b" />
 
@@ -119,6 +150,34 @@ Update to ERD:
  NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
  NB: a new and updated SQL Script will be uploaded
 
+Explain the /docs folder
+RaceDay Repository
+|
+|-- README.md
+|
+|-- Projectfiles
+| |-- RacedatPOEPartERD.pdf
+| |-- POEPart1ERD.pdf
+| |- finalupdated.sql
+|
+`-- .github
+ `-- workflows
+
+## Database Setup
+Explain how to open and run the SQL script in SSMS.
+
+## CI/CD
+The GitHub Actions workflow checks if all the files uploaded on the repository are available with their correct file name.
+
+<img width="1629" height="85" alt="image" src="https://github.com/user-attachments/assets/639b864e-a913-4d4b-abdb-0622b37d1cf7" />
+
+workflow action
+<img width="1080" height="648" alt="image" src="https://github.com/user-attachments/assets/29558fb8-3ff3-42be-85c9-47bf39962ef5" />
+
+
+## Video Demonstration
+YouTube Link: 
+ 
 
 
 
