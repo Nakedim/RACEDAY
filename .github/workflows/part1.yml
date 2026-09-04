@@ -28,7 +28,7 @@ jobs:
         run: test -d Projectfiles
       # Check if the updated ERD/database SQL file exists
       - name: Check ERD
-        run: test -f Projectfiles/Finalupdated.sql
+        run: test -f Projectfiles/RacedayDb.sql
       # Check API document
       - name: Check API Document
         run: test -f Projectfiles/POEPart1APIEndpointtable.pdf
