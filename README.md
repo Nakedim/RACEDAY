@@ -158,7 +158,7 @@ RaceDay Repository
 |-- Projectfiles
 | |-- RacedatPOEPartERD.pdf
 | |-- POEPart1ERD.pdf
-| |- finalupdated.sql
+| |- RacedayDb.sql
 |
 `-- .github
  `-- workflows
