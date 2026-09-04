@@ -142,13 +142,7 @@ Races ➔ RaceEntries: One-to-Many (1-1 to 1*). A race enters into one or many r
 Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many race entries.
 
 
-<img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
 
-Update to ERD: 
- participant must register their profile using password,username,email before being allowed to enter event.
- Organiser are the company's employees, There are using company login details to login into the system. there are authenticated using companies information system.
- NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
- NB: a new and updated SQL Script will be uploaded
 
 Explain the /docs folder
 RaceDay Repository
@@ -176,7 +170,7 @@ workflow action
 
 
 ## Video Demonstration
-YouTube Link: https://youtu.be/mkcNyMAOg5M
+YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
  
 
 
