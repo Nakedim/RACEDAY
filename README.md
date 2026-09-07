@@ -30,7 +30,9 @@
 
 
 ERD
-<img width="940" height="952" alt="image" src="https://github.com/user-attachments/assets/af562667-efee-44d9-bc6a-66867a11488e" />
+<img width="688" height="697" alt="image" src="https://github.com/user-attachments/assets/bc9c804a-ade1-476b-85c8-c0b2e824d457" />
+
+
 
 
 RESTFUL API
@@ -120,6 +122,19 @@ CategoryName VARCHAR(50) NOT NULL,
     
     -- Enforces: "A participant may enter only one race per event at a time "
     CONSTRAINT UQ_Participant_Single_Race_Per_Event UNIQUE (ParticipantID, EventID)
+
+  	ERD Update: 
+  	--New Table
+CREATE TABLE Result (
+    ResultID INT PRIMARY KEY IDENTITY(1,1),
+    ParticipantID INT NOT NULL,
+    RaceID INT NOT NULL,
+    Position INT,
+    Finish_time DATETIME,
+    -- Foreign keys to keep data accurate
+    FOREIGN KEY (ParticipantID) REFERENCES Participant(ParticipantID),
+    FOREIGN KEY (RaceID) REFERENCES Races(RaceID)
+	
 
 Step 3 : Seed Data 
 
