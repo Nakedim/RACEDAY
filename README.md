@@ -159,12 +159,18 @@ RaceDay Repository
 |
 `-- .github
  `-- workflows
+
+ 
 ##DATABASE UPDATE
 After though evaluation we realized that organiser will need to records Finish time as well position of the participant. We therefore decided to create another table called Results
-<img width="511" height="142" alt="image" src="https://github.com/user-attachments/assets/f21e09c3-3e29-4835-83f2-cafb8e16aa8f" />
-We need to link the newly created table with races to be able to show results of each race
-<img width="280" height="50" alt="image" src="https://github.com/user-attachments/assets/da8508be-b0f9-4651-bb23-e63f48560a49" />
 
+<img width="511" height="142" alt="image" src="https://github.com/user-attachments/assets/f21e09c3-3e29-4835-83f2-cafb8e16aa8f" />
+<p></p>
+We modify the table by adding foreign keys since we need to show participant results. The link must be created from participant, Event and Race table, <p></p>
+
+
+<img width="280" height="50" alt="image" src="https://github.com/user-attachments/assets/da8508be-b0f9-4651-bb23-e63f48560a49" />
+<p></p>
 
 ## Database Setup
 Explain how to open and run the SQL script in SSMS.
