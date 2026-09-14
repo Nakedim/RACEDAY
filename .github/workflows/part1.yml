@@ -35,7 +35,17 @@ jobs:
          # Check ERD Document
       - name: Check API Document
         run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
-      # Runs multiple commands
+      - name: Check csproj
+        run: test -f RACEDAY.csproj
+       # Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      # Check C# project
+      - name: Check C# project
+        run: dotnet build
+        # Runs multiple commands
       - name: Run a multi-line script
         run: |
           echo "Add other actions to build,"
