@@ -13,8 +13,10 @@ namespace RACEDAY.DTOs
         [Required]
         [StringLength(100, ErrorMessage = "select atleast two characters")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The password must match")]
         public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+
+        public string UserRole { get; set; }
 
 
 

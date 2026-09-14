@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
 using Microsoft.AspNetCore.Mvc;
 using RACEDAY.DTOs;
+using RACEDAY.Models;
 using System.Threading.Tasks;
 
 namespace RACEDAY.Controllers
@@ -9,30 +11,33 @@ namespace RACEDAY.Controllers
     [ApiController]
     public class AuthUsers : ControllerBase
     {
-    
-        private readonly UserManager _userManager;
-        private readonly SignInManager _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthUsers(UserManager userManager, SignInManager signInManager)
+        public AuthUsers(
+           UserManager<ApplicationUser> userManager,
+           SignInManager<ApplicationUser> signInManager,
+           RoleManager<IdentityRole> roleManager
+         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
-        // POST: api/AuthUsers
+        // POST: api/AuthUsers/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
-           
             if (model.Password != model.ConfirmPassword)
             {
                 return BadRequest(new { Message = "Passwords do not match." });
             }
 
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
-       
             if (result.Succeeded)
             {
                 return Ok(new { Message = "User registered successfully!" });
@@ -40,7 +45,5 @@ namespace RACEDAY.Controllers
 
             return BadRequest(result.Errors);
         }
-
-
     }
 }
