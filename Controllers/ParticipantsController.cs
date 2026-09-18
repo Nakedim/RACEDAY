@@ -19,7 +19,7 @@ namespace RACEDAY.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
         {
-            return await _context.Participants.ToListAsync();
+            return await _context.Participant.ToListAsync();
         }
     }
 }
