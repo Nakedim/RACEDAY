@@ -8,18 +8,18 @@ namespace RACEDAY.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class ParticipantsController: ControllerBase
+    public class RaceEntriesController: ControllerBase
     {
         private readonly RacedayDbContext _context;
 
-        public ParticipantsController(RacedayDbContext context)
+        public RaceEntriesController(RacedayDbContext context)
         {
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Participants>>> GetParticipant()
+        public async Task<ActionResult<IEnumerable<RaceEntries>>> GetRaceEntries()
         {
-            return await _context.Participants.ToListAsync();
+            return await _context.RaceEntries.ToListAsync();
         }
     }
 }
