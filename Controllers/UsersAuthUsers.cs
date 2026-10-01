@@ -1,5 +1,9 @@
+
 ﻿
-using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
+using Microsoft.AspNetCore.Identity; 
+
+﻿using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
+
 using Microsoft.AspNetCore.Mvc;
 using RACEDAY.DTOs;
 using RACEDAY.Models;
@@ -44,6 +48,26 @@ namespace RACEDAY.Controllers
             }
 
             return BadRequest(result.Errors);
+        }
+        public async Task<IActionResult> Login([FromBody] LoginDTO model)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _signInManager.PasswordSignInAsync(
+
+                userName: model.Email,
+                password: model.PasswordHashed,
+                isPersistent: model.RememberMe,//system to remeber the user or user can choose no
+                lockoutOnFailure: false
+
+                );
+
+            if (result.Succeeded)
+            {
+                return Ok(new { Message = "Login successful!" });
+            }
+
+            return Unauthorized(new { Message = "Invalid email or password combination." });
         }
     }
 }
