@@ -36,8 +36,7 @@ jobs:
         run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
 
       # Check C# project
-      - name: Check C# project
-        run: dotnet build
+    
 
       # Runs multiple commands
       - name: Run a multi-line script

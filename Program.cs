@@ -50,8 +50,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseAuthentication(); //check if cookie exists
 
+
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 
 
