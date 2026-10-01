@@ -21,6 +21,7 @@ jobs:
 
       # Check if the Projectfiles folder exists
       - name: Check documentation folder
+<<<<<<< HEAD
         run: test -d Projectfiles
 
       # Check if the updated ERD/database SQL file exists
@@ -34,6 +35,21 @@ jobs:
       # Check ERD Document
       - name: Check ERD Document
         run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
+=======
+        run: test -d Docs
+
+      # Check if the updated ERD/database SQL file exists
+      - name: Check ERD SQL file
+        run: test -f Docs/RacedayDb.sql
+
+      # Check API document
+      - name: Check API Document
+        run: test -f Docs/POEPart1APIEndpointtable.pdf
+
+      # Check ERD Document
+      - name: Check ERD Document
+        run: test -f Docs/RacedayPOEPart1ERD.pdf
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 
       # Check C# project
     

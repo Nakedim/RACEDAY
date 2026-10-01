@@ -17,6 +17,11 @@ builder.Services.AddDbContext<RacedayDbContext>(options => options.UseSqlServer(
 builder.Services.AddControllers();
 
 
+<<<<<<< HEAD
+=======
+//Security and Authentication service
+
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -33,10 +38,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 // 2. Configure JWT Authentication Services (Block properly closed here)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -53,6 +66,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+<<<<<<< HEAD
+=======
+// 3. Build the Web Application after all services are registered
+
+
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 
 var app = builder.Build();
 
@@ -63,9 +82,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+<<<<<<< HEAD
 app.UseAuthentication(); //check if cookie exists
 
 
+
+app.UseStaticFiles();
+app.UseRouting();
+
+// IMPORTANT: Authentication must always come BEFORE Authorization
+app.UseAuthentication();
+=======
+
+app.UseAuthentication(); //check if cookie exists
+
+
+//app.UseHttpsRedirection();
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 
 app.UseStaticFiles();
 app.UseRouting();

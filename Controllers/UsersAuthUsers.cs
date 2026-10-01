@@ -50,6 +50,7 @@ namespace RACEDAY.Controllers
 
             return BadRequest(result.Errors);
         }
+<<<<<<< HEAD
 
 
         [HttpPost("login")]
@@ -63,6 +64,11 @@ namespace RACEDAY.Controllers
             }
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
+=======
+        public async Task<IActionResult> Login([FromBody] LoginDTO model)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 
             var result = await _signInManager.PasswordSignInAsync(
 
@@ -75,6 +81,7 @@ namespace RACEDAY.Controllers
 
             if (result.Succeeded)
             {
+<<<<<<< HEAD
                 var claims = new List<Claim>
              {
                  new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -82,12 +89,17 @@ namespace RACEDAY.Controllers
                  
                  new Claim(ClaimTypes.Role, user)
              };
+=======
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
                 return Ok(new { Message = "Login successful!" });
             }
 
             return Unauthorized(new { Message = "Invalid email or password combination." });
         }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
     }
 }
