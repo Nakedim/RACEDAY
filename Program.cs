@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using RACEDAY.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +13,29 @@ builder.Services.AddDbContext<RacedayDbContext>(options => options.UseSqlServer(
 
 builder.Services.AddControllers();
 
+//Security and Authentication service
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+
+        options.Cookie.Name = "RacedayAuthCookie";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); //session duration
+
+        //security essentials
+
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //requires HTTPS
+        options.Cookie.SameSite = SameSiteMode.Strict;
+    });
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 app.UseStaticFiles();
