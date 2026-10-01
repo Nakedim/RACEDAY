@@ -17,8 +17,6 @@ builder.Services.AddDbContext<RacedayDbContext>(options => options.UseSqlServer(
 builder.Services.AddControllers();
 
 
-//Security and Authentication service
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -35,11 +33,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 // 2. Configure JWT Authentication Services (Block properly closed here)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -57,9 +53,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// 3. Build the Web Application after all services are registered
-
-
 
 var app = builder.Build();
 
@@ -70,11 +63,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseAuthentication(); //check if cookie exists
 
 
-//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();

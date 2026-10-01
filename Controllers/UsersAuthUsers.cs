@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RACEDAY.DTOs;
 using RACEDAY.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RACEDAY.Controllers
@@ -49,9 +50,19 @@ namespace RACEDAY.Controllers
 
             return BadRequest(result.Errors);
         }
+
+
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return Unauthorized(new {Message ="invalid user"})
+            }
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _signInManager.PasswordSignInAsync(
 
@@ -64,10 +75,19 @@ namespace RACEDAY.Controllers
 
             if (result.Succeeded)
             {
+                var claims = new List<Claim>
+             {
+                 new Claim(ClaimTypes.NameIdentifier, user.Id),
+                 new Claim(ClaimTypes.Name, user.Email),
+                 
+                 new Claim(ClaimTypes.Role, user)
+             };
                 return Ok(new { Message = "Login successful!" });
             }
 
             return Unauthorized(new { Message = "Invalid email or password combination." });
         }
+
+
     }
 }

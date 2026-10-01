@@ -6,5 +6,6 @@ namespace RACEDAY.Models
     {
          public string FirstName { get; set; }
          public string Surname { get; set; }
+        public ProfileRole profileRole { get; internal set; }
     }
 }
