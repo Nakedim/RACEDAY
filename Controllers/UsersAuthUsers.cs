@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
+﻿using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
 using Microsoft.AspNetCore.Mvc;
 using RACEDAY.DTOs;
 using RACEDAY.Models;

@@ -1,41 +1,59 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RACEDAY.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// 1. Add services to the Dependency Injection container
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<RacedayDbContext>(options => options.UseSqlServer(connectionString));
 
-
 builder.Services.AddControllers();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 2. Configure JWT Authentication Services (Block properly closed here)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "YourSuperSecretDefaultKeyHere")),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// 3. Build the Web Application after all services are registered
 var app = builder.Build();
-app.UseStaticFiles();
-app.UseRouting(); // Adds routing capability to the request pipeline
 
-app.UseAuthorization();
-
-// Configure the HTTP request pipeline.
+// 4. Configure the HTTP request pipeline (Middleware)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 
+// IMPORTANT: Authentication must always come BEFORE Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
-
+// 5. Map Endpoints
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllers();
+
+// 6. Run the application
 app.Run();
