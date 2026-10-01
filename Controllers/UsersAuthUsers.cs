@@ -1,5 +1,9 @@
+<<<<<<< HEAD:Controllers/AuthUsers.cs
 ﻿
 using Microsoft.AspNetCore.Identity; 
+=======
+﻿using Microsoft.AspNetCore.Identity; // Standard ASP.NET Core Identity
+>>>>>>> 1df3eaa8bd333f6c1f984e0208c07c2ba4f76515:Controllers/UsersAuthUsers.cs
 using Microsoft.AspNetCore.Mvc;
 using RACEDAY.DTOs;
 using RACEDAY.Models;
