@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
+
 using Microsoft.IdentityModel.Tokens;
-=======
+
 using Microsoft.AspNetCore.Authentication.Cookies;
->>>>>>> 6f931e7101cab1b7e96f686fb32ca8b3575084e4
+
 using RACEDAY.Data;
 using System.Text;
 
@@ -15,8 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<RacedayDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
-<<<<<<< HEAD
-=======
+
 
 //Security and Authentication service
 
@@ -36,12 +35,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
->>>>>>> 6f931e7101cab1b7e96f686fb32ca8b3575084e4
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-<<<<<<< HEAD
+
 // 2. Configure JWT Authentication Services (Block properly closed here)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -59,10 +58,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // 3. Build the Web Application after all services are registered
-=======
 
 
->>>>>>> 6f931e7101cab1b7e96f686fb32ca8b3575084e4
+
 var app = builder.Build();
 
 // 4. Configure the HTTP request pipeline (Middleware)
@@ -72,18 +70,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-<<<<<<< HEAD
+
 app.UseAuthentication(); //check if cookie exists
 
 
 //app.UseHttpsRedirection();
-=======
+
 app.UseStaticFiles();
 app.UseRouting();
 
 // IMPORTANT: Authentication must always come BEFORE Authorization
 app.UseAuthentication();
->>>>>>> 1df3eaa8bd333f6c1f984e0208c07c2ba4f76515
+
 app.UseAuthorization();
 
 // 5. Map Endpoints
