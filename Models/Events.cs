@@ -13,5 +13,7 @@ namespace RACEDAY.Models
         public string location { get; set; } = string.Empty;
         public int OrganiserID { get; set; }
         public int CategoryID { get; set; }
+        public int Distance { get; set; }
+        public string EventType { get; set; }
     }
 }

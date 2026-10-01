@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RACEDAY.Models
 {
+    public enum ProfileRole
+    {
+        Organiser,
+        Participant
+    }
     [Table("AuthUsers")]
     public class AuthUsers
     {
@@ -11,7 +16,7 @@ namespace RACEDAY.Models
 
         public string Username { get; set; } = string.Empty;
         public string PasswordHashed { get; set; } = string.Empty;
-        public string CategoryName { get; set; } = string.Empty;
+        public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
 
 
     }
