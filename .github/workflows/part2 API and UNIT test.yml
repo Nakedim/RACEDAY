@@ -12,7 +12,6 @@ jobs:
     name: Database, Auth & Unit Testing
     runs-on: ubuntu-latest
 
-    # Spin up an isolated SQL Server 2022 instance alongside the test runner
     services:
       sqlserver:
         image: ://microsoft.com
@@ -21,7 +20,6 @@ jobs:
           MSSQL_SA_PASSWORD: "YourSecurePassword123!"
         ports:
           - 1433:1433
-        # Strict health checks ensure the engine is fully initialized before steps begin
         options: >-
           --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourSecurePassword123!' -C -Q 'SELECT 1'" 
           --health-interval 10s 
@@ -36,12 +34,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
-          cache: true # Speeds up execution by caching your NuGet dependencies automatically
+          cache: true
 
       - name: Restore dependencies
         run: dotnet restore
 
-      # Securely registers official Microsoft packaging keys to download standard mssql-tools18
       - name: Install Database Utilities
         run: |
           curl -sSL https://microsoft.com | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
@@ -49,7 +46,6 @@ jobs:
           sudo apt-get update
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
 
-      # Seeds the SQL container using your physical schema script
       - name: Initialize Database Schema
         run: |
           /opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P "YourSecurePassword123!" -C -i Projectfiles/RacedayDb.sql
@@ -57,7 +53,6 @@ jobs:
       - name: Build Solution
         run: dotnet build --configuration Release --no-restore
 
-      # Runs your Controller logic, DTO mappings, and Role Authentication unit tests
       - name: Run Unit & Authentication Tests
         run: dotnet test --configuration Release --no-build --verbosity normal
         env:
