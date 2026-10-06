@@ -40,8 +40,16 @@ namespace RACEDAY.Controllers
                 return BadRequest(new { Message = "Passwords do not match." });
             }
 
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser 
+            {
+                UserName = model.Email, 
+                Email = model.Email,
+                profileRole = ProfileRole.Participant
+                
+            };
             var result = await _userManager.CreateAsync(user, model.Password);
+
+
 
             if (result.Succeeded)
             {
@@ -50,7 +58,6 @@ namespace RACEDAY.Controllers
 
             return BadRequest(result.Errors);
         }
-<<<<<<< HEAD
 
 
         [HttpPost("login")]
@@ -60,15 +67,10 @@ namespace RACEDAY.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return Unauthorized(new {Message ="invalid user"})
+                return Unauthorized(new { Message = "invalid user" });
             }
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-=======
-        public async Task<IActionResult> Login([FromBody] LoginDTO model)
-        {
-            if(!ModelState.IsValid) return BadRequest(ModelState);
->>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
 
             var result = await _signInManager.PasswordSignInAsync(
 
@@ -81,25 +83,19 @@ namespace RACEDAY.Controllers
 
             if (result.Succeeded)
             {
-<<<<<<< HEAD
                 var claims = new List<Claim>
              {
                  new Claim(ClaimTypes.NameIdentifier, user.Id),
                  new Claim(ClaimTypes.Name, user.Email),
                  
-                 new Claim(ClaimTypes.Role, user)
+     
              };
-=======
->>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
                 return Ok(new { Message = "Login successful!" });
             }
 
             return Unauthorized(new { Message = "Invalid email or password combination." });
         }
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
     }
 }

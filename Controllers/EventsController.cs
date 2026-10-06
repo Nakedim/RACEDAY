@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RACEDAY.Data;
 using RACEDAY.Models;
@@ -16,8 +17,9 @@ namespace RACEDAY.Controllers
         {
             _context = context;
         }
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Events>>> GetEvents()
+        public async Task<ActionResult<IEnumerable<Events>>> GetAllEvents()
         {
             return await _context.Events.ToListAsync();
         }
