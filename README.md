@@ -176,7 +176,7 @@ RaceDay Repository
  `-- workflows
 
  
-##DATABASE UPDATE
+## DATABASE UPDATE
 After though evaluation we realized that organiser will need to records Finish time as well position of the participant. We therefore decided to create another table called Results
 
 <img width="511" height="142" alt="image" src="https://github.com/user-attachments/assets/f21e09c3-3e29-4835-83f2-cafb8e16aa8f" />
@@ -201,6 +201,15 @@ workflow action
 
 ## Video Demonstration
 YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
+
+
+## part 2 Adjustments and Updates
+Adjust races tables to include RaceType and distance since and one event can be composed of multiple event for Marathon Event can have race of 2km, 5km, 10km and so on.
+While Categories can be Male or Female, Senior, Youth or Pensioners
+As we moved along we might change ERD Table to put participant into categories automatically according to their age and gender or we might be fluid and let them participant in race of all races and sex then at the end the winner per age group can be decided.
+### others changes
+The Fix: Remove FK EventID from the RaceEntries table. Keep only FK RaceID and FK ParticipantID, The two keys inclusion is redundant
+The Fix: Change ParticipantID and RaceID to be Foreign Keys (FK) that link back to their respective tables, while keeping resultsID as the sole unique Primary Key (PK).
  
 
 
