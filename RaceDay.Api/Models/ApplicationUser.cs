@@ -1,0 +1,11 @@
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace RaceDay.Api.Models
+{
+    public class ApplicationUser: IdentityUser
+    {
+         public string FirstName { get; set; }
+         public string Surname { get; set; }
+        public ProfileRole profileRole { get; internal set; }
+    }
+}

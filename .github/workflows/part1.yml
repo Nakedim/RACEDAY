@@ -1,18 +1,14 @@
 name: Part 1 Documentation Check
 
 on:
-  # Triggers the workflow on push or pull request events for the main branch
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-
-
   workflow_dispatch:
 
 jobs:
   build:
-  
     runs-on: ubuntu-latest
 
     steps:
@@ -25,18 +21,38 @@ jobs:
 
       # Check if the Projectfiles folder exists
       - name: Check documentation folder
+<<<<<<< HEAD
         run: test -d Projectfiles
 
-      # Check if the ERD/database SQL file exists - this was deleted and replace with final
-      - name: Check ERD
-        run: test -f Projectfiles/RacedayDb.sql
-        
       # Check if the updated ERD/database SQL file exists
-      - name: Check ERD
-        run: test -f Projectfiles/Finalupdated.sql
+      - name: Check ERD SQL file
+        run: test -f Projectfiles/RacedayDb.sql
+
       # Check API document
       - name: Check API Document
-        run: test -f Projectfiles/POE Part 1 API Endpoint table.pdf
+        run: test -f Projectfiles/POEPart1APIEndpointtable.pdf
+
+      # Check ERD Document
+      - name: Check ERD Document
+        run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
+=======
+        run: test -d Docs
+
+      # Check if the updated ERD/database SQL file exists
+      - name: Check ERD SQL file
+        run: test -f Docs/RacedayDb.sql
+
+      # Check API document
+      - name: Check API Document
+        run: test -f Docs/POEPart1APIEndpointtable.pdf
+
+      # Check ERD Document
+      - name: Check ERD Document
+        run: test -f Docs/RacedayPOEPart1ERD.pdf
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
+
+      # Check C# project
+    
 
       # Runs multiple commands
       - name: Run a multi-line script

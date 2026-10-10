@@ -22,13 +22,49 @@
 • participant must register their profile using password,username,email before being allowed to enter event. 
 • A participant may enter only one race at a time, as races within an event may take place simultaneously.
 • Each participant's name, surname, age, and location must be stored in the database.
-• Each event can contain multiple races. • Each event must include a title, description, and city must be stored in the database.
+• Each event can contain multiple races. 
+• Each event must include a title, description, and city must be stored in the database.
 • Each Event must belong to one category, such as cycling, walking and running.
-• Each event takes place in a specific city
+•  The results of each race needs to be recorded,
+• Each race results must have the following attributes: Position,finishTime RaceID, partipantID
+
 
 ERD
-<img width="940" height="952" alt="image" src="https://github.com/user-attachments/assets/af562667-efee-44d9-bc6a-66867a11488e" />
+<img width="688" height="697" alt="image" src="https://github.com/user-attachments/assets/bc9c804a-ade1-476b-85c8-c0b2e824d457" />
 
+
+
+
+RESTFUL API
+The restful api will enable organiser to create profile by registering themselves to the system
+Once login the organiser can create events, delete events, update events and view events
+He can also view participant’s information, events they have entered, delete and update participants. The workflow can be created to send email to notify participant of changes 
+Participants must be able to Register own accounts then login
+A RESTful API specification table
+1 Organiser endpoint
+HTTP methods	Route	description	Role required	Request body	response
+GET	api/event/{eventI}	View event	organiser	{ title, description, date, location}	200 (OK), 404 (No Found)
+POST	api/event	Create event,	Organiser	{ title, description, date, location}	200 (Created), 400 Bad Request
+PUT	api/event/{eventId}	Update event 	Organiser	{ eventId}	201 Ok; 400 not found
+DELETE	api/event/{eventId}	Delete event 	Organiser		204 (No Content) ,404 (No Found)
+					
+GET	api/categories/{categoryId}	View Category	Organiser	{categoryId, categoryname}	200 (Ok),400 (not found)
+POST	/api/categories	Create Category	Organiser	{categoryname}	200 (Created)  400 Bad Request
+Delete	/api/categories/{categoryId}	Delete Category	Organiser		204 (No Content) ,404 (No Found)
+					
+					
+					
+GET	/api/profiles/{participantId}	Capture participant results	Participant	{participantId, FirstName, Surname}	200 (Ok), 204 (No Found)
+GET	/api/profiles/{participantId}	View profile	Participant	{participantId}	200 (Ok), 204 No Found
+POST	/api/auth/users	Create profile account	Participant	{ username, password, email}	201 Created (Success)
+400 (Bad Request (invalidate credentials)
+POST	/api/auth/tokens	login	participant	{ username, password,}	200 OK (returns token), 401 Unauthorized
+POST	api/event/{eventId}	View Events	Participant	{ title, description, date, location}	200(OK),404 (Not Found)
+GET	/api/participants/{participantId}/registrations	View own entries	Participant	{ entriesId }	200 OK, 404 (Not Found), 204 (No Content)
+GET	/api/participants/{participantIId}/results	Track own results	Participant	{participantId}	200 (Ok), 404 (Not Found), 204 (No Content)
+
+
+- SQL Database Script
 
 tables
 <img width="940" height="829" alt="image" src="https://github.com/user-attachments/assets/5237b7ba-22d9-46c7-afed-c3eb2526cf3b" />
@@ -87,6 +123,19 @@ CategoryName VARCHAR(50) NOT NULL,
     -- Enforces: "A participant may enter only one race per event at a time "
     CONSTRAINT UQ_Participant_Single_Race_Per_Event UNIQUE (ParticipantID, EventID)
 
+  	ERD Update: 
+  	--New Table
+CREATE TABLE Result (
+    ResultID INT PRIMARY KEY IDENTITY(1,1),
+    ParticipantID INT NOT NULL,
+    RaceID INT NOT NULL,
+    Position INT,
+    Finish_time DATETIME,
+    -- Foreign keys to keep data accurate
+    FOREIGN KEY (ParticipantID) REFERENCES Participant(ParticipantID),
+    FOREIGN KEY (RaceID) REFERENCES Races(RaceID)
+	
+
 Step 3 : Seed Data 
 
 INSERT sample records
@@ -111,14 +160,48 @@ Races ➔ RaceEntries: One-to-Many (1-1 to 1*). A race enters into one or many r
 Event ➔ RaceEntries: One-to-Many (1-1 to 1*). An event contains one or many race entries.
 
 
-<img width="465" height="429" alt="image" src="https://github.com/user-attachments/assets/8d1907fb-e204-4df5-a783-c4644b986d7c" />
 
-Update to ERD: 
- participant must register their profile using password,username,email before being allowed to enter event.
- Organiser are the company's employees, There are using company login details to login into the system. there are authenticated using companies information system.
- NB: before we already created the ERD and SQL script will update our database and create new table that will house authorisation details.
- NB: a new and updated SQL Script will be uploaded
 
+Explain the /docs folder
+RaceDay Repository
+|
+|-- README.md
+|
+|-- Projectfiles
+| |-- RacedatPOEPartERD.pdf
+| |-- POEPart1ERD.pdf
+| |- RacedayDb.sql
+|
+`-- .github
+ `-- workflows
+
+ 
+##DATABASE UPDATE
+After though evaluation we realized that organiser will need to records Finish time as well position of the participant. We therefore decided to create another table called Results
+
+<img width="511" height="142" alt="image" src="https://github.com/user-attachments/assets/f21e09c3-3e29-4835-83f2-cafb8e16aa8f" />
+<p></p>
+We modify the table by adding foreign keys since we need to show participant results. The link must be created from participant, Event and Race table, <p></p>
+
+
+<img width="280" height="50" alt="image" src="https://github.com/user-attachments/assets/da8508be-b0f9-4651-bb23-e63f48560a49" />
+<p></p>
+
+## Database Setup
+Explain how to open and run the SQL script in SSMS.
+
+## CI/CD
+The GitHub Actions workflow checks if all the files uploaded on the repository are available with their correct file name.
+
+<img width="1629" height="85" alt="image" src="https://github.com/user-attachments/assets/639b864e-a913-4d4b-abdb-0622b37d1cf7" />
+
+workflow action
+<img width="1080" height="648" alt="image" src="https://github.com/user-attachments/assets/29558fb8-3ff3-42be-85c9-47bf39962ef5" />
+
+
+## Video Demonstration
+YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
+ 
 
 
 
