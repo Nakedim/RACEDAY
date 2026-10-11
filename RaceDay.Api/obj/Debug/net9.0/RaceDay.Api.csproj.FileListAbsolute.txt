@@ -17,10 +17,6 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\RaceDay.Api.
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\RaceDay.Api.pdb
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Azure.Core.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Azure.Identity.dll
-C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\EntityFramework.SqlServer.dll
-C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\EntityFramework.dll
-C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.AspNet.Identity.Core.dll
-C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.Data.SqlClient.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.dll
@@ -81,3 +77,5 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\refint\RaceD
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay.Api.pdb
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay.Api.genruntimeconfig.cache
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\ref\RaceDay.Api.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll

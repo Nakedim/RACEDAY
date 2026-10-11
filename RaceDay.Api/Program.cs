@@ -1,20 +1,27 @@
+
+
+using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Data; // Extraneous using statement cleaned up
+using RaceDay.Api.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Core API Services
+
+
 builder.Services.AddControllers();
 
-// 2. Swagger OpenAPI Generation
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
-// 3. Database Context Setup (FIXED: Removed the isolated variable assignment)
 builder.Services.AddDbContext<RacedayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 4. Cross-Origin Resource Sharing (CORS) Policy
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RACEDAY API", Version = "v1" });
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -26,22 +33,23 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+    app.UseCors("AllowAll");
 
-// 5. Middleware Pipeline
-app.UseHttpsRedirection();
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/openapi/v1.json", "Raceday API v1");
+        });
+    }
 
-app.UseCors("AllowAll");
+    app.UseHttpsRedirection();
 
-app.UseAuthorization();
+    app.UseAuthorization();
 
-// 6. Development Tools & Swagger UI Endpoints
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(); // Access this webpage at http://localhost:YOUR_PORT/swagger
-}
+    app.MapControllers();
 
-// 7. Route Mapping
-app.MapControllers();
-
-app.Run();
+    app.Run();

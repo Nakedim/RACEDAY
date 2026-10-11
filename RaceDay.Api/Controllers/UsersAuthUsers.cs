@@ -3,12 +3,12 @@
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.AspNetCore.Mvc;
-using RaceDay.Api.Models;
+using RaceDay.Api.Controllers;
+using RaceDay.Api.Data;
 using RaceDay.Contracts;
-
 using System.Security.Claims;
 
-namespace RACEDAY.Controllers
+namespace RaceDay.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,31 +30,43 @@ namespace RACEDAY.Controllers
         }
 
 
-     
 
 
-        // POST: api/AuthUsers/register
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
+            // 1. Guard clause against invalid input
+            if (model == null)
+            {
+                return BadRequest("Invalid registration data.");
+            }
+
+            // 2. Parse and validate the incoming role
+            if (!Enum.TryParse<ProfileRole>(model.ProfileRole, true, out var assignedRole))
+            {
+                return BadRequest(new { Error = $"Invalid role provided. Valid roles are: {string.Join(", ", Enum.GetNames(typeof(ProfileRole)))}" });
+            }
+
+            // 3. Map DTO to Identity model cleanly
             var newUser = new ApplicationUser
             {
-                UserName = model.Email,  //Identity defaults to matching UserName with Email
-              
+                UserName = model.Email,
                 Email = model.Email,
                 FirstName = model.FirstName,
                 Surname = model.Surname,
-                profileRole = model.ProfileRole.ToLower() == "participant" ? ProfileRole.Participant : ProfileRole.Participant
-                
+                profileRole = (Models.ProfileRole)assignedRole // Assuming models and DTO share the same backend enum type
             };
 
-            var results = await _userManager.CreateAsync(newUser);
+            // 4. Create user via ASP.NET Identity UserManager
+            var results = await _userManager.CreateAsync(newUser, model.Password); // Note: Always pass the password!
 
             if (!results.Succeeded)
             {
                 return BadRequest(results.Errors);
             }
-            return Ok(new { Message = "Registration successfull" });
+
+            return Ok(new { Message = "Registration successful" });
         }
 
 
@@ -84,7 +96,7 @@ namespace RACEDAY.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
-                    new Claim(ClaimTypes.Role, user.profileRole.ToString())
+                   new Claim(ClaimTypes.Role, user.profileRole.ToString())
                 };
                 return Ok(new
                 {
