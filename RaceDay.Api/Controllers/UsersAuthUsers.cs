@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RaceDay.Api.Controllers;
 using RaceDay.Api.Data;
+using RaceDay.Api.Filters;
 using RaceDay.Contracts;
 using System.Security.Claims;
 
@@ -34,6 +35,7 @@ namespace RaceDay.Api.Controllers
 
 
         [HttpPost("register")]
+        [ValidateModel]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
             // 1. Guard clause against invalid input
@@ -65,8 +67,16 @@ namespace RaceDay.Api.Controllers
             {
                 return BadRequest(results.Errors);
             }
+            var roleResult = await _userManager.AddToRoleAsync(newUser, assignedRole.ToString());
 
+            if(!roleResult.Succeeded)
+                    return BadRequest(roleResult.Errors);
+            {
+
+            }
             return Ok(new { Message = "Registration successful" });
+
+         
         }
 
 

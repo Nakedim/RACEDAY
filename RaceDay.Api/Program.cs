@@ -31,6 +31,14 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+builder.Services.AddIdentity(options =>
+{
+
+});
+
+.AddEntityFramework(RacedayDbContext);
+.ad
+
 
 var app = builder.Build();
     app.UseCors("AllowAll");

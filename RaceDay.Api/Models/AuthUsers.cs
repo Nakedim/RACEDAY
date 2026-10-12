@@ -3,27 +3,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using RaceDay.Api.Models;
 
 
-namespace RaceDay.Api.Models;
-
-public enum ProfileRole
+namespace RaceDay.Api.Models
 {
-    Organiser,
-    Participant
-}
-[Table("AuthUsers")]
-public class AuthUsers
-{
-    [Key]
-    public int UserID { get; set; }
-    [Required]
-    public string Username { get; set; } = string.Empty;
-    [Required]
-    public string PasswordHashed { get; set; } = string.Empty;
-    [Required]
-    public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
-    // Optional Navigation Properties (makes fetching profile data easier in EF Core)
-    //public virtual Participant? Participant { get; set; }
-    //public virtual Organiser? Organiser { get; set; }
+    public enum ProfileRole
+    {
+        Organiser,
+        Participant
+    }
+    [Table("AuthUsers")]
+    public class AuthUsers
+    {
+        [Key]
+        public int UserID { get; set; }
+        [Required]
+        public string Username { get; set; } = string.Empty;
+        [Required]
+        public string PasswordHashed { get; set; } = string.Empty;
+        [Required]
+        public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
+        // Optional Navigation Properties (makes fetching profile data easier in EF Core)
+        //public virtual Participant? Participant { get; set; }
+        //public virtual Organiser? Organiser { get; set; }
 
 
+    }
 }
