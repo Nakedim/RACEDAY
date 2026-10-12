@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using RaceDay.Api.Controllers;
 using RaceDay.Api.Data;
 using RaceDay.Api.Filters;
+using RaceDay.Api.Models;
 using RaceDay.Contracts;
 using System.Security.Claims;
 
@@ -57,7 +58,8 @@ namespace RaceDay.Api.Controllers
                 Email = model.Email,
                 FirstName = model.FirstName,
                 Surname = model.Surname,
-                profileRole = (Models.ProfileRole)assignedRole // Assuming models and DTO share the same backend enum type
+               
+                
             };
 
             // 4. Create user via ASP.NET Identity UserManager
@@ -106,12 +108,12 @@ namespace RaceDay.Api.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
-                   new Claim(ClaimTypes.Role, user.profileRole.ToString())
+                  
                 };
                 return Ok(new
                 {
                     Message = "Login successful!",
-                    Role = user.profileRole.ToString()
+                  
                 });
             }
             return Unauthorized(new { Message = "invalid email or password" });
