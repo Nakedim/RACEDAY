@@ -11,8 +11,9 @@ namespace RaceDay.Api.Models
     }
     public class ApplicationUser: IdentityUser
         {
-             public string FirstName { get; set; } = string.Empty;
+         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
+        public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
     }
 
 }

@@ -8,15 +8,15 @@ namespace RaceDay.Api.Models
 
 
 
-    [Table("Participants")]
-    public class Participants
+    [Table("Participant")]
+    public class Participant
     {
         [Key]
         public int ParticipantID { get; set; }
 
 
         [ForeignKey("UserID")]
-        public virtual AuthUsers User { get; set; } = null!;
+     
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public int Age { get; set; }

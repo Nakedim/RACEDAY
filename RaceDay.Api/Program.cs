@@ -11,7 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<RacedayDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+           // ADD THIS BLOCK: Tells EF Core to ignore the warning and just create the tables!
+           .ConfigureWarnings(warnings => warnings.Ignore(
+               Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning
+           )));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -65,33 +69,46 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Run your role seeding
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<RacedayDbContext>();
+
+    // 1. Force deletes the entire existing database to clear out old tables like AuthUsers
+    await dbContext.Database.EnsureDeletedAsync();
+
+    // 2. Builds a brand new database with ALL 14 tables (Identity + your custom tables)
+    await dbContext.Database.EnsureCreatedAsync();
+}
+
+// 3. Run your role seeding safely outside the container block
 await SeedRolesAsync(app.Services);
 
 app.Run();
 
 
-async Task SeedRolesAsync(IServiceProvider serviceProvider)
-{
-    using var scope = serviceProvider.CreateScope();
-
-    var roleManager = scope.ServiceProvider.GetRequiredService <RoleManager<IdentityRole>> ();
-
-    string[] roleNames = Enum.GetNames(typeof(ProfileRole));
-
-    foreach (var roleName in roleNames)
+    async Task SeedRolesAsync(IServiceProvider serviceProvider)
     {
-        if (!await roleManager.RoleExistsAsync(roleName))
-        {
-            var results = await roleManager.CreateAsync(new IdentityRole(roleName));
+        using var scope = serviceProvider.CreateScope();
 
-            if (!results.Succeeded)
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        string[] roleNames = Enum.GetNames(typeof(ProfileRole));
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
             {
-                // FIXED: Removed the stray trailing curly brackets
-                throw new Exception($"fail to create role {roleName}: " +
-                    string.Join(" ", results.Errors.Select(e => e.Description)));
+                var results = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+                if (!results.Succeeded)
+                {
+                    // FIXED: Removed the stray trailing curly brackets
+                    throw new Exception($"fail to create role {roleName}: " +
+                        string.Join(" ", results.Errors.Select(e => e.Description)));
+                }
             }
         }
     }
-}
+
 
 
