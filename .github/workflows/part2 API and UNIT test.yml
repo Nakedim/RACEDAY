@@ -14,7 +14,7 @@ jobs:
 
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: ://microsoft.com
         env:
           ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: "TestingPassword123!"
@@ -42,13 +42,14 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Restore dependencies
-        working-directory: raceday/raceday.api
+        # Updated to match the exact casing shown in your Solution Explorer
+        working-directory: RaceDay.Api
         run: dotnet restore
 
       - name: Initialize Database Schema
         run: |
-          # Looks inside the API folder context where your project files live
-          SQL_SCRIPT="raceday/raceday.api/Projectfiles/RacedayDb.sql"
+          # Matches case-sensitive path requirements
+          SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
           
           if [ ! -f "$SQL_SCRIPT" ]; then
             echo "ERROR: $SQL_SCRIPT was not found."
@@ -64,11 +65,11 @@ jobs:
             -i "$SQL_SCRIPT"
 
       - name: Build Solution
-        working-directory: raceday/raceday.api
+        working-directory: RaceDay.Api
         run: dotnet build --configuration Release --no-restore
 
       - name: Run Unit, Authentication & Integration Tests
-        working-directory: raceday/raceday.api
+        working-directory: RaceDay.Api
         run: |
           dotnet test \
             --configuration Release \
