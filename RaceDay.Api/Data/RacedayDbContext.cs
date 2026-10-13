@@ -1,27 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
+
 namespace RaceDay.Api.Data
 {
-    public class RacedayDbContext : DbContext
-    {
-     
-        public RacedayDbContext(DbContextOptions<RacedayDbContext> options) : base(options)
-        {
-        }
-
+   
   
-        public DbSet<Categories> Categories { get; set; }
-        public DbSet<Events> Events { get; set; }
-        public DbSet<Organisers> Organisers { get; set; }
-        public DbSet<Participants> Participants { get; set; }
-        public DbSet<RaceEntries> RaceEntries { get; set; }
+    
+    public class RacedayDbContext: IdentityDbContext<ApplicationUser>
+    
+    {
+
+public RacedayDbContext(
+    DbContextOptions<RacedayDbContext>options
+    ) : base(options) { }           
+       
+        public DbSet<Participant> Participants { get; set; }
+        public DbSet<Organiser> Organisers { get; set; }
+        public DbSet<RaceEvent> RaceEvents { get; set; }
         public DbSet<RaceResults> RaceResults { get; set; }
         public DbSet<Races> Races { get; set; }
+        public DbSet<RaceEntries> RaceEntries { get; set; }
+        public DbSet<Categories> Categories { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
-
+            base.OnModelCreating(builder);
+            builder.Ignore<Microsoft.AspNetCore.Mvc.Filters.FilterDescriptor>();
+            builder.Ignore<Microsoft.AspNetCore.Mvc.ModelBinding.BindingSource>();
         }
     }
 }

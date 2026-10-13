@@ -137,9 +137,17 @@
           "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
-            "Microsoft.AspNet.Identity.EntityFramework": {
+            "BCrypt.Net-Core": {
               "target": "Package",
-              "version": "[2.2.4, )"
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -149,9 +157,9 @@
               "target": "Package",
               "version": "[9.0.0, )"
             },
-            "Swashbuckle.AspNetCore": {
+            "Portable.BouncyCastle": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[1.9.0, )"
             },
             "Swashbuckle.AspNetCore.Annotations": {
               "target": "Package",

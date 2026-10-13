@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RACEDAY.Models
+namespace RaceDay.Api.Models
 {
-    [Table("Events")]
-    public class Events
+    [Table("RaceEvents")]
+    public class RaceEvent
     {
         [Key]
         public int EventID { get; set; }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RACEDAY.Data;
-using RACEDAY.Models;
+using RaceDay.Api.Models;
+using RaceDay.Api.Data;
 
-namespace RACEDAY.Controllers
+namespace RaceDay.Api.Controllers
 {
 
     [ApiController]
@@ -17,7 +17,7 @@ namespace RACEDAY.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Organisers>>> GetOrganisers()
+        public async Task<ActionResult<IEnumerable<Organiser>>> GetOrganisers()
         {
             return await _context.Organisers.ToListAsync();
         }

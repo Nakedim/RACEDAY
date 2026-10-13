@@ -1,14 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "7JBtETK3smE=",
+  "dgSpecHash": "iKb1+GIp0qM=",
   "success": true,
   "projectFilePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nmontsho\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
-    "C:\\Users\\nmontsho\\.nuget\\packages\\entityframework\\6.1.0\\entityframework.6.1.0.nupkg.sha512",
-    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnet.identity.core\\2.2.4\\microsoft.aspnet.identity.core.2.2.4.nupkg.sha512",
-    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnet.identity.entityframework\\2.2.4\\microsoft.aspnet.identity.entityframework.2.2.4.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\bcrypt.net-core\\1.6.0\\bcrypt.net-core.1.6.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.0\\microsoft.aspnetcore.cryptography.internal.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\9.0.0\\microsoft.aspnetcore.cryptography.keyderivation.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\9.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.0\\microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.data.sqlclient\\5.1.6\\microsoft.data.sqlclient.5.1.6.nupkg.sha512",
@@ -23,6 +25,8 @@
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\9.0.0\\microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.0\\microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.identity.core\\9.0.0\\microsoft.extensions.identity.core.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.identity.stores\\9.0.0\\microsoft.extensions.identity.stores.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.logging\\9.0.0\\microsoft.extensions.logging.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0\\microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.options\\9.0.0\\microsoft.extensions.options.9.0.0.nupkg.sha512",
@@ -40,7 +44,7 @@
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.openapi\\1.6.23\\microsoft.openapi.1.6.23.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
-    "C:\\Users\\nmontsho\\.nuget\\packages\\swashbuckle.aspnetcore\\9.0.0\\swashbuckle.aspnetcore.9.0.0.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\9.0.0\\swashbuckle.aspnetcore.annotations.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\9.0.0\\swashbuckle.aspnetcore.swagger.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\9.0.0\\swashbuckle.aspnetcore.swaggergen.9.0.0.nupkg.sha512",
@@ -73,42 +77,5 @@
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.20\\microsoft.aspnetcore.app.ref.9.0.20.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.20\\microsoft.netcore.app.host.win-x64.9.0.20.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "message": "Package 'EntityFramework 6.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "libraryId": "EntityFramework",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "message": "Package 'Microsoft.AspNet.Identity.Core 2.2.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "libraryId": "Microsoft.AspNet.Identity.Core",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "message": "Package 'Microsoft.AspNet.Identity.EntityFramework 2.2.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj",
-      "libraryId": "Microsoft.AspNet.Identity.EntityFramework",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

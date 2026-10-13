@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RACEDAY.Data;
-using RACEDAY.Models;
+using RaceDay.Api.Models;
+using RaceDay.Api.Data;
 
-namespace RACEDAY.Controllers
+namespace RaceDay.Api.Controllers
 {
 
     [ApiController]
     [Route("api/[controller]")]
-    public class ParticipantsController: ControllerBase
+    public class ParticipantController: ControllerBase
     {
         private readonly RacedayDbContext _context;
 
-        public ParticipantsController(RacedayDbContext context)
+        public ParticipantController(RacedayDbContext context)
         {
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Participants>>> GetParticipant()
+        public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
         {
             return await _context.Participants.ToListAsync();
         }

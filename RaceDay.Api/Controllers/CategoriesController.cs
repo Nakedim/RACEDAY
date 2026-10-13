@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Controllers;
 using RaceDay.Api.Models;
+using RaceDay.Api.Data;
 
-namespace RaceDay.Api.Data;
-
-
+namespace RaceDay.Api.Controllers
+{
 
     [ApiController]
     [Route("api/[controller]")]
@@ -23,4 +22,4 @@ namespace RaceDay.Api.Data;
             return await _context.Categories.ToListAsync();
         }
     }
-
+}

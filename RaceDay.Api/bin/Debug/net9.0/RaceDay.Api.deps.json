@@ -8,9 +8,12 @@
     ".NETCoreApp,Version=v9.0": {
       "RaceDay.Api/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNet.Identity.EntityFramework": "2.2.4",
+          "BCrypt.Net-Core": "1.6.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.0",
+          "Microsoft.AspNetCore.OpenApi": "9.0.0",
           "Microsoft.EntityFrameworkCore": "9.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0",
+          "Portable.BouncyCastle": "1.9.0",
           "RaceDay.Contracts": "1.0.0",
           "Swashbuckle.AspNetCore.Annotations": "9.0.0",
           "Swashbuckle.AspNetCore.Swagger": "9.0.0",
@@ -48,35 +51,33 @@
           }
         }
       },
-      "EntityFramework/6.1.0": {
+      "BCrypt.Net-Core/1.6.0": {
         "runtime": {
-          "lib/net45/EntityFramework.SqlServer.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.1.30225.0"
-          },
-          "lib/net45/EntityFramework.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.1.30225.0"
+          "lib/netstandard2.0/BCrypt.Net-Core.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
           }
         }
       },
-      "Microsoft.AspNet.Identity.Core/2.2.4": {
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.2.4.50621"
-          }
-        }
-      },
-      "Microsoft.AspNet.Identity.EntityFramework/2.2.4": {
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore/9.0.0": {
         "dependencies": {
-          "EntityFramework": "6.1.0",
-          "Microsoft.AspNet.Identity.Core": "2.2.4"
+          "Microsoft.EntityFrameworkCore.Relational": "9.0.0"
         },
         "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.EntityFramework.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.2.4.50621"
+          "lib/net9.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52903"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.OpenApi/9.0.0": {
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.23"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52903"
           }
         }
       },
@@ -306,6 +307,14 @@
           }
         }
       },
+      "Portable.BouncyCastle/1.9.0": {
+        "runtime": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "assemblyVersion": "1.9.0.0",
+            "fileVersion": "1.9.0.1"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore.Annotations/9.0.0": {
         "dependencies": {
           "Swashbuckle.AspNetCore.SwaggerGen": "9.0.0"
@@ -510,26 +519,26 @@
       "path": "azure.identity/1.11.4",
       "hashPath": "azure.identity.1.11.4.nupkg.sha512"
     },
-    "EntityFramework/6.1.0": {
+    "BCrypt.Net-Core/1.6.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-u/M0OEfqxTUsL5BwzD66eBGm278/ozqdLK3JvMO6QwUxxc+z7ZUkTYm4suDhWRqzkc6mOhvXDQY5dZUwbldxyQ==",
-      "path": "entityframework/6.1.0",
-      "hashPath": "entityframework.6.1.0.nupkg.sha512"
+      "sha512": "sha512-hsKiHGjrnlDW05MzuzzlD9gNP8YOW2KbZ+FbvISrilsKJJ76tXKhWey6psZX5sd7DczNpSU2U6ldjPoblk8BLw==",
+      "path": "bcrypt.net-core/1.6.0",
+      "hashPath": "bcrypt.net-core.1.6.0.nupkg.sha512"
     },
-    "Microsoft.AspNet.Identity.Core/2.2.4": {
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore/9.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-s3u/o3iG5h0z7Ggukwo4soPwogD56ZrYbolGxTfw41zkuG6jAXUJT/V3EThqHJXGuCNvWSdSnnwAhPfT9Sn36g==",
-      "path": "microsoft.aspnet.identity.core/2.2.4",
-      "hashPath": "microsoft.aspnet.identity.core.2.2.4.nupkg.sha512"
+      "sha512": "sha512-fwQkBQGaiRKDQWBc7PXxDiDXtsUsRPL88Jp0CqjqoDhd9p5uHSyuv6g3ALq2EbCvKcWk/7pOKsJiDomPvp/ptA==",
+      "path": "microsoft.aspnetcore.identity.entityframeworkcore/9.0.0",
+      "hashPath": "microsoft.aspnetcore.identity.entityframeworkcore.9.0.0.nupkg.sha512"
     },
-    "Microsoft.AspNet.Identity.EntityFramework/2.2.4": {
+    "Microsoft.AspNetCore.OpenApi/9.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ay5FMSwNF0tb9KiC4l4aqm7D1E6Da9nU3euI/X0UD1SuumJX7OkZ9LtZjU9xT3xmou3XLXO8DDcgrW6udSQk6Q==",
-      "path": "microsoft.aspnet.identity.entityframework/2.2.4",
-      "hashPath": "microsoft.aspnet.identity.entityframework.2.2.4.nupkg.sha512"
+      "sha512": "sha512-FqUK5j1EOPNuFT7IafltZQ3cakqhSwVzH5ZW1MhZDe4pPXs9sJ2M5jom1Omsu+mwF2tNKKlRAzLRHQTZzbd+6Q==",
+      "path": "microsoft.aspnetcore.openapi/9.0.0",
+      "hashPath": "microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
       "type": "package",
@@ -656,6 +665,13 @@
       "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
       "path": "microsoft.win32.systemevents/6.0.0",
       "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
+    },
+    "Portable.BouncyCastle/1.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw==",
+      "path": "portable.bouncycastle/1.9.0",
+      "hashPath": "portable.bouncycastle.1.9.0.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore.Annotations/9.0.0": {
       "type": "package",

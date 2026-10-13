@@ -4,18 +4,17 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyTitle>RaceDay.Api</AssemblyTitle>
+		<AssemblyName>RaceDay.Api</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- Perfectly matched .NET 9 Core Libraries -->
-
-		<PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
-
+		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
-
-		<!-- Swashbuckle Swagger Engine -->
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.0" />
@@ -23,11 +22,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Filters\" />
+	  <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+	  <Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>

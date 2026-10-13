@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Data;
 using RaceDay.Api.Models;
+using RaceDay.Api.Data;
 
-
-namespace RACEDAY.Controllers
+namespace RaceDay.Api.Controllers
 {
 
     [ApiController]

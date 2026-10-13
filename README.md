@@ -1,9 +1,9 @@
-1. Executive Summary & Project Mission
+## 1. Executive Summary & Project Mission
 2. RACEDAY is a specialized, web-based athletic event management platform engineered explicitly for the South African road running, walking, and cycling communities. The platform serves as a dual-sided ecosystem: bridging the operational needs of event organizers with a seamless, data-driven experience for athletes. Organizers are empowered with comprehensive tools to deploy events, manage underlying athletic categories, and oversee athlete rosters. Simultaneously, participants can intuitively discover local fixtures, register for events, archive their historical race performance, and leverage real-time route dynamics alongside live localized weather data to safely prepare for their upcoming race day.
 
 
 3
-3.1 Functional Core Capabilities and User Roles
+## 3.1 Functional Core Capabilities and User Roles
 🏢 For Organizers
 • The system must permanently capture and store each organizer’s unique identifier, legal first name, and surname.
 •	Event Lifecycle Management: Tools to conceptualize, schedule, and edit multi-race sporting events.
@@ -29,7 +29,7 @@
 • Each race results must have the following attributes: Position,finishTime RaceID, partipantID
 
 
-ERD
+## ERD
 <img width="688" height="697" alt="image" src="https://github.com/user-attachments/assets/bc9c804a-ade1-476b-85c8-c0b2e824d457" />
 
 
@@ -201,7 +201,38 @@ workflow action
 
 ## Video Demonstration
 YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
- 
 
 
+ ## PART 2
+
+ ### update as per feedback from Par2
+
+## API Endpooints
+
+
+ ## Filters:
+   1. Authorization Filters (IAuthorizationFilter):
+	• When they run: First of all filters.
+	• What they do: Determine if the user is authorized for the request. If they fail, the request is blocked immediately.
+2. Resource Filters (IResourceFilter):
+	• When they run: Right after authorization, and again at the very end of the request.
+	• What they do: Good for caching responses to save database performance.
+3. Action Filters (IActionFilter):
+	• When they run: Right before and right after an individual controller action method runs.
+	• What they do: Highly useful for inspecting or manipulating the input arguments (like verifying a password formatting request) or altering the result.
+4. Exception Filters (IExceptionFilter):
+	• When they run: Only if an unhandled error/exception occurs during execution.
+	• What they do: Log the crash and return a clean HTTP 500 error to the client.
+5. Result Filters (IResultFilter):
+	• When they run: Immediately before and after the final API response (like JSON serialization) is sent back.
+
+   ## Authentication
+
+   
+   ## Session Management
+
+   ## SWagger
+ <img width="1347" height="504" alt="image" src="https://github.com/user-attachments/assets/38b72cf6-38db-42bf-973f-0955f588390f" />
+
+## Testing
 

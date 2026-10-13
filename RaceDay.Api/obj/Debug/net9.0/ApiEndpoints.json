@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "RACEDAY.Controllers.AuthUsers",
+    "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
     "Method": "Login",
     "RelativePath": "api/AuthUsers/login",
     "HttpMethod": "POST",
@@ -16,7 +16,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RACEDAY.Controllers.AuthUsers",
+    "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
     "Method": "Register",
     "RelativePath": "api/AuthUsers/register",
     "HttpMethod": "POST",
@@ -32,7 +32,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RaceDay.Api.Data.CategoriesController",
+    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
     "Method": "GetCategories",
     "RelativePath": "api/Categories",
     "HttpMethod": "GET",
@@ -52,16 +52,16 @@
     ]
   },
   {
-    "ContainingType": "RACEDAY.Controllers.EventsController",
-    "Method": "GetAllEvents",
-    "RelativePath": "api/Events",
+    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
+    "Method": "GetOrganisers",
+    "RelativePath": "api/Organisers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Events, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Organiser, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -72,7 +72,27 @@
     ]
   },
   {
-    "ContainingType": "RACEDAY.Controllers.RaceEntriesController",
+    "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
+    "Method": "GetParticipant",
+    "RelativePath": "api/Participant",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Participant, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.RaceEntriesController",
     "Method": "GetRaceEntries",
     "RelativePath": "api/RaceEntries",
     "HttpMethod": "GET",
@@ -92,7 +112,27 @@
     ]
   },
   {
-    "ContainingType": "RACEDAY.Controllers.RaceResultsController",
+    "ContainingType": "RaceDay.Api.Controllers.RaceEventsController",
+    "Method": "GetAllEvents",
+    "RelativePath": "api/RaceEvents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.RaceResultsController",
     "Method": "GetRaceResults",
     "RelativePath": "api/RaceResults",
     "HttpMethod": "GET",
@@ -112,7 +152,7 @@
     ]
   },
   {
-    "ContainingType": "RACEDAY.Controllers.RacesController",
+    "ContainingType": "RaceDay.Api.Controllers.RacesController",
     "Method": "GetParticipant",
     "RelativePath": "api/Races",
     "HttpMethod": "GET",

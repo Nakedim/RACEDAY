@@ -2,9 +2,9 @@ name: "Part 2: API, Database & Unit Tests"
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -14,17 +14,23 @@ jobs:
 
     services:
       sqlserver:
-        image: ://microsoft.com
+        image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: "Y"
-          MSSQL_SA_PASSWORD: "YourSecurePassword123!"
+          MSSQL_SA_PASSWORD: "TestingPassword123!"
         ports:
           - 1433:1433
         options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourSecurePassword123!' -C -Q 'SELECT 1'" 
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 3
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TestingPassword123!' -C -Q 'SELECT 1' || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 15
+          --health-start-period 30s
+
+    env:
+      MSSQL_SA_PASSWORD: "TestingPassword123!"
+      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=TestingPassword123!;Encrypt=True;TrustServerCertificate=True;"
+      Jwt__Secret: "LocalTestingKeyMustBeAtLeast32CharactersLong123!"
 
     steps:
       - name: Checkout repository
@@ -33,28 +39,38 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
-          cache: true
+          dotnet-version: "9.0.x"
 
       - name: Restore dependencies
+        working-directory: RaceDay.Api
         run: dotnet restore
-
-      - name: Install Database Utilities
-        run: |
-          curl -sSL https://microsoft.com | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
-          curl -sSL https://microsoft.com(lsb_release -rs)/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
 
       - name: Initialize Database Schema
         run: |
-          /opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P "YourSecurePassword123!" -C -i Projectfiles/RacedayDb.sql
+          SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
+          
+          if [ ! -f "$SQL_SCRIPT" ]; then
+            echo "ERROR: $SQL_SCRIPT was not found."
+            exit 1
+          fi
+
+          /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost,1433 \
+            -U sa \
+            -P "$MSSQL_SA_PASSWORD" \
+            -C \
+            -b \
+            -i "$SQL_SCRIPT"
 
       - name: Build Solution
+        working-directory: RaceDay.Api
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run Unit & Authentication Tests
-        run: dotnet test --configuration Release --no-build --verbosity normal
-        env:
-          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=YourSecurePassword123!;Encrypt=True;TrustServerCertificate=True;"
-          Jwt__Secret: "SuperSecretKeyForTestingPurposesOnly123!"
+      - name: Run Unit, Authentication & Integration Tests
+        working-directory: RaceDay.Api
+        run: |
+          dotnet test \
+            --configuration Release \
+            --no-build \
+            --no-restore \
+            --verbosity normal
