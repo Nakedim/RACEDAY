@@ -61,6 +61,8 @@ jobs:
             -C \
             -b \
             -i "$SQL_SCRIPT"
+            -i docs/RacedayDb.sql
+          
 
       - name: Build Solution
         working-directory: RaceDay.Api
