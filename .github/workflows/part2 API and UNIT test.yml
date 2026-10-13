@@ -42,13 +42,11 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Restore dependencies
-        # Updated to match the exact casing shown in your Solution Explorer
         working-directory: RaceDay.Api
         run: dotnet restore
 
       - name: Initialize Database Schema
         run: |
-          # Matches case-sensitive path requirements
           SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
           
           if [ ! -f "$SQL_SCRIPT" ]; then
