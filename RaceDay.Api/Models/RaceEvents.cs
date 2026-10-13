@@ -15,5 +15,12 @@ namespace RaceDay.Api.Models
         public int CategoryID { get; set; }
         public int Distance { get; set; }
         public string EventType { get; set; }
+
+
+        [ForeignKey("OrganiserID")]
+        public Organiser Organiser { get; set; } = null!;
+
+        // Navigation property for children races
+        public ICollection<Races> Races { get; set; } = new List<Races>();
     }
 }

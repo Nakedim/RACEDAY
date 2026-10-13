@@ -7,10 +7,21 @@ namespace RaceDay.Api.Models
     public class RaceEntries
     {
         [Key]
-        public int EntryID { get; set; }
-        public int ParticipantID { get; set; }
+        public int RaceEntryID { get; set; }
+
         public int RaceID { get; set; }
-        public int EventID { get; set; }
-        public DateTime EntryDate { get; set; }
+        [ForeignKey("RaceID")]
+        public Races Race { get; set; } = null!;
+
+        public int ParticipantID { get; set; }
+        [ForeignKey("ParticipantID")]
+        public Participant Participant { get; set; } = null!;
+
+        public int CategoryID { get; set; }
+        [ForeignKey("CategoryID")]
+        public Categories Categories { get; set; } = null!; // Pluralized to match your Fluent API (re.Categories)
+
+        public DateTime EntryDate { get; set; } = DateTime.UtcNow;
     }
-}
+    }
+

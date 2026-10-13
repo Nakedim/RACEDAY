@@ -49,8 +49,16 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<RacedayDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
+app.UseSession();
 app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
@@ -102,7 +110,7 @@ app.Run();
 
                 if (!results.Succeeded)
                 {
-                    // FIXED: Removed the stray trailing curly brackets
+                   
                     throw new Exception($"fail to create role {roleName}: " +
                         string.Join(" ", results.Errors.Select(e => e.Description)));
                 }

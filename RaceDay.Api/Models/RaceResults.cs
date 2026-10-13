@@ -8,14 +8,19 @@ namespace RaceDay.Api.Models
     {
         [Key]
         public int ResultID { get; set; }
-        public int ParticipantID { get; set; }
 
-        public int Position { get; set; }
-
-        public TimeOnly? finishTime { get; set; }
         public int RaceID { get; set; }
 
+        [ForeignKey("RaceID")]
+        public Races race { get; set; } = null!; 
+        public int ParticipantID { get; set; }
+        [ForeignKey("ParticipantID")]
+        public Participant Participant { get; set; } = null!;
 
+        [Required]
+        public string FinishTime { get; set; } = string.Empty;
+
+        public int Position { get; set; }
 
     }
 }

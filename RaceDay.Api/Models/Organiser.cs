@@ -11,5 +11,8 @@ namespace RaceDay.Api.Models
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
 
+
+        public ICollection<RaceEvent> RaceEvents { get; set; } = new List<RaceEvent>();
+
     }
 }

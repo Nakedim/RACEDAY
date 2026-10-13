@@ -14,5 +14,10 @@ namespace RaceDay.Api.Models
         public int EventID { get; set; }
         public string Location { get; set; } = string.Empty;
 
+        [ForeignKey("EventID")]
+        public RaceEvent Event { get; set; } = null!;
+
+        public ICollection<RaceEntries> RaceEntries { get; set; } = new List<RaceEntries>();
+
     }
 }
