@@ -47,7 +47,7 @@ jobs:
 
       - name: Initialize Database Schema
         run: |
-          SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
+          SQL_SCRIPT="docs/RacedayDb.sql"
           
           if [ ! -f "$SQL_SCRIPT" ]; then
             echo "ERROR: $SQL_SCRIPT was not found."
