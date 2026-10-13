@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Models;
 using RaceDay.Api.Data;
+using RaceDay.Api.Models;
 
 namespace RaceDay.Api.Controllers
 {
 
     [ApiController]
     [Route("api/[controller]")]
-    public class ParticipantController: ControllerBase
+    public class ParticipantController : ControllerBase
     {
         private readonly RacedayDbContext _context;
 
@@ -21,5 +22,32 @@ namespace RaceDay.Api.Controllers
         {
             return await _context.Participants.ToListAsync();
         }
+
+        //both view race events
+        [HttpGet]
+        [Authorize(Roles = "Organiser")]
+        public async Task<ActionResult<IEnumerable<RaceEvent>>> viewAllParticipantInfo()
+        {
+            return await _context.RaceEvents.ToListAsync();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Participant")]
+        public async Task<ActionResult<IEnumerable<RaceEvent>>> viewOwnParticipantInfo()
+        {
+            return await _context.RaceEvents.ToListAsync();
+
+            //a user need to login with his own credentials
+        }
+
+
+        //organisers create events
+        [HttpPost]
+        [Authorize(Roles = "Organiser")]
+        public IActionResult CreateEvent()
+        {
+            return Ok();
+        }
     }
+
 }

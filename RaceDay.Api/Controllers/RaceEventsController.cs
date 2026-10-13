@@ -17,11 +17,29 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
-        [Authorize]
+        
+        //both view race events
         [HttpGet]
+        [Authorize(Roles = "Organiser, Participant")]
         public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllEvents()
         {
             return await _context.RaceEvents.ToListAsync();
         }
+
+        //organisers create events
+        [HttpPost]
+        [Authorize(Roles = "Organiser")]
+        public IActionResult CreateEvent()
+        {
+            return Ok();
+        }
+        //organisers update events
+        [HttpPut]
+        [Authorize(Roles = "Organiser")]
+        public IActionResult UpdateEvent(int EventID)
+        {
+            return Ok();
+        }
+
     }
 }
