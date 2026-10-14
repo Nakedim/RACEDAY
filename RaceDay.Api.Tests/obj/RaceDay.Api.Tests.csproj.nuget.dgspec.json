@@ -114,6 +114,9 @@
             "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {
+              "C:\\Users\\nmontsho\\source\\repos\\RaceDay.Contracts\\RaceDay.Contracts.csproj": {
+                "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RaceDay.Contracts\\RaceDay.Contracts.csproj"
+              },
               "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj": {
                 "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj"
               }
@@ -137,6 +140,10 @@
           "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Testing": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[9.0.0, )"

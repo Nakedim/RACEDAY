@@ -18,7 +18,7 @@ namespace RaceDay.Api.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categories>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<Categories>>> GetCategories(int id)
         {
             return await _context.Categories.ToListAsync();
         }

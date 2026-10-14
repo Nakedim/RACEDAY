@@ -80,3 +80,4 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\refint\RaceD
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay.Api.pdb
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay.Api.genruntimeconfig.cache
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\ref\RaceDay.Api.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

@@ -82,7 +82,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<RacedayDbContext>();
 
     // 1. Force deletes the entire existing database to clear out old tables like AuthUsers
-    await dbContext.Database.EnsureDeletedAsync();
+    //await dbContext.Database.EnsureDeletedAsync();
 
     // 2. Builds a brand new database with ALL 14 tables (Identity + your custom tables)
     await dbContext.Database.EnsureCreatedAsync();
@@ -117,6 +117,9 @@ app.Run();
             }
         }
     }
+
+public partial class Program { }
+
 
 
 

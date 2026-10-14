@@ -89,7 +89,7 @@ namespace RaceDay.Api.Controllers
             }
 
             // 2. Validate password using SignInManager
-            var result = await _signInManager.CheckPasswordSignInAsync(user, model.PasswordHashed, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
                 return Unauthorized(new { Error = "Invalid email or password." });

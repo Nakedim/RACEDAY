@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.0" />
@@ -20,12 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+    <ProjectReference Include="..\RaceDay.Api\RaceDay.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RaceDay.Api\RaceDay.Api.csproj" />
-    <ProjectReference Include="..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

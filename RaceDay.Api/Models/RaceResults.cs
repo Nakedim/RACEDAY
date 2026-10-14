@@ -6,21 +6,26 @@ namespace RaceDay.Api.Models
     [Table("Results")]
     public class RaceResults
     {
-        [Key]
-        public int ResultID { get; set; }
+       
+            [Key]
+            public int ResultID { get; set; }
 
-        public int RaceID { get; set; }
+            public int RaceID { get; set; }
 
-        [ForeignKey("RaceID")]
-        public Races race { get; set; } = null!; 
-        public int ParticipantID { get; set; }
-        [ForeignKey("ParticipantID")]
-        public Participant Participant { get; set; } = null!;
+            public int ParticipantID { get; set; }
 
-        [Required]
-        public string FinishTime { get; set; } = string.Empty;
+            [Required]
+            public string FinishTime { get; set; } = string.Empty;
 
-        public int Position { get; set; }
+            public int Position { get; set; }
+
+            // Navigation Properties
+            [ForeignKey(nameof(RaceID))]
+            public virtual Races Race { get; set; } = null!;
+
+            [ForeignKey(nameof(ParticipantID))]
+            public virtual Participant Participant { get; set; } = null!;
+        }
 
     }
-}
+
