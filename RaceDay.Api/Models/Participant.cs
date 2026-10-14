@@ -21,7 +21,9 @@ namespace RaceDay.Api.Models
         public string Surname { get; set; } = string.Empty;
         public int Age { get; set; }
         public string Location { get; set; } = string.Empty;
-        public int? UserID { get; set; }
+        //public int? UserID { get; set; }
+
+        public ICollection<RaceEvent> races { get; set; } = new List<RaceEvent>();
 
     }
     

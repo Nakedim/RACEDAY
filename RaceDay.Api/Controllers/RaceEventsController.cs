@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Models;
 using RaceDay.Api.Data;
+using RaceDay.Api.Models;
+using RaceDay.Contracts;
 
 namespace RaceDay.Api.Controllers
 {
@@ -26,12 +27,29 @@ namespace RaceDay.Api.Controllers
             return await _context.RaceEvents.ToListAsync();
         }
 
-        //organisers create events
+        //organisers create Raceevents
         [HttpPost]
         [Authorize(Roles = "Organiser")]
-        public IActionResult CreateEvent()
+        public async Task <IActionResult> CreateEvent([FromBody ] RaceEventDTO raceEventDTO )
         {
-            return Ok();
+
+                if (ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var NewEvent = new RaceEvent 
+                {
+                   Title = raceEventDTO.Title,
+                   Description = raceEventDTO.Title,
+                   location = raceEventDTO.location,
+                   Distance = raceEventDTO.Distance,
+                   EventType = raceEventDTO.EventType,
+                   OrganiserID = raceEventDTO.OrganiserID,
+                   
+                };
+               _context.RaceEvents.Add(NewEvent);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetRaceByID", new { id = NewEvent.EventID },NewEvent);
         }
         //organisers update events
         [HttpPut]

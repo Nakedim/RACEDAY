@@ -12,6 +12,7 @@ namespace RaceDay.Api.Models
         public string Surname { get; set; } = string.Empty;
 
 
+        // is used to define a one-to-many relationship between the Organiser and RaceEvent entities
         public ICollection<RaceEvent> RaceEvents { get; set; } = new List<RaceEvent>();
 
     }

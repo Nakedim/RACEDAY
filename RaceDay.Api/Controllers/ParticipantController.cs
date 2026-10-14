@@ -17,18 +17,26 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
+
+        //get all participant
         [HttpGet]
+        //only organisers are allow to view all participant
         public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
         {
             return await _context.Participants.ToListAsync();
         }
 
         //both view race events
-        [HttpGet]
-        [Authorize(Roles = "Organiser")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> viewAllParticipantInfo()
+        [HttpGet("{id}")]
+        //[Authorize(Roles = "Organiser")]
+        public async Task<ActionResult<Participant>> viewParticipant(int id)
         {
-            return await _context.RaceEvents.ToListAsync();
+            var partipant = await _context.Participants.FindAsync();
+            if(partipant == null)
+            {
+                return NotFound();
+            }
+            return Ok(partipant);
         }
 
         [HttpGet]
@@ -41,13 +49,23 @@ namespace RaceDay.Api.Controllers
         }
 
 
-        //organisers create events
-        [HttpPost]
-        [Authorize(Roles = "Organiser")]
-        public IActionResult CreateEvent()
+        //update participant
+        [HttpPut("{id}")]
+        //[Authorize(Roles = "Organiser")]
+        public async Task<ActionResult<Participant>> UpdateParticipant(int id)
         {
-            return Ok();
+            var partipant = await _context.Participants.FindAsync();
+            if (partipant == null)
+            {
+                return NotFound();
+            }
+            _context.Participants.Remove(partipant);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
+
+
     }
 
 }

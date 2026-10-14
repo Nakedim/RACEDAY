@@ -19,6 +19,16 @@ namespace RaceDay.Api.Data
         public DbSet<RaceEntries> RaceEntries { get; set; }
         public DbSet<Categories> Categories { get; set; }
 
-        
+
+        //The idea is to have id always for every category since the list is rigid
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Categories>().HasData(
+        //        new Categories { CategoryID = 1, CategoryName = "Marathon" },
+        //        new Categories { CategoryID = 2, CategoryName = "Walking" },
+        //        new Categories { CategoryID = 3, CategoryName = "Track and Field" }
+        //    );
+        //}
     }
 }

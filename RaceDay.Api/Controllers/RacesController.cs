@@ -45,7 +45,7 @@ namespace RaceDay.Api.Controllers
             exisitingRace.Location = updateRaceDto.Location;
 
             await _context.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
 

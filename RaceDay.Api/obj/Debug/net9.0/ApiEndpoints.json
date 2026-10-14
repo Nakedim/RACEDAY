@@ -33,32 +33,6 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
-    "Method": "GetCategories",
-    "RelativePath": "api/Categories",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Categories, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
     "Method": "GetAllCategories",
     "RelativePath": "api/Categories",
     "HttpMethod": "GET",
@@ -86,8 +60,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "category",
-        "Type": "RaceDay.Api.Models.Categories",
+        "Name": "categoryDTO",
+        "Type": "RaceDay.Contracts.CategoriesDTO",
         "IsRequired": true
       }
     ],
@@ -131,24 +105,36 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
-    "Method": "GetOrganisers",
-    "RelativePath": "api/Organisers",
+    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
+    "Method": "GetCategory",
+    "RelativePath": "api/Categories/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
+    "Parameters": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Organiser, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
-    ]
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
+    "Method": "CreateOrgProfile",
+    "RelativePath": "api/Organisers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "organiserProfileDTO",
+        "Type": "RaceDay.Contracts.OrganiserProfileDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
@@ -171,6 +157,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
+    "Method": "GetOrganiserbyID",
+    "RelativePath": "api/Organisers/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
     "Method": "GetParticipant",
     "RelativePath": "api/Participant",
@@ -181,26 +183,6 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Participant, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
-    "Method": "viewAllParticipantInfo",
-    "RelativePath": "api/Participant",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -232,13 +214,55 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
-    "Method": "CreateEvent",
-    "RelativePath": "api/Participant",
-    "HttpMethod": "POST",
+    "Method": "viewParticipant",
+    "RelativePath": "api/Participant/{id}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RaceDay.Api.Models.Participant",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
+    "Method": "UpdateParticipant",
+    "RelativePath": "api/Participant/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RaceDay.Api.Models.Participant",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceEntriesController",
@@ -327,7 +351,13 @@
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "raceEventDTO",
+        "Type": "RaceDay.Contracts.RaceEventDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -488,26 +518,5 @@
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.WeatherForecast, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]
