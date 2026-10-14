@@ -74,7 +74,6 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\staticwebass
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\staticwebassets.build.endpoints.json
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\swae.build.ex.cache
-C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay..67FF5970.Up2Date
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\RaceDay.Api.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api\obj\Debug\net9.0\refint\RaceDay.Api.dll

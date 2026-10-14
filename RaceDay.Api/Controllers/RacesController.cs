@@ -30,7 +30,12 @@ namespace RaceDay.Api.Controllers
  //both view race events
  [HttpGet]
         [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllRace(int RaceID)
+        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllRace()        {
+            return await _context.RaceEvents.ToListAsync();
+        }
+        [HttpGet]
+        [Authorize(Roles = "Organiser, Participant")]
+        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetRace( int RaceID)
         {
             return await _context.RaceEvents.ToListAsync();
         }

@@ -47,6 +47,19 @@
           }
         }
       },
+      "BCrypt.Net-Core/1.6.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/BCrypt.Net-Core.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/BCrypt.Net-Core.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
       "coverlet.collector/6.0.4": {
         "type": "package",
         "build": {
@@ -977,6 +990,19 @@
           }
         }
       },
+      "Portable.BouncyCastle/1.9.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore.Annotations/9.0.0": {
         "type": "package",
         "dependencies": {
@@ -1604,10 +1630,12 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
+          "BCrypt.Net-Core": "1.6.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.0",
           "Microsoft.AspNetCore.OpenApi": "9.0.0",
           "Microsoft.EntityFrameworkCore": "9.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0",
+          "Portable.BouncyCastle": "1.9.0",
           "RaceDay.Contracts": "1.0.0",
           "Swashbuckle.AspNetCore.Annotations": "9.0.0",
           "Swashbuckle.AspNetCore.Swagger": "9.0.0",
@@ -1627,13 +1655,6 @@
       "RaceDay.Contracts/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0",
-          "Swashbuckle.AspNetCore.Annotations": "9.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "9.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.0",
-          "Swashbuckle.AspNetCore.SwaggerUI": "9.0.0"
-        },
         "compile": {
           "bin/placeholder/RaceDay.Contracts.dll": {}
         },
@@ -1680,6 +1701,29 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "BCrypt.Net-Core/1.6.0": {
+      "sha512": "hsKiHGjrnlDW05MzuzzlD9gNP8YOW2KbZ+FbvISrilsKJJ76tXKhWey6psZX5sd7DczNpSU2U6ldjPoblk8BLw==",
+      "type": "package",
+      "path": "bcrypt.net-core/1.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bcrypt.net-core.1.6.0.nupkg.sha512",
+        "bcrypt.net-core.nuspec",
+        "lib/net40/BCrypt.Net-Core.dll",
+        "lib/net40/BCrypt.Net-Core.pdb",
+        "lib/net45/BCrypt.Net-Core.dll",
+        "lib/net45/BCrypt.Net-Core.pdb",
+        "lib/net451/BCrypt.Net-Core.dll",
+        "lib/net451/BCrypt.Net-Core.pdb",
+        "lib/net452/BCrypt.Net-Core.dll",
+        "lib/net452/BCrypt.Net-Core.pdb",
+        "lib/netstandard1.3/BCrypt.Net-Core.dll",
+        "lib/netstandard1.3/BCrypt.Net-Core.pdb",
+        "lib/netstandard2.0/BCrypt.Net-Core.dll",
+        "lib/netstandard2.0/BCrypt.Net-Core.pdb"
       ]
     },
     "coverlet.collector/6.0.4": {
@@ -2986,6 +3030,21 @@
         "packageIcon.png"
       ]
     },
+    "Portable.BouncyCastle/1.9.0": {
+      "sha512": "eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw==",
+      "type": "package",
+      "path": "portable.bouncycastle/1.9.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/BouncyCastle.Crypto.dll",
+        "lib/net40/BouncyCastle.Crypto.xml",
+        "lib/netstandard2.0/BouncyCastle.Crypto.dll",
+        "lib/netstandard2.0/BouncyCastle.Crypto.xml",
+        "portable.bouncycastle.1.9.0.nupkg.sha512",
+        "portable.bouncycastle.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore.Annotations/9.0.0": {
       "sha512": "ug7YYn1DqavvKRmzdPYrqq/e0lahsbEd06LIMwfy6ssJKPqhhs8kJ35+dYMMQ2ti5f0inXx8+9jZEAVOij9UPw==",
       "type": "package",
@@ -4159,8 +4218,8 @@
     },
     "RaceDay.Contracts/1.0.0": {
       "type": "project",
-      "path": "../RaceDay.Contracts/RaceDay.Contracts.csproj",
-      "msbuildProject": "../RaceDay.Contracts/RaceDay.Contracts.csproj"
+      "path": "../../RaceDay.Contracts/RaceDay.Contracts.csproj",
+      "msbuildProject": "../../RaceDay.Contracts/RaceDay.Contracts.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4168,7 +4227,6 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.0",
       "Microsoft.NET.Test.Sdk >= 17.14.1",
       "RaceDay.Api >= 1.0.0",
-      "RaceDay.Contracts >= 1.0.0",
       "Swashbuckle.AspNetCore.Annotations >= 9.0.0",
       "Swashbuckle.AspNetCore.Swagger >= 9.0.0",
       "Swashbuckle.AspNetCore.SwaggerGen >= 9.0.0",
@@ -4213,9 +4271,6 @@
           "projectReferences": {
             "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj": {
               "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api\\RaceDay.Api.csproj"
-            },
-            "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Contracts\\RaceDay.Contracts.csproj": {
-              "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Contracts\\RaceDay.Contracts.csproj"
             }
           }
         }

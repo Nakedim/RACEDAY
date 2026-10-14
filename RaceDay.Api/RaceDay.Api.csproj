@@ -22,11 +22,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+	  <Folder Include="Services\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\" />
+	  <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
 	</ItemGroup>
 
 </Project>

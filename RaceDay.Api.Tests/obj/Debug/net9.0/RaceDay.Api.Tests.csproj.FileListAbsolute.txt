@@ -153,3 +153,5 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\obj\Debug\net9.0\refint
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.pdb
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.genruntimeconfig.cache
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\obj\Debug\net9.0\ref\RaceDay.Api.Tests.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\BCrypt.Net-Core.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\BouncyCastle.Crypto.dll
