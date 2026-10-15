@@ -8,9 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Only run this job when either it's not a pull_request OR it's a PR from the same repo.
+  # This avoids trying to use repository secrets for forked PRs (which are blocked).
   api-integration-tests:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     name: Database, Auth & Unit Testing
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     services:
       sqlserver:
@@ -45,17 +50,32 @@ jobs:
         working-directory: RaceDay.Api
         run: dotnet restore
 
+      - name: Wait for SQL Server to be ready
+        shell: bash
+        run: |
+          set -euo pipefail
+          i=0
+          until /opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P "$MSSQL_SA_PASSWORD" -Q "SELECT 1" >/dev/null 2>&1 || [ $i -ge 30 ]; do
+            i=$((i+1))
+            echo "Waiting for SQL Server to be available... ($i/30)"
+            sleep 5
+          done
+          if [ $i -ge 30 ]; then
+            echo "ERROR: SQL Server did not become available in time."
+            /opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P "$MSSQL_SA_PASSWORD" -Q "SELECT @@VERSION" || true
+            exit 1
+          fi
+          echo "SQL Server is accepting connections."
+
       - name: Initialize Database Schema
         shell: bash
         run: |
           set -euo pipefail
 
-          # Path to your database initialization script
+          # Try known script locations (prefer repository path used by project, fallback to docs/)
           SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
-          
           if [ ! -f "$SQL_SCRIPT" ]; then
-            echo "ERROR: $SQL_SCRIPT was not found."
-            echo "Checking alternative path docs/RacedayDb.sql..."
+            echo "Not found at $SQL_SCRIPT, checking docs/RacedayDb.sql"
             SQL_SCRIPT="docs/RacedayDb.sql"
           fi
 
@@ -68,8 +88,7 @@ jobs:
           fi
 
           echo "Initializing database schema using script: $SQL_SCRIPT"
-          
-          # Since the container port 1433 is mapped to the host, we can run sqlcmd directly on the runner host
+
           /opt/mssql-tools18/bin/sqlcmd \
             -S localhost,1433 \
             -U sa \
