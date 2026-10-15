@@ -17,33 +17,19 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: "Y"
-
-          MSSQL_SA_PASSWORD: "TestingPassword123!"
+          MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 1433:1433
         options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TestingPassword123!' -C -Q 'SELECT 1' || exit 1"
-
-          # Changed to valid secrets wrapper reference
-          MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-
-        options: >-
           --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${{ secrets.DB_PASSWORD }}' -C -Q 'SELECT 1' || exit 1"
-
           --health-interval 10s
           --health-timeout 5s
           --health-retries 15
           --health-start-period 30s
 
     env:
-
-      MSSQL_SA_PASSWORD: "TestingPassword123!"
-      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=TestingPassword123!;Encrypt=True;TrustServerCertificate=True;"
-
       MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
       ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=${{ secrets.DB_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
-
       Jwt__Secret: "LocalTestingKeyMustBeAtLeast32CharactersLong123!"
 
     steps:
@@ -62,14 +48,28 @@ jobs:
       - name: Initialize Database Schema
         shell: bash
         run: |
+          set -euo pipefail
 
+          # Path to your database initialization script
           SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
           
           if [ ! -f "$SQL_SCRIPT" ]; then
             echo "ERROR: $SQL_SCRIPT was not found."
+            echo "Checking alternative path docs/RacedayDb.sql..."
+            SQL_SCRIPT="docs/RacedayDb.sql"
+          fi
+
+          if [ ! -f "$SQL_SCRIPT" ]; then
+            echo "ERROR: Database script could not be found in known locations."
+            echo "Current directory: $(pwd)"
+            echo "Available files:"
+            ls -la
             exit 1
           fi
 
+          echo "Initializing database schema using script: $SQL_SCRIPT"
+          
+          # Since the container port 1433 is mapped to the host, we can run sqlcmd directly on the runner host
           /opt/mssql-tools18/bin/sqlcmd \
             -S localhost,1433 \
             -U sa \
@@ -78,43 +78,7 @@ jobs:
             -b \
             -i "$SQL_SCRIPT"
 
-          set -euo pipefail
-
-          SQL_SCRIPT="docs/RacedayDb.sql"
-
-          if [ ! -f "$SQL_SCRIPT" ]; then
-            echo "ERROR: $SQL_SCRIPT was not found."
-            echo "Current directory: $(pwd)"
-            echo "Available files:"
-            ls -la
-            exit 1
-          fi
-
-          SQLSERVER_CONTAINER=$(
-            docker ps \
-              --filter "ancestor=mcr.microsoft.com/mssql/server:2022-latest" \
-              --format '{{.ID}}' | head -n 1
-          )
-
-          if [ -z "$SQLSERVER_CONTAINER" ]; then
-            echo "ERROR: SQL Server container was not found."
-            docker ps -a
-            exit 1
-          fi
-
-          echo "SQL Server container: $SQLSERVER_CONTAINER"
-          echo "Initializing database schema..."
-
-          docker exec -i "$SQLSERVER_CONTAINER" \
-            /opt/mssql-tools18/bin/sqlcmd \
-            -S localhost \
-            -U sa \
-            -P "$MSSQL_SA_PASSWORD" \
-            -C \
-            -b < "$SQL_SCRIPT"
-
           echo "Database schema initialized successfully."
-
 
       - name: Build Solution
         working-directory: RaceDay.Api
