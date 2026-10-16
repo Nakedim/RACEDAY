@@ -4,6 +4,7 @@ using RaceDay.Api.Data;
 using RaceDay.Api.Filters;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
+using RaceDay.Contracts.RegisterRegquest;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -16,24 +17,28 @@ namespace RaceDay.Api.Controllers
     public class AuthUsersController : ControllerBase // Updated naming style to match standard Controller patterns
     {
 
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+            private readonly RoleManager<IdentityRole> _roleManager;
+            private readonly UserManager<ApplicationUser> _userManager;
+            private readonly SignInManager<ApplicationUser> _signInManager;
+            // 1. Ensure this private field is declared at the top
+           
 
-        public AuthUsersController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _roleManager = roleManager;
-        }
+            public AuthUsersController(
+                   RoleManager<IdentityRole> roleManager,
+                UserManager<ApplicationUser> userManager,
+                SignInManager<ApplicationUser> signInManager
+               )
+            {
+                _userManager = userManager;
+                _signInManager = signInManager;
+              
+                _roleManager = roleManager;
+            }
 
 
-        [HttpPost("register")]
+            [HttpPost("register")]
         [ValidateModel]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
             // 1. Guard clause against invalid input
             if (model == null)
