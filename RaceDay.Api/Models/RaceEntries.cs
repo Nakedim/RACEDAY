@@ -22,6 +22,7 @@ namespace RaceDay.Api.Models
         public Categories Categories { get; set; } = null!; // Pluralized to match your Fluent API (re.Categories)
 
         public DateTime EntryDate { get; set; } = DateTime.UtcNow;
+        public object Category { get; internal set; }
     }
     }
 

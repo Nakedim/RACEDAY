@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
+using RaceDay.Contracts;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoriesController: ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly RacedayDbContext _context;
 
@@ -17,62 +17,89 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categories>>> GetCategories(int id)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<CategoriesDTO>>> GetCategories(int id)
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Select(c => new CategoriesDTO
+                {
+                    CategoryID = c.CategoryID,
+                    CategoryName = c.CategoryName
+                })
+                .ToListAsync();
         }
-        //both view gategory
-        [HttpGet]
+
+        //both view category
+        [HttpGet("all")]
         [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllCategories()
+        public async Task<ActionResult<IEnumerable<RaceEventDTO>>> GetAllCategories()
         {
-            return await _context.RaceEvents.ToListAsync();
+            return await _context.RaceEvents
+                .Select(re => new RaceEventDTO
+                {
+                    EventID = re.EventID,
+                    Description = re.Description,
+                    Title = re.Title,
+                    location = re.location,
+                    OrganiserID = re.OrganiserID,
+                    CategoryID = re.CategoryID,
+                    EventType = re.EventType
+                })
+                .ToListAsync();
         }
+
         //organisers create category
         [HttpPost]
         [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> CreateCategory(Categories category)
+        public async Task<IActionResult> CreateCategory(CategoriesDTO categoryDto)
         {
+            var category = new Categories
+            {
+                CategoryName = categoryDto.CategoryName
+            };
+
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
+            categoryDto.CategoryID = category.CategoryID;
+
             return CreatedAtAction(
                 nameof(GetAllCategories),
-                new {id = category.CategoryID},
-                category
-                
-                );
-
+                new { id = category.CategoryID },
+                categoryDto
+            );
         }
 
         //organisers update category
-        [HttpPut]
+        [HttpPut("{CategoryID}")]
         [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> UpdateCategoryAsync(int CategoryID,Categories category)
+        public async Task<IActionResult> UpdateCategoryAsync(int CategoryID, CategoriesDTO categoryDto)
         {
-            
-            if (CategoryID != category.CategoryID)
+            if (CategoryID != categoryDto.CategoryID)
             {
                 return BadRequest("Category not found");
             }
-            var existingCategory = await _context.Categories
-                .FindAsync();
+
+            var existingCategory = await _context.Categories.FindAsync(CategoryID);
+            if (existingCategory == null)
+            {
+                return NotFound("Category not found in database");
+            }
+
+            existingCategory.CategoryName = categoryDto.CategoryName;
+            await _context.SaveChangesAsync();
 
             return Ok("Category Update successfull");
         }
 
-
-
-
-
         //organisers can delete category
-        [HttpDelete]
+        [HttpDelete("{CategoryID}")]
         [Authorize(Roles = "Organiser")]
         public async Task<IActionResult> DeleteCategory(int CategoryID)
         {
             var category = await _context.Categories.FindAsync(CategoryID);
-            if(category == null)
+            if (category == null)
             {
                 return BadRequest("Category not found");
             }

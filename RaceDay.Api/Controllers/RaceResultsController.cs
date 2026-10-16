@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Models;
 using RaceDay.Api.Data;
-using Microsoft.AspNetCore.Authorization;
+using RaceDay.Api.Models;
+using RaceDay.Contracts;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class RaceResultsController: ControllerBase
+    public class RaceResultsController : ControllerBase
     {
         private readonly RacedayDbContext _context;
 
@@ -17,23 +20,31 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RaceResults>>> GetRaceResults()
-        {
-            return await _context.RaceResults.ToListAsync();
-        }
+
+        //[HttpGet("all")]
+        //public async Task<ActionResult<IEnumerable<RaceResultsDTO>>> GetRaceResults()
+        //{
+        //    return await _context.RaceResults
+        //        .Select(r => new RaceResultsDTO
+        //        {
+        //            ResultsID = r.ResultsID,
+        //            ParticipantID = r.ParticipantID,
+        //            FinishTime = r.FinishTime,
+        //            Position = r.Position
+        //        })
+        //        .ToListAsync();
+        //}
 
         //organisers can enter results
         [HttpPost]
-        [Authorize (Roles = "Organiser")]
-        public IActionResult EnterResults()
+        [Authorize(Roles = "Organiser")]
+        public IActionResult EnterResults([FromBody] RaceResultsDTO resultsDto)
         {
             return Ok();
         }
 
-
         //organisers can view RaceResult
-        [HttpGet]
+        [HttpGet("view")]
         [Authorize(Roles = "Participant, Organiser")]
         public IActionResult ViewRaceResults()
         {

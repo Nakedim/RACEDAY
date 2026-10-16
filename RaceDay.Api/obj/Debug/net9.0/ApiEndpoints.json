@@ -17,6 +17,16 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
+    "Method": "Logout",
+    "RelativePath": "api/AuthUsers/Logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
     "Method": "Register",
     "RelativePath": "api/AuthUsers/register",
     "HttpMethod": "POST",
@@ -33,8 +43,61 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
-    "Method": "GetCategories",
+    "Method": "CreateCategory",
     "RelativePath": "api/Categories",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoryDto",
+        "Type": "RaceDay.Contracts.CategoriesDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
+    "Method": "UpdateCategoryAsync",
+    "RelativePath": "api/Categories/{CategoryID}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CategoryID",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryDto",
+        "Type": "RaceDay.Contracts.CategoriesDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
+    "Method": "DeleteCategory",
+    "RelativePath": "api/Categories/{CategoryID}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CategoryID",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
+    "Method": "GetCategories",
+    "RelativePath": "api/Categories/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -42,12 +105,12 @@
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Categories, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.CategoriesDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -60,14 +123,14 @@
   {
     "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
     "Method": "GetAllCategories",
-    "RelativePath": "api/Categories",
+    "RelativePath": "api/Categories/all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.RaceEventDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -76,59 +139,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
-    "Method": "CreateCategory",
-    "RelativePath": "api/Categories",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "category",
-        "Type": "RaceDay.Api.Models.Categories",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
-    "Method": "UpdateCategoryAsync",
-    "RelativePath": "api/Categories",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "CategoryID",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "category",
-        "Type": "RaceDay.Api.Models.Categories",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.CategoriesController",
-    "Method": "DeleteCategory",
-    "RelativePath": "api/Categories",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "CategoryID",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
@@ -140,7 +150,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Organiser, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.OrganiserDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -153,17 +163,23 @@
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
     "Method": "UpdateOrgProfile",
-    "RelativePath": "api/Organisers",
+    "RelativePath": "api/Organisers/profile",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "profileDto",
+        "Type": "RaceDay.Contracts.OrganiserProfileDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
     "Method": "DeleteOwnProfile",
-    "RelativePath": "api/Organisers",
+    "RelativePath": "api/Organisers/profile",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -192,8 +208,18 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
+    "Method": "CreateEvent",
+    "RelativePath": "api/Participant/event",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
     "Method": "viewAllParticipantInfo",
-    "RelativePath": "api/Participant",
+    "RelativePath": "api/Participant/info/all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -213,7 +239,7 @@
   {
     "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
     "Method": "viewOwnParticipantInfo",
-    "RelativePath": "api/Participant",
+    "RelativePath": "api/Participant/info/me",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -231,74 +257,14 @@
     ]
   },
   {
-    "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
-    "Method": "CreateEvent",
-    "RelativePath": "api/Participant",
-    "HttpMethod": "POST",
+    "ContainingType": "RaceDay.Api.Controllers.ProfileController",
+    "Method": "GetProfile",
+    "RelativePath": "api/Profile",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RaceEntriesController",
-    "Method": "GetRaceEntries",
-    "RelativePath": "api/RaceEntries",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEntries, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RaceEntriesController",
-    "Method": "EnterRace",
-    "RelativePath": "api/RaceEntries",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RaceEntriesController",
-    "Method": "ViewAllEntries",
-    "RelativePath": "api/RaceEntries",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceEventsController",
@@ -310,7 +276,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.RaceEventDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -327,13 +293,19 @@
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "createEventDto",
+        "Type": "RaceDay.Contracts.CreateRaceEventDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceEventsController",
     "Method": "UpdateEvent",
-    "RelativePath": "api/RaceEvents",
+    "RelativePath": "api/RaceEvents/{EventID}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -341,30 +313,15 @@
       {
         "Name": "EventID",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
+      },
+      {
+        "Name": "updateEventDto",
+        "Type": "RaceDay.Contracts.RaceEventDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RaceResultsController",
-    "Method": "GetRaceResults",
-    "RelativePath": "api/RaceResults",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceResults, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceResultsController",
@@ -373,13 +330,19 @@
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "resultsDto",
+        "Type": "RaceDay.Contracts.RaceResultsDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceResultsController",
     "Method": "ViewRaceResults",
-    "RelativePath": "api/RaceResults",
+    "RelativePath": "api/RaceResults/view",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -396,53 +359,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.Races, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RacesController",
-    "Method": "GetAllRace",
-    "RelativePath": "api/Races",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.RacesController",
-    "Method": "GetRace",
-    "RelativePath": "api/Races",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "RaceID",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.RaceDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -488,6 +405,53 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.RacesController",
+    "Method": "GetRace",
+    "RelativePath": "api/Races/{RaceID}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RaceID",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Api.Models.RaceEvent, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetRaceByID"
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.RacesController",
+    "Method": "GetAllRace",
+    "RelativePath": "api/Races/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RaceDay.Contracts.RaceEventDTO, RaceDay.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.WeatherForecastController",

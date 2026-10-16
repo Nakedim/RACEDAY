@@ -4,7 +4,10 @@ using RaceDay.Api.Data;
 using RaceDay.Api.Filters;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
+using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace RaceDay.Api.Controllers
 {
@@ -12,22 +15,21 @@ namespace RaceDay.Api.Controllers
     [ApiController]
     public class AuthUsersController : ControllerBase // Updated naming style to match standard Controller patterns
     {
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthUsersController(
-           UserManager<ApplicationUser> userManager,
-           SignInManager<ApplicationUser> signInManager,
-           RoleManager<IdentityRole> roleManager
-
-         )
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            roleManager = roleManager;
-
+            _roleManager = roleManager;
         }
+
 
         [HttpPost("register")]
         [ValidateModel]
@@ -52,7 +54,6 @@ namespace RaceDay.Api.Controllers
                 Email = model.Email,
                 FirstName = model.FirstName,
                 Surname = model.Surname,
-
             };
 
             // 4. Create user via ASP.NET Identity UserManager
@@ -63,15 +64,34 @@ namespace RaceDay.Api.Controllers
                 return BadRequest(results.Errors);
             }
 
-            // 5. Assign user to the parsed role in security storage
-            var roleResult = await _userManager.AddToRoleAsync(newUser, assignedRole.ToString());
+
+            string roleName = assignedRole.ToString();
+
+            // 1. Check whether the role exists
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                var createRoleResult = await _roleManager.CreateAsync(
+                    new IdentityRole(roleName));
+
+                if (!createRoleResult.Succeeded)
+                {
+                    return StatusCode(500, createRoleResult.Errors);
+                }
+            }
+
+            // 2. Assign the role to the newly registered user
+            var roleResult = await _userManager.AddToRoleAsync(
+                newUser, roleName);
+
             if (!roleResult.Succeeded)
             {
                 return BadRequest(roleResult.Errors);
             }
 
             return Ok(new { Message = "Registration successful" });
+
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
@@ -108,6 +128,13 @@ namespace RaceDay.Api.Controllers
                 Message = "Login successful",
                 User = new { Id = user.Id, Email = user.Email, Role = primaryRole }
             });
+        }
+
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Logout successful. Session cleared." });
         }
     }
 }

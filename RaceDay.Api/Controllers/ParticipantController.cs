@@ -6,7 +6,6 @@ using RaceDay.Api.Models;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class ParticipantController : ControllerBase
@@ -17,6 +16,7 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
         {
@@ -24,30 +24,27 @@ namespace RaceDay.Api.Controllers
         }
 
         //both view race events
-        [HttpGet]
+        [HttpGet("info/all")]
         [Authorize(Roles = "Organiser")]
         public async Task<ActionResult<IEnumerable<RaceEvent>>> viewAllParticipantInfo()
         {
             return await _context.RaceEvents.ToListAsync();
         }
 
-        [HttpGet]
+        [HttpGet("info/me")]
         [Authorize(Roles = "Participant")]
         public async Task<ActionResult<IEnumerable<RaceEvent>>> viewOwnParticipantInfo()
         {
             return await _context.RaceEvents.ToListAsync();
-
             //a user need to login with his own credentials
         }
 
-
         //organisers create events
-        [HttpPost]
+        [HttpPost("event")]
         [Authorize(Roles = "Organiser")]
         public IActionResult CreateEvent()
         {
             return Ok();
         }
     }
-
 }

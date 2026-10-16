@@ -13,7 +13,7 @@ namespace RaceDay.Api.Models
         {
          public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
-        public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
+        public ProfileRole ProfileRole { get; set; } = ProfileRole.Participant;
     }
 
 }

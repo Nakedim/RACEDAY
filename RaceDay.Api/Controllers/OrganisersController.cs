@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
 using RaceDay.Api.Data;
 using Microsoft.AspNetCore.Authorization;
+using RaceDay.Contracts;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class OrganisersController: ControllerBase
+    public class OrganisersController : ControllerBase
     {
         private readonly RacedayDbContext _context;
 
@@ -18,29 +18,31 @@ namespace RaceDay.Api.Controllers
             _context = context;
         }
 
- 
-
         //both can view organiser
-
         [HttpGet]
-        [Authorize (Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<Organiser>>> GetOrganisers()
+        //[Authorize(Roles = "Organiser, Participant")]
+        public async Task<ActionResult<IEnumerable<OrganiserDTO>>> GetOrganisers()
         {
-            return await _context.Organisers.ToListAsync();
+            return await _context.Organisers
+                .Select(o => new OrganiserDTO
+                {
+                    OrganiserID = o.OrganiserID,
+                    FirstName = o.FirstName,
+                    Surname = o.Surname
+                })
+                .ToListAsync();
         }
 
         //can update his own
-
-        [HttpPut]
+        [HttpPut("profile")]
         [Authorize(Roles = "Organiser")]
-        public IActionResult UpdateOrgProfile()
+        public IActionResult UpdateOrgProfile([FromBody] OrganiserProfileDTO profileDto)
         {
             return Ok();
         }
 
         //can delete
-
-        [HttpDelete]
+        [HttpDelete("profile")]
         [Authorize(Roles = "Organiser")]
         public IActionResult DeleteOwnProfile()
         {
