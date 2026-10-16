@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "plkbU7WGYdg=",
+  "dgSpecHash": "jpkN9pfDoF4=",
   "success": true,
   "projectFilePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api.Tests\\RaceDay.Api.Tests.csproj",
   "expectedPackageFiles": [
@@ -58,6 +58,7 @@
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identity.client\\4.61.3\\microsoft.identity.client.4.61.3.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identity.client.extensions.msal\\4.61.3\\microsoft.identity.client.extensions.msal.4.61.3.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identitymodel\\7.0.0\\microsoft.identitymodel.7.0.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identitymodel.abstractions\\6.35.0\\microsoft.identitymodel.abstractions.6.35.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\6.35.0\\microsoft.identitymodel.jsonwebtokens.6.35.0.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.identitymodel.logging\\6.35.0\\microsoft.identitymodel.logging.6.35.0.nupkg.sha512",
@@ -116,5 +117,18 @@
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.20\\microsoft.netcore.app.ref.9.0.20.nupkg.sha512",
     "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.20\\microsoft.aspnetcore.app.ref.9.0.20.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.IdentityModel 7.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api.Tests\\RaceDay.Api.Tests.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Api.Tests\\RaceDay.Api.Tests.csproj",
+      "libraryId": "Microsoft.IdentityModel",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
 }
