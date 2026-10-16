@@ -232,7 +232,8 @@ YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
    ## Session Management
 
    ## SWagger
- <img width="1347" height="504" alt="image" src="https://github.com/user-attachments/assets/38b72cf6-38db-42bf-973f-0955f588390f" />
+ <img width="1032" height="674" alt="image" src="https://github.com/user-attachments/assets/d88ae183-46a9-4160-ae26-f4ab3cae375e" />
+
 
 ## Testing
 
