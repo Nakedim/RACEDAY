@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
+using RaceDay.Contracts;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoriesController: ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly RacedayDbContext _context;
 
@@ -17,70 +18,53 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
+
+        // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categories>>> GetCategories(int id)
+        [Authorize(Roles = "Organiser,Participant")]
+        public async Task<ActionResult<IEnumerable<CategoriesDTO>>>
+            GetAllCategories()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Select(c => new CategoriesDTO
+                {
+                    CategoryID = c.CategoryID,
+                    CategoryName = c.CategoryName
+                })
+                .ToListAsync();
         }
-        //both view gategory
-        [HttpGet]
-        [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllCategories()
+
+        // GET: api/Categories/5
+        [HttpGet("{id}", Name = "GetCategoryById")]
+        public async Task<ActionResult<CategoriesDTO>> GetCategory(int id)
         {
-            return await _context.RaceEvents.ToListAsync();
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null) return NotFound();
+
+            return new CategoriesDTO { CategoryID = category.CategoryID, CategoryName = category.CategoryName };
         }
-        //organisers create category
+
+        // POST: api/Categories
         [HttpPost]
-        [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> CreateCategory(Categories category)
+        //[Authorize(Roles = "Organiser")]
+        public async Task<ActionResult<CategoriesDTO>>
+            CreateCategory(CategoriesDTO categoryDto)
         {
+            var category = new Categories
+            {
+                CategoryName = categoryDto.CategoryName
+            };
+
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetAllCategories),
-                new {id = category.CategoryID},
-                category
-                
-                );
+            categoryDto.CategoryID = category.CategoryID;
 
-        }
-
-        //organisers update category
-        [HttpPut]
-        [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> UpdateCategoryAsync(int CategoryID,Categories category)
-        {
-            
-            if (CategoryID != category.CategoryID)
-            {
-                return BadRequest("Category not found");
-            }
-            var existingCategory = await _context.Categories
-                .FindAsync();
-
-            return Ok("Category Update successfull");
-        }
-
-
-
-
-
-        //organisers can delete category
-        [HttpDelete]
-        [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> DeleteCategory(int CategoryID)
-        {
-            var category = await _context.Categories.FindAsync(CategoryID);
-            if(category == null)
-            {
-                return BadRequest("Category not found");
-            }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return Ok("Category deleted successfully");
+            return CreatedAtRoute(
+           "GetCategoryById",
+           new { id = category.CategoryID },
+           categoryDto
+       );
         }
     }
 }
