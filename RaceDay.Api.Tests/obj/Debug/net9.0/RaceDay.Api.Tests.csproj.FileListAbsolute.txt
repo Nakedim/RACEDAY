@@ -320,6 +320,8 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\refs\W
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Azure.Core.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Azure.Identity.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\BCrypt.Net-Core.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.AspNet.Identity.Core.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Mvc.Testing.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
@@ -334,6 +336,7 @@ C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Micros
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.Identity.Client.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\microsoft.identitymodel.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\nmontsho\source\repos\RACEDAY\RaceDay.Api.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll

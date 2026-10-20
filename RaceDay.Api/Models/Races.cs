@@ -13,6 +13,7 @@ namespace RaceDay.Api.Models
         public DateTime StartTime { get; set; }
         public int EventID { get; set; }
         public string Location { get; set; } = string.Empty;
+        public int Distance { get; internal set; }
 
         [ForeignKey("EventID")]
         public RaceEvent Event { get; set; } = null!;

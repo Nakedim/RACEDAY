@@ -22,26 +22,28 @@ namespace RaceDay.Api.Controllers
 
 
         [HttpGet("{id}")]
-    public async Task<ActionResult> GetCategory(int id) 
+        [Authorize(Roles = "Organiser, Participant")]
+        public async Task<ActionResult> GetCategory(int id)
         {
-           
+
             var Category = await _context.Categories.FindAsync(id);
 
-            if(Category == null)
-            { 
+            if (Category == null)
+            {
                 return NotFound();
 
             }
             return Ok(Category);
-           
-            
+
+
         }
         //both view gategory
         [HttpGet]
-        [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllCategories()
+        [Authorize(Roles = "Organiser")]
+        public async Task<ActionResult<List<Categories>>> GetAllCategories()
         {
-            return await _context.RaceEvents.ToListAsync();
+           var Categories = await _context.RaceEvents.ToListAsync();
+            return Ok(Categories);
         }
         //organisers create category
         [HttpPost]
@@ -55,7 +57,7 @@ namespace RaceDay.Api.Controllers
 
             var Newcategory = new Categories()
             {
-               
+
                 CategoryName = categoryDTO.CategoryName
 
             };
@@ -63,18 +65,19 @@ namespace RaceDay.Api.Controllers
             await _context.SaveChangesAsync();
 
 
-            return CreatedAtAction(nameof(GetAllCategories), 
-                new { id = Newcategory.CategoryID },Newcategory
+            return CreatedAtAction(nameof(GetAllCategories),
+                new { id = Newcategory.CategoryID }, Newcategory
                 );
 
         }
 
         //organisers update category
+        //testing only
         [HttpPut]
         [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> UpdateCategoryAsync(int CategoryID,Categories category)
+        public async Task<IActionResult> UpdateCategoryAsync(int CategoryID, Categories category)
         {
-            
+
             if (CategoryID != category.CategoryID)
             {
                 return BadRequest("Category not found");
@@ -95,7 +98,7 @@ namespace RaceDay.Api.Controllers
         public async Task<IActionResult> DeleteCategory(int CategoryID)
         {
             var category = await _context.Categories.FindAsync(CategoryID);
-            if(category == null)
+            if (category == null)
             {
                 return BadRequest("Category not found");
             }

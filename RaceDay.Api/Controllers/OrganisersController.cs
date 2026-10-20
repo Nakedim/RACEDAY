@@ -1,80 +1,107 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RaceDay.Api.Models;
-using RaceDay.Api.Data;
-using Microsoft.AspNetCore.Authorization;
 using RaceDay.Contracts;
+using System.Security.Claims;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class OrganisersController: ControllerBase
+    public class OrganisersController : ControllerBase
     {
-        private readonly RacedayDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrganisersController(RacedayDbContext context)
+        
+        public OrganisersController(UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
+        // View an organiser's profile details by their alphanumeric Identity ID string
+        [HttpGet("{id}")]
+        [Authorize] // Requires being logged in
+        public async Task<ActionResult> GetOrganiserbyID(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
 
+            // Verify the user exists AND their role is actually an Organiser
+            if (user == null || user.profileRole != ProfileRole.Organiser)
+            {
+                return NotFound("Organiser profile not found.");
+            }
 
-        //Organiser create own Profile
+            return Ok(new
+            {
+                user.Id,
+                user.FirstName,
+                user.Surname,
+                user.Email
+            });
+        }
 
-        [HttpPost]
-        //[Authorize (Roles = "Organiser, Participant" ) ]
-        public async Task<ActionResult> CreateOrgProfile([FromBody]OrganiserProfileDTO organiserProfileDTO )
+        // Updates the logged-in organiser's personal profile information
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateOrgProfile([FromBody] OrganiserProfileDTO organiserProfileDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var newOrganiser = new Organiser
+            // 1. Get the current logged-in user's ID from their token securely
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId))
             {
-                FirstName = organiserProfileDTO.FirstName,
-                Surname =  organiserProfileDTO.Surname
-            };
+                return Unauthorized();
+            }
 
-            _context.Organisers.Add(newOrganiser);
-            await _context.SaveChangesAsync();
-            return
-            CreatedAtAction(nameof(GetOrganiserbyID),
-                 new { id = newOrganiser.OrganiserID }, newOrganiser
-                 );
+            // 2. Fetch the profile record
+            var user = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (user == null || user.profileRole != ProfileRole.Organiser)
+            {
+                return Forbid("Only registered organisers can modify this profile.");
+            }
 
+            // 3. Apply updates to the Identity model properties
+            user.FirstName = organiserProfileDTO.FirstName;
+            user.Surname = organiserProfileDTO.Surname;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(new { Message = "Profile updated successfully." });
         }
-        [HttpGet ("{id}")]
-        //[Authorize (Roles = "Organiser, Participant")]
-        public async Task<ActionResult>GetOrganiserbyID(int id)
-        {
-            var OrganiserID = await _context.Organisers.FindAsync(id);
 
-            if (OrganiserID == null)
+        // Deletes the logged-in organiser's account profile
+        [HttpDelete("profile")]
+        [Authorize]
+        public async Task<IActionResult> DeleteOwnProfile()
+        {
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (user == null)
             {
                 return NotFound();
             }
-            return Ok(OrganiserID);
-        }
 
-        //can update his own
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
 
-        [HttpPut]
-        [Authorize(Roles = "Organiser")]
-        public IActionResult UpdateOrgProfile()
-        {
-            return Ok();
-        }
-
-        //can delete
-
-        [HttpDelete]
-        [Authorize(Roles = "Organiser")]
-        public IActionResult DeleteOwnProfile()
-        {
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RaceDay.Api.Models
@@ -9,19 +11,24 @@ namespace RaceDay.Api.Models
         [Key]
         public int RaceEntryID { get; set; }
 
-        public int RaceID { get; set; }
-        [ForeignKey("RaceID")]
-        public Races Race { get; set; } = null!;
+        // Foreign key to RaceEvent
+        public int RaceEventID { get; set; }
 
-        public int ParticipantID { get; set; }
-        [ForeignKey("ParticipantID")]
-        public Participant Participant { get; set; } = null!;
+        [ForeignKey(nameof(RaceEventID))]
+        public virtual RaceEvent RaceEvent { get; set; } = null!;
 
+        // Foreign key to ApplicationUser
+        public string ParticipantID { get; set; } = string.Empty;
+
+        [ForeignKey(nameof(ParticipantID))]
+        public virtual ApplicationUser Participant { get; set; } = null!;
+
+        // Foreign key to Category
         public int CategoryID { get; set; }
-        [ForeignKey("CategoryID")]
-        public Categories Categories { get; set; } = null!; // Pluralized to match your Fluent API (re.Categories)
 
-        public DateTime EntryDate { get; set; } = DateTime.UtcNow;
-    }
-    }
+        [ForeignKey(nameof(CategoryID))]
+        public virtual Categories Category { get; set; } = null!;
 
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+    }
+}

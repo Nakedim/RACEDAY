@@ -6,13 +6,13 @@ namespace RaceDay.Api.Models
     [Table("Results")]
     public class RaceResults
     {
-       
             [Key]
             public int ResultID { get; set; }
 
             public int RaceID { get; set; }
 
-            public int ParticipantID { get; set; }
+            // FIXED: Changed from int to string to match ApplicationUser's string key type
+            public string ParticipantID { get; set; } = string.Empty;
 
             [Required]
             public string FinishTime { get; set; } = string.Empty;
@@ -24,8 +24,8 @@ namespace RaceDay.Api.Models
             public virtual Races Race { get; set; } = null!;
 
             [ForeignKey(nameof(ParticipantID))]
-            public virtual Participant Participant { get; set; } = null!;
+            public virtual ApplicationUser Participant { get; set; } = null!;
         }
 
-    }
+}
 

@@ -23,13 +23,17 @@ jobs:
       - name: Check documentation folder
 <<<<<<< HEAD
         run: test -d Projectfiles
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d22d40 (Update part1.yml)
       # Check if the updated ERD/database SQL file exists
       - name: Check ERD SQL file
         run: test -f Projectfiles/RacedayDb.sql
 
       # Check API document
       - name: Check API Document
+<<<<<<< HEAD
         run: test -f Projectfiles/POEPart1APIEndpointtable.pdf
 
       # Check ERD Document
@@ -53,6 +57,12 @@ jobs:
 
       # Check C# project
     
+=======
+        run: test -f Projectfiles/POE Part 1 API Endpoint table.pdf
+         # Check ERD Document
+      - name: Check API Document
+        run: test -f Projectfiles/Raceday POE Part 1 ERD.pdf
+>>>>>>> 7d22d40 (Update part1.yml)
 
       # Runs multiple commands
       - name: Run a multi-line script

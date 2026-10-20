@@ -1,112 +1,188 @@
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RaceDay.Api.Data;
+using Microsoft.IdentityModel.Tokens;
 using RaceDay.Api.Filters;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
+using RaceDay.Contracts.Logins;
+using RaceDay.Contracts.RegisterRegquest;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace RaceDay.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthUsersController : ControllerBase // Updated naming style to match standard Controller patterns
+    public class AuthUsersController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
+
 
         public AuthUsersController(
-           UserManager<ApplicationUser> userManager,
-           SignInManager<ApplicationUser> signInManager,
-           RoleManager<IdentityRole> roleManager
-
-         )
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration
+            
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            roleManager = roleManager;
-
+            _roleManager = roleManager;
+            _configuration = configuration;
         }
 
+        // POST: api/AuthUsers/register
         [HttpPost("register")]
         [ValidateModel]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO model)
+        public async Task<IActionResult> Register(
+            [FromBody] RegisterRequest model)
         {
-            // 1. Guard clause against invalid input
             if (model == null)
             {
-                return BadRequest("Invalid registration data.");
+                return BadRequest(new
+                {
+                    Error = "Invalid registration data."
+                });
             }
 
-            // 2. Parse and validate the incoming role
-            if (!Enum.TryParse<ProfileRole>(model.ProfileRole, true, out var assignedRole))
+            // Validate the requested role
+            if (!Enum.TryParse<ProfileRole>(
+                model.ProfileRole,
+                true,
+                out var assignedRole))
             {
-                return BadRequest(new { Error = $"Invalid role provided. Valid roles are: {string.Join(", ", Enum.GetNames(typeof(ProfileRole)))}" });
+                return BadRequest(new
+                {
+                    Error = "Invalid role. Choose Organiser or Participant."
+                });
             }
 
-            // 3. Map DTO to Identity model cleanly
+            var roleName = assignedRole.ToString();
+
+            // Ensure the role exists before creating the user
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                var createRoleResult =
+                    await _roleManager.CreateAsync(
+                        new IdentityRole(roleName));
+
+                if (!createRoleResult.Succeeded)
+                {
+                    return StatusCode(500, createRoleResult.Errors);
+                }
+            }
+
+            // Create the Identity user
             var newUser = new ApplicationUser
             {
                 UserName = model.Email,
                 Email = model.Email,
                 FirstName = model.FirstName,
-                Surname = model.Surname,
-
+                Surname = model.Surname
             };
 
-            // 4. Create user via ASP.NET Identity UserManager
-            var results = await _userManager.CreateAsync(newUser, model.Password);
+            var createUserResult =
+                await _userManager.CreateAsync(
+                    newUser,
+                    model.Password);
 
-            if (!results.Succeeded)
+            if (!createUserResult.Succeeded)
             {
-                return BadRequest(results.Errors);
+                return BadRequest(createUserResult.Errors);
             }
 
-            // 5. Assign user to the parsed role in security storage
-            var roleResult = await _userManager.AddToRoleAsync(newUser, assignedRole.ToString());
+            // Assign Organiser or Participant role
+            var roleResult = await _userManager.AddToRoleAsync(
+                newUser,
+                roleName);
+
             if (!roleResult.Succeeded)
             {
-                return BadRequest(roleResult.Errors);
+                // Avoid leaving an unassigned user behind
+                await _userManager.DeleteAsync(newUser);
+
+                return StatusCode(500, roleResult.Errors);
             }
 
-            return Ok(new { Message = "Registration successful" });
+            return Ok(new
+            {
+                Message = "Registration successful.",
+                UserId = newUser.Id,
+                Email = newUser.Email,
+                Role = roleName
+            });
         }
 
+        // POST: api/AuthUsers/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO model)
+        public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
             if (model == null || !ModelState.IsValid)
             {
                 return BadRequest(new { Error = "Invalid login payload." });
             }
 
-            // 1. Find user by email
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return Unauthorized(new { Error = "Invalid email or password." });
             }
 
-            // 2. Validate password using SignInManager
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
                 return Unauthorized(new { Error = "Invalid email or password." });
             }
 
-            // 3. Retrieve the user's role (e.g., Organiser or Participant)
             var roles = await _userManager.GetRolesAsync(user);
-            var primaryRole = roles.FirstOrDefault() ?? "Participant"; // Default fallback if no role assigned
+            if (roles.Count == 0)
+            {
+                return StatusCode(403, new { Error = "This account has no assigned role." });
+            }
 
-            // 4. Establish Server-Side Session State (Matching your requirement)
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
-            HttpContext.Session.SetString("Role", primaryRole);
+            // --- ADDED FROM HERE TO GENERATE THE ACTUAL JWT TOKEN ---
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Email ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            // Vital step: Add roles into Claims so [Authorize(Roles = "...")] works
+            foreach (var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                expires: DateTime.UtcNow.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
 
             return Ok(new
             {
-                Message = "Login successful",
-                User = new { Id = user.Id, Email = user.Email, Role = primaryRole }
+                Message = "Login successful.",
+                Token = new JwtSecurityTokenHandler().WriteToken(token), // Client needs this!
+                Expiration = token.ValidTo,
+                User = new
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    Surname = user.Surname,
+                    Roles = roles
+                }
             });
         }
     }

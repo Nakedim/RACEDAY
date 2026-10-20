@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace RaceDay.Api.Filters
 {
-    public class ValidateModelAttribute: ActionFilterAttribute
+    public class ValidateModelAttribute : ActionFilterAttribute
     {
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -14,8 +14,8 @@ namespace RaceDay.Api.Filters
             }
             base.OnActionExecuting(context);
         }
-        
 
-        }
+
     }
+}
 

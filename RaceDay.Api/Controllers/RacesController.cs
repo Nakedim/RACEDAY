@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
+using RaceDay.Contracts.RaceRequestDTO;
 
 namespace RaceDay.Api.Controllers
 {
@@ -25,10 +26,11 @@ namespace RaceDay.Api.Controllers
         }
 
         //update race
+        //test purpose only
         [HttpPut("{id:int}")]
-        [Authorize (Roles ="Organiser")]
-        
-        public async Task<ActionResult> UpdateRace( int id, [FromBody] RaceDTO updateRaceDto)
+        //[Authorize(Roles = "Organiser")]
+
+        public async Task<ActionResult> UpdateRace(int id, [FromBody] RaceDTO updateRaceDto)
         {
             if (ModelState.IsValid)
             {
@@ -51,25 +53,33 @@ namespace RaceDay.Api.Controllers
 
 
         //both view race events
-        [HttpGet]
+        [HttpGet("{ALL}")]
         [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetAllRace()        {
-            return await _context.RaceEvents.ToListAsync();
-        }
-        [HttpGet]
-        [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetRace( int RaceID)
+        public async Task<ActionResult<List<RaceEvent>>> GetAllRace()
         {
-            return Ok();
+            var races = await _context.Races.ToListAsync();
+            return Ok(races);
+        }
+
+        [HttpGet("{RaceID}")]
+        //[Authorize(Roles = "Organiser, Participant")]
+        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetRace(int RaceID)
+        {
+            var race = await _context.Races.FindAsync(RaceID);
+            if (race == null)
+            {
+                return NotFound();
+            }
+            return Ok(race);
         }
 
         //organisers create events
         [HttpPost]
-        [Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> CreateRace([FromBody] RaceDTO racedto)
-            
+        //[Authorize(Roles = "Organiser")]
+        public async Task<IActionResult> CreateRace([FromBody] RaceRequestDTO racedto)
+
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -77,13 +87,17 @@ namespace RaceDay.Api.Controllers
             {
                 RaceName = racedto.RaceName,
                 StartTime = racedto.StartTime,
-                Location = racedto.Location
+                EventID = racedto.EventID,
+                Location = racedto.Location,
+                Distance = racedto.Distance
+
             };
             _context.Races.Add(NewRace);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetRaceByID", new {id = NewRace.RaceID}, NewRace);
-          
+            return CreatedAtAction(nameof(GetRace),
+                new { RaceID = NewRace.RaceID }, NewRace);
+
         }
-               
-        }
+
     }
+}
