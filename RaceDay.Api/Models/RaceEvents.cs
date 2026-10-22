@@ -24,6 +24,6 @@ namespace RaceDay.Api.Models
         public ApplicationUser Organiser { get; set; } = null!;
 
         // 3. Clean navigation collection connecting an event to its registered entries
-        public ICollection<RaceEntries> Entries { get; set; } = new List<RaceEntries>();
+        //public ICollection<RaceEntries> Entries { get; set; } = new List<RaceEntries>();
     }
 }

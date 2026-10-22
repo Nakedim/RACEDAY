@@ -1,15 +1,23 @@
+
 name: "Part 2: API, Database & Unit Tests"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
+
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   api-integration-tests:
-    name: Database, Auth & Unit Testing
+    name: Database, Authentication & Unit Tests
     runs-on: ubuntu-latest
 
     services:
@@ -17,114 +25,191 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: "Y"
-<<<<<<< HEAD
-          MSSQL_SA_PASSWORD: "TestingPassword123!"
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TestingPassword123!' -C -Q 'SELECT 1' || exit 1"
-=======
-          # Changed to valid secrets wrapper reference
+          MSSQL_PID: "Developer"
           MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 1433:1433
         options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${{ secrets.DB_PASSWORD }}' -C -Q 'SELECT 1' || exit 1"
->>>>>>> 8e7629ffb66d45a365d87e8295c879fad7f4431e
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd
+          -S localhost -U sa
+          -P '$MSSQL_SA_PASSWORD'
+          -C -Q 'SELECT 1'
+          || exit 1"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 15
+          --health-retries 20
           --health-start-period 30s
 
     env:
-<<<<<<< HEAD
-      MSSQL_SA_PASSWORD: "TestingPassword123!"
-      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=TestingPassword123!;Encrypt=True;TrustServerCertificate=True;"
-=======
       MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
       ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=${{ secrets.DB_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
->>>>>>> 8e7629ffb66d45a365d87e8295c879fad7f4431e
       Jwt__Secret: "LocalTestingKeyMustBeAtLeast32CharactersLong123!"
+      ASPNETCORE_ENVIRONMENT: Testing
 
     steps:
+      # 1. Download the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Install .NET 9
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
-        working-directory: RaceDay.Api
-        run: dotnet restore
-
-      - name: Initialize Database Schema
+      # 3. Confirm SQL Server is ready
+      - name: Verify SQL Server connection
         shell: bash
         run: |
-<<<<<<< HEAD
-          SQL_SCRIPT="RaceDay.Api/Projectfiles/RacedayDb.sql"
-          
-          if [ ! -f "$SQL_SCRIPT" ]; then
-            echo "ERROR: $SQL_SCRIPT was not found."
-            exit 1
-          fi
-
-          /opt/mssql-tools18/bin/sqlcmd \
-            -S localhost,1433 \
-            -U sa \
-            -P "$MSSQL_SA_PASSWORD" \
-            -C \
-            -b \
-            -i "$SQL_SCRIPT"
-=======
           set -euo pipefail
 
-          SQL_SCRIPT="docs/RacedayDb.sql"
+          for attempt in $(seq 1 30); do
+            if docker exec \
+              "$(docker ps -q \
+                --filter ancestor=mcr.microsoft.com/mssql/server:2022-latest \
+                | head -n 1)" \
+              /opt/mssql-tools18/bin/sqlcmd \
+              -S localhost \
+              -U sa \
+              -P "$MSSQL_SA_PASSWORD" \
+              -C \
+              -b \
+              -Q "SELECT 1" >/dev/null 2>&1; then
+              echo "SQL Server is ready."
+              exit 0
+            fi
 
-          if [ ! -f "$SQL_SCRIPT" ]; then
-            echo "ERROR: $SQL_SCRIPT was not found."
-            echo "Current directory: $(pwd)"
-            echo "Available files:"
-            ls -la
+            echo "Waiting for SQL Server ($attempt/30)..."
+            sleep 5
+          done
+
+          echo "ERROR: SQL Server did not become ready."
+          exit 1
+
+      # 4. Locate the database initialization script
+      - name: Locate database script
+        id: database-script
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for candidate in \
+            "RaceDay.Api/Projectfiles/RacedayDb.sql" \
+            "Projectfiles/RacedayDb.sql" \
+            "docs/RacedayDb.sql"
+          do
+            if [ -f "$candidate" ]; then
+              echo "path=$candidate" >> "$GITHUB_OUTPUT"
+              echo "Found database script: $candidate"
+              exit 0
+            fi
+          done
+
+          echo "ERROR: RacedayDb.sql was not found."
+          find . -iname "RacedayDb.sql" -print
+          exit 1
+
+      # 5. Initialize SQL Server database
+      - name: Initialize database schema
+        shell: bash
+        env:
+          SQL_SCRIPT: ${{ steps.database-script.outputs.path }}
+        run: |
+          set -euo pipefail
+
+          CONTAINER_ID=$(docker ps -q \
+            --filter ancestor=mcr.microsoft.com/mssql/server:2022-latest \
+            | head -n 1)
+
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "ERROR: SQL Server container not found."
             exit 1
           fi
 
-          SQLSERVER_CONTAINER=$(
-            docker ps \
-              --filter "ancestor=mcr.microsoft.com/mssql/server:2022-latest" \
-              --format '{{.ID}}' | head -n 1
-          )
+          docker cp "$SQL_SCRIPT" \
+            "$CONTAINER_ID:/tmp/RacedayDb.sql"
 
-          if [ -z "$SQLSERVER_CONTAINER" ]; then
-            echo "ERROR: SQL Server container was not found."
-            docker ps -a
-            exit 1
-          fi
-
-          echo "SQL Server container: $SQLSERVER_CONTAINER"
-          echo "Initializing database schema..."
-
-          docker exec -i "$SQLSERVER_CONTAINER" \
+          docker exec "$CONTAINER_ID" \
             /opt/mssql-tools18/bin/sqlcmd \
             -S localhost \
             -U sa \
             -P "$MSSQL_SA_PASSWORD" \
             -C \
-            -b < "$SQL_SCRIPT"
+            -b \
+            -i /tmp/RacedayDb.sql
 
-          echo "Database schema initialized successfully."
->>>>>>> 8e7629ffb66d45a365d87e8295c879fad7f4431e
+          echo "Database script executed successfully."
 
-      - name: Build Solution
-        working-directory: RaceDay.Api
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Run Unit, Authentication & Integration Tests
-        working-directory: RaceDay.Api
+      # 6. Restore, build and test the solution or projects
+      - name: Restore, build and test
+        shell: bash
         run: |
-          dotnet test \
-            --configuration Release \
-            --no-build \
-            --no-restore \
-            --verbosity normal
+          set -euo pipefail
+
+          # Prefer a solution file if one exists.
+          SOLUTION=$(find . -maxdepth 4 \
+            \( -name '*.sln' -o -name '*.slnx' \) \
+            -print -quit)
+
+          if [ -n "$SOLUTION" ]; then
+            echo "Using solution: $SOLUTION"
+
+            dotnet restore "$SOLUTION"
+
+            dotnet build "$SOLUTION" \
+              --configuration Release \
+              --no-restore
+
+            dotnet test "$SOLUTION" \
+              --configuration Release \
+              --no-build \
+              --no-restore \
+              --verbosity normal
+
+          else
+            echo "No solution found. Searching for API and test projects."
+
+            API_PROJECT=$(find . -maxdepth 4 \
+              -name 'RaceDay.Api.csproj' \
+              -print -quit)
+
+            if [ -z "$API_PROJECT" ]; then
+              echo "ERROR: RaceDay.Api.csproj was not found."
+              find . -maxdepth 4 -name '*.csproj' -print
+              exit 1
+            fi
+
+            # Restore and build the API.
+            dotnet restore "$API_PROJECT"
+
+            dotnet build "$API_PROJECT" \
+              --configuration Release \
+              --no-restore
+
+            # Find test projects by their project filename.
+            mapfile -t TEST_PROJECTS < <(
+              find . -maxdepth 5 -name '*Tests.csproj' -print
+            )
+
+            if [ "${#TEST_PROJECTS[@]}" -eq 0 ]; then
+              echo "ERROR: No *Tests.csproj project was found."
+              echo "Add your test project or update this workflow."
+              exit 1
+            fi
+
+            for TEST_PROJECT in "${TEST_PROJECTS[@]}"; do
+              echo "Testing project: $TEST_PROJECT"
+
+              dotnet restore "$TEST_PROJECT"
+
+              dotnet build "$TEST_PROJECT" \
+                --configuration Release \
+                --no-restore
+
+              dotnet test "$TEST_PROJECT" \
+                --configuration Release \
+                --no-build \
+                --no-restore \
+                --verbosity normal
+            done
+          fi

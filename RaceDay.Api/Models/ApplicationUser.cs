@@ -6,15 +6,19 @@ namespace RaceDay.Api.Models
 
     public enum ProfileRole
     {
-        Organiser,
-        Participant
+        Organiser = 0,
+        Participant =1
     }
     public class ApplicationUser : IdentityUser
     {
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
+
         public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
         public ICollection<RaceEvent> RaceEvents { get; set; } = new List<RaceEvent>();
+
+        
+
     }
 
 }

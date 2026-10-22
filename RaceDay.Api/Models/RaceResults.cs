@@ -14,8 +14,8 @@ namespace RaceDay.Api.Models
             // FIXED: Changed from int to string to match ApplicationUser's string key type
             public string ParticipantID { get; set; } = string.Empty;
 
-            [Required]
-            public string FinishTime { get; set; } = string.Empty;
+        [Required]
+        public DateTime FinishTime{ get; set; } = DateTime.UtcNow;
 
             public int Position { get; set; }
 

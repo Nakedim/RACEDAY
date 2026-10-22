@@ -1,9 +1,13 @@
+
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RaceDay.Api.Data;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
 using System.Security.Claims;
+
 
 namespace RaceDay.Api.Controllers
 {
@@ -12,13 +16,68 @@ namespace RaceDay.Api.Controllers
     public class OrganisersController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RacedayDbContext _context;
 
-        
         public OrganisersController(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+            
         }
 
+
+        // POST: api/Organisers
+        [HttpPost]
+    
+        public async Task<ActionResult<ApplicationUser>> CreateOrganiser(string id )
+        {
+            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var requestor = await _userManager.FindByIdAsync(requestorId!);
+
+            if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
+            {
+                return Forbid();
+            }
+
+            // 2. Find the target user profile
+            var participant = await _userManager.FindByIdAsync(id);
+            if (participant == null || participant.profileRole != ProfileRole.Participant)
+            {
+                return NotFound("Participant not found.");
+            }
+
+            return Ok(participant);
+        }
+
+
+
+
+
+
+
+
+
+
+        // View my own profile details (Accessible by logged-in Participants)
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<ActionResult<ApplicationUser>> ViewOwnParticipantInfo()
+        {
+            // 1. Get the current logged-in user's ID securely from the session token
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId))
+            {
+                return Unauthorized();
+            }
+
+            // 2. Fetch their clean account object directly
+            var userProfile = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userProfile);
+        }
         // View an organiser's profile details by their alphanumeric Identity ID string
         [HttpGet("{id}")]
         [Authorize] // Requires being logged in
@@ -78,30 +137,19 @@ namespace RaceDay.Api.Controllers
             return Ok(new { Message = "Profile updated successfully." });
         }
 
-        // Deletes the logged-in organiser's account profile
-        [HttpDelete("profile")]
-        [Authorize]
-        public async Task<IActionResult> DeleteOwnProfile()
+     
+        // GET: api/Organisers
+        [HttpGet]
+        [Authorize(Roles = "Organiser,Participant")]
+        public async Task<ActionResult<IEnumerable<OrganiserDTO>>> GetOrganisers()
         {
-            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(authenticatedUserId))
-            {
-                return Unauthorized();
-            }
-
-            var user = await _userManager.FindByIdAsync(authenticatedUserId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return NoContent();
+            return Ok();
         }
+            
+        
+           
+            
+
+       
     }
 }

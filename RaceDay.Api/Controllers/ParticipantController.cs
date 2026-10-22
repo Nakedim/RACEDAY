@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
+using RaceDay.Contracts.ProfileDTO;
 using System.Security.Claims;
-
 namespace RaceDay.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/participants")] 
+    [Authorize]
     public class ParticipantController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -19,9 +20,30 @@ namespace RaceDay.Api.Controllers
             _userManager = userManager;
         }
 
+        [HttpPost("Register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateParticipantAccount([FromBody] ParticipantProfileDTO participantDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var participants = await _userManager.Users
+                .Where(u => u.profileRole == ProfileRole.Participant)
+                .Select(u => new ParticipantProfileDTO
+                {
+                    Id = Guid.Parse(u.Id), // Converts string Identity ID to Guid
+                    FirstName = u.FirstName, // Assumes these fields exist on ApplicationUser
+                    LastName = u.Surname,
+                    Email = u.Email,
+                }).ToListAsync();
+
+            return Ok(participants);
+        }
+
+
         // View all users who have the Participant role (Accessible only by Organisers)
         [HttpGet]
-        [Authorize] // Requires being logged in
         public async Task<ActionResult<List<ApplicationUser>>> ViewAllParticipants()
         {
             // 1. Verify the caller is an Organiser
@@ -34,11 +56,7 @@ namespace RaceDay.Api.Controllers
             }
 
             // 2. Filter the users table to only return profiles marked as Participants
-            var participants = await _userManager.Users
-                .Where(u => u.profileRole == ProfileRole.Participant)
-                .ToListAsync();
-
-            return Ok(participants);
+            return Ok();
         }
 
         // View a specific participant profile by their string Identity ID
@@ -61,60 +79,45 @@ namespace RaceDay.Api.Controllers
             {
                 return NotFound("Participant not found.");
             }
+            var profileDto = new ParticipantProfileDTO
+            {
+                Id = Guid.Parse(participant.Id),
+                FirstName = participant.FirstName,
+                LastName = participant.Surname,
+                Email = participant.Email!
+              
+            };
+
 
             return Ok(participant);
         }
 
         // View my own profile details (Accessible by logged-in Participants)
         [HttpGet("profile")]
-        [Authorize]
-        public async Task<ActionResult<ApplicationUser>> ViewOwnParticipantInfo()
+        public async Task<ActionResult<ParticipantProfileDTO>> ViewOwnParticipantInfo()
         {
-            // 1. Get the current logged-in user's ID securely from the session token
             var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(authenticatedUserId))
             {
                 return Unauthorized();
             }
 
-            // 2. Fetch their clean account object directly
             var userProfile = await _userManager.FindByIdAsync(authenticatedUserId);
             if (userProfile == null)
             {
                 return NotFound();
             }
 
-            return Ok(userProfile);
-        }
-
-        // Delete/Remove a user profile (Accessible only by Organisers)
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteParticipant(string id)
-        {
-            // 1. Verify the caller is an Organiser
-            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var requestor = await _userManager.FindByIdAsync(requestorId!);
-
-            if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
+            var profileDto = new ParticipantProfileDTO
             {
-                return Forbid();
-            }
+                Id = Guid.Parse(userProfile.Id),
+                FirstName = userProfile.FirstName,
+                LastName = userProfile.Surname,
+                Email = userProfile.Email!
+            
+            };
 
-            // 2. Locate and delete the target profile
-            var participant = await _userManager.FindByIdAsync(id);
-            if (participant == null)
-            {
-                return NotFound();
-            }
-
-            var result = await _userManager.DeleteAsync(participant);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return NoContent();
+            return Ok(profileDto);
         }
     }
 }

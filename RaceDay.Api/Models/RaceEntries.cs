@@ -5,11 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RaceDay.Api.Models
 {
-    [Table("RaceEntries")]
-    public class RaceEntries
+
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    namespace RaceDay.Api.Models
     {
-        [Key]
-        public int RaceEntryID { get; set; }
+        [Table("RaceEntries")]
+        public class RaceEntries
+        {
+            [Key]
+            public int RaceEntryID { get; set; }
+
 
         // Foreign key to RaceEvent
         public int RaceEventID { get; set; }
@@ -30,5 +38,9 @@ namespace RaceDay.Api.Models
         public virtual Categories Category { get; set; } = null!;
 
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+
+        
+        }
+
     }
 }

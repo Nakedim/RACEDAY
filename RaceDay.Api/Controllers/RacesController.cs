@@ -1,88 +1,78 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
 using RaceDay.Contracts.RaceRequestDTO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims; 
+using System.Threading.Tasks;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class RacesController : ControllerBase
     {
         private readonly RacedayDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RacesController(RacedayDbContext context)
+        public RacesController(RacedayDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-        }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Races>>> GetParticipant()
-        {
-            return await _context.Races.ToListAsync();
+            _userManager = userManager;
         }
 
-        //update race
-        //test purpose only
-        [HttpPut("{id:int}")]
-        //[Authorize(Roles = "Organiser")]
-
-        public async Task<ActionResult> UpdateRace(int id, [FromBody] RaceDTO updateRaceDto)
+        [HttpGet] 
+        public async Task<ActionResult<List<RaceResponseDTO>>> GetAllRace()
         {
-            if (ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var exisitingRace = await _context.Races.FindAsync(id);
-            if (exisitingRace == null)
-            {
-                return NotFound($"Race with ID: {id} was not found");
-            }
-
-            exisitingRace.RaceName = updateRaceDto.RaceName;
-            exisitingRace.Location = updateRaceDto.Location;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return await _context.Races
+               .Select(re => new RaceResponseDTO
+               {
+                   RaceName = re.RaceName,
+                   StartTime = re.StartTime,
+                   Location = re.Location,
+                   Distance = re.Distance
+               })
+               .ToListAsync();
         }
 
-
-
-        //both view race events
-        [HttpGet("{ALL}")]
-        [Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<List<RaceEvent>>> GetAllRace()
+        [HttpGet("{RaceID:int}", Name = "GetRaceByID")]
+        [Authorize]
+        public async Task<ActionResult<Races>> GetRace(int RaceID)
         {
-            var races = await _context.Races.ToListAsync();
-            return Ok(races);
-        }
-
-        [HttpGet("{RaceID}")]
-        //[Authorize(Roles = "Organiser, Participant")]
-        public async Task<ActionResult<IEnumerable<RaceEvent>>> GetRace(int RaceID)
-        {
-            var race = await _context.Races.FindAsync(RaceID);
-            if (race == null)
+            var races = await _context.Races.FindAsync(RaceID);
+            if (races == null)
             {
                 return NotFound();
             }
-            return Ok(race);
+            return Ok(races);
         }
 
-        //organisers create events
+        // Organisers create events
         [HttpPost]
-        //[Authorize(Roles = "Organiser")]
-        public async Task<IActionResult> CreateRace([FromBody] RaceRequestDTO racedto)
-
+        [Authorize]
+        [Authorize(Roles = "Organiser")] // Replaces manual userManager & role checks
+        public async Task<IActionResult> CreateRace([FromBody] RaceDTO racedto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            // 1. Validate that the requesting user profile is an Organiser (Same logic applied)
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
+
+            var caller = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (caller == null || caller.profileRole != ProfileRole.Organiser)
+            {
+                return Forbid();
+            }
+
             var NewRace = new Races
             {
                 RaceName = racedto.RaceName,
@@ -90,14 +80,13 @@ namespace RaceDay.Api.Controllers
                 EventID = racedto.EventID,
                 Location = racedto.Location,
                 Distance = racedto.Distance
-
             };
+
             _context.Races.Add(NewRace);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetRace),
                 new { RaceID = NewRace.RaceID }, NewRace);
-
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
@@ -7,7 +8,6 @@ using RaceDay.Contracts;
 
 namespace RaceDay.Api.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
 
@@ -19,6 +19,7 @@ namespace RaceDay.Api.Controllers
         {
             _context = context;
         }
+
 
 
         [HttpGet("{id}")]
@@ -38,18 +39,22 @@ namespace RaceDay.Api.Controllers
 
         }
         //both view gategory
-        [HttpGet]
-        [Authorize(Roles = "Organiser")]
+        [HttpGet("{All}")]
+        [Authorize]
         public async Task<ActionResult<List<Categories>>> GetAllCategories()
         {
-           var Categories = await _context.RaceEvents.ToListAsync();
+            var Categories = await _context.RaceEvents.ToListAsync();
             return Ok(Categories);
         }
-        //organisers create category
+
+       
+        // POST: api/Categories
         [HttpPost]
-        //[Authorize(Roles = "Organiser")]
+        [Authorize(Roles = "Organiser")]
+
         public async Task<IActionResult> CreateCategory([FromBody] CategoriesDTO categoryDTO)
         {
+           
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -74,7 +79,7 @@ namespace RaceDay.Api.Controllers
         //organisers update category
         //testing only
         [HttpPut]
-        [Authorize(Roles = "Organiser")]
+        [Authorize]
         public async Task<IActionResult> UpdateCategoryAsync(int CategoryID, Categories category)
         {
 
@@ -108,6 +113,7 @@ namespace RaceDay.Api.Controllers
 
             return Ok("Category deleted successfully");
         }
+
 
 
     }

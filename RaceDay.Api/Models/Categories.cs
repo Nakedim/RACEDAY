@@ -12,5 +12,6 @@ namespace RaceDay.Api.Models
 
         public string CategoryName { get; set; } = string.Empty;
 
+
     }
 }
