@@ -1,7 +1,9 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RaceDay.Api.Data;
 using RaceDay.Api.Models;
 using RaceDay.Contracts;
 using RaceDay.Contracts.Logins;
@@ -20,77 +22,107 @@ namespace RaceDay.Api.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly RacedayDbContext _context;
+
 
         public AuthUsersController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            RacedayDbContext context
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _context = context;
         }
 
-        // POST: api/AuthUsers/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register(
-            [FromBody] RegisterRequest model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
             if (model == null || !ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!Enum.TryParse<ProfileRole>(
-                model.ProfileRole, true, out var assignedRole)
+            if (!Enum.TryParse<ProfileRole>(model.ProfileRole, true, out var assignedRole)
                 || !Enum.IsDefined(typeof(ProfileRole), assignedRole))
             {
-                return BadRequest(new
-                {
-                    Error = "Choose Organiser or Participant."
-                });
+                return BadRequest(new { Error = "Choose Organiser or Participant." });
             }
 
             string roleName = assignedRole.ToString();
 
-            // Ensure the role exists
+            // Ensure the identity role exists
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
-                var roleResult = await _roleManager.CreateAsync(
-                    new IdentityRole(roleName));
-
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
                 if (!roleResult.Succeeded)
                 {
                     return StatusCode(500, roleResult.Errors);
                 }
             }
 
+            // 1. Instantiate and save the core Login user credentials
             var newUser = new ApplicationUser
             {
                 UserName = model.Email,
                 Email = model.Email,
                 FirstName = model.FirstName,
                 Surname = model.Surname,
+                Location = model.Location,
                 profileRole = assignedRole
             };
 
-            var createResult = await _userManager.CreateAsync(
-                newUser, model.Password);
-
+            var createResult = await _userManager.CreateAsync(newUser, model.Password);
             if (!createResult.Succeeded)
             {
                 return BadRequest(createResult.Errors);
             }
 
-            var assignRoleResult = await _userManager.AddToRoleAsync(
-                newUser, roleName);
+            // 2. Build out specific domain extension table fields safely
+            try
+            {
+                if (assignedRole == ProfileRole.Organiser)
+                {
+                    var organiserEntity = new Organiser
+                    {
+                        ApplicationUserId = newUser.Id, // Foreign Key link
+                        FirstName = newUser.FirstName,
+                        Surname = newUser.Surname
+                    };
+                    _context.Organisers.Add(organiserEntity);
+                }
+                else if (assignedRole == ProfileRole.Participant)
+                {
+                    var participantEntity = new Participant
+                    {
+                        ApplicationUserId = newUser.Id,
+                        FirstName = newUser.FirstName,
+                        Surname = newUser.Surname,
+                        Age = model.Age,       
+                        Location = model.Location
+                    };
+                    _context.Participants.Add(participantEntity);
+                }
 
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                // Fail-safe cleanup: deletes the user if profile assignment fails
+                await _userManager.DeleteAsync(newUser);
+                return StatusCode(500, new { Error = "Failed to create database profile row.", Details = e.Message });
+            }
+
+            // 3. Assign structural security roles
+            var assignRoleResult = await _userManager.AddToRoleAsync(newUser, roleName);
             if (!assignRoleResult.Succeeded)
             {
                 await _userManager.DeleteAsync(newUser);
-
                 return StatusCode(500, assignRoleResult.Errors);
             }
 
@@ -102,6 +134,38 @@ namespace RaceDay.Api.Controllers
                 Role = roleName
             });
         }
+        //
+
+        [HttpGet("{id}")]
+        [Authorize] // Allows any authenticated user to enter
+        public async Task<ActionResult<ApplicationUser>> GetParticipantById(string id)
+        {
+            // 1. Get the logged-in user making the request
+            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var requestor = await _userManager.FindByIdAsync(requestorId!);
+
+            if (requestor == null)
+            {
+                return Unauthorized();
+            }
+
+            // 2. Fetch the target participant
+            var participant = await _userManager.FindByIdAsync(id);
+            if (participant == null)
+            {
+                return NotFound("User profile not found.");
+            }
+
+            // 💡 THE FIX: Allow the request if the requestor is an Organiser, 
+            // OR if the requestor is looking at their own profile data.
+            if (requestor.profileRole != ProfileRole.Organiser && requestorId != id)
+            {
+                return Forbid(); // Deny access if they are another participant trying to nose around
+            }
+
+            return Ok(participant);
+        }
+
 
         // POST: api/AuthUsers/login
         [HttpPost("login")]

@@ -9,14 +9,26 @@ namespace RaceDay.Api.Models
     {
         [Key]
         public int RaceID { get; set; }
+
         public string RaceName { get; set; } = string.Empty;
+
+        public int CategoryID { get; set; }
+
+        [ForeignKey(nameof(CategoryID))]
+        public Categories? Category { get; set; }
+
         public DateTime StartTime { get; set; }
+
         public int EventID { get; set; }
-        public string Location { get; set; } = string.Empty;
-        public int Distance { get; internal set; }
 
         [ForeignKey("EventID")]
         public RaceEvent Event { get; set; } = null!;
-        public int OrganiserID { get; internal set; }
+
+        public string Location { get; set; } = string.Empty;
+
+        public int Distance { get; set; }
+
+
+        public string? OrganiserID { get; set; }
     }
 }

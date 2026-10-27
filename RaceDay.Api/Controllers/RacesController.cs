@@ -55,7 +55,7 @@ namespace RaceDay.Api.Controllers
         // Organisers create events
         [HttpPost]
         [Authorize]
-        [Authorize(Roles = "Organiser")] // Replaces manual userManager & role checks
+        //[Authorize(Roles = "Organiser")] // Replaces manual userManager & role checks
         public async Task<IActionResult> CreateRace([FromBody] RaceDTO racedto)
         {
             if (!ModelState.IsValid)
@@ -85,8 +85,8 @@ namespace RaceDay.Api.Controllers
             _context.Races.Add(NewRace);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetRace),
-                new { RaceID = NewRace.RaceID }, NewRace);
+            return CreatedAtAction(nameof(GetRace), new { RaceID = NewRace.RaceID }, NewRace);
+
         }
     }
 }

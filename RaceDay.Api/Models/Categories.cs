@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RaceDay.Api.Models.RaceDay.Api.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,6 +12,8 @@ namespace RaceDay.Api.Models
         public int CategoryID { get; set; }
 
         public string CategoryName { get; set; } = string.Empty;
+
+     
 
 
     }

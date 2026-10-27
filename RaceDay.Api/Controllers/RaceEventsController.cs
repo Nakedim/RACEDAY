@@ -32,7 +32,7 @@ namespace RaceDay.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<RaceEvent>>> ListAllEvents()
         {
-            var eventsList = await _context.RaceEvents.FindAsync();
+            var eventsList = await _context.RaceEvents.ToListAsync();
             if (eventsList == null)
             {
                 return NotFound();
@@ -41,7 +41,6 @@ namespace RaceDay.Api.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<ActionResult<RaceEvent>> GetRaceById(int id)
         {
             var eventsList = await _context.RaceEvents.FindAsync(id);
@@ -53,7 +52,7 @@ namespace RaceDay.Api.Controllers
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "Organiser")]
         public async Task<ActionResult<RaceEvent>> createEvent([FromBody] EventsCreateDTO eventDTO)
         {
          
@@ -74,7 +73,7 @@ namespace RaceDay.Api.Controllers
                 Title = eventDTO.Title,
                 Description = eventDTO.Description,
                 CategoryID = eventDTO.CategoryID,
-                EventType =eventDTO.EventType,
+                EventType = eventDTO.EventType,
                 OrganiserID = eventDTO.OrganiserID
             };
             return CreatedAtAction(nameof(GetRaceById),

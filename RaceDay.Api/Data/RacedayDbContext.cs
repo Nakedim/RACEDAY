@@ -34,47 +34,47 @@ namespace RaceDay.Api.Data
             modelBuilder.Entity<Races>().ToTable("Races");
             modelBuilder.Entity<Categories>().ToTable("Categories");
 
-            // 2. Setup Organiser -> RaceEvents relationship
-            modelBuilder.Entity<RaceEvent>()
-                .HasOne(re => re.Organiser)
-                .WithMany(o => o.RaceEvents)
-                .HasForeignKey(re => re.OrganiserID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // 3. Setup Participant -> Entries relationship
+            // 2. Setup Participant -> Entries relationship
             modelBuilder.Entity<RaceEntries>()
                 .HasOne(e => e.Participant)
                 .WithMany()
                 .HasForeignKey(e => e.ParticipantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 4. Setup RaceEvent -> Entries relationship
-            //modelBuilder.Entity<RaceEntries>()
-            //    .HasOne(e => e.RaceEvent)
-            //    .WithMany(re => re.Entries)
-            //    .HasForeignKey(e => e.RaceEventID)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            // 3. Setup RaceEvent -> Entries relationship
+            modelBuilder.Entity<RaceEntries>()
+                .HasOne(e => e.RaceEvent)
+                .WithMany(re => re.Entries)
+                .HasForeignKey(e => e.RaceEventID)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // 5. Setup Participant -> RaceResults relationship
+            // 4. Setup Participant -> RaceResults relationship
             modelBuilder.Entity<RaceResults>()
                 .HasOne(r => r.Participant)
                 .WithMany()
                 .HasForeignKey(r => r.ParticipantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 6. Setup Race -> RaceResults relationship
+            // 5. Setup Race -> RaceResults relationship
             modelBuilder.Entity<RaceResults>()
                 .HasOne(r => r.Race)
                 .WithMany()
                 .HasForeignKey(r => r.RaceID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 7. Setup Category -> Races relationship
-            //modelBuilder.Entity<Races>()
-            //    .HasOne(r => r.Category)
-            //    .WithMany()
-            //    .HasForeignKey(r => r.CategoryID)
-            //    .OnDelete(DeleteBehavior.Restrict);
+            // 6. Setup Category -> Races relationship
+            modelBuilder.Entity<Races>()
+            .HasOne(r => r.Category)
+            .WithMany()  
+             .HasForeignKey(r => r.CategoryID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 7. Setup RaceEvent -> Organiser (ApplicationUser) relationship
+            modelBuilder.Entity<RaceEvent>()
+            .HasOne(e => e.Organiser)
+            .WithMany() 
+            .HasForeignKey(e => e.OrganiserID);
+      
         }
     }
 }

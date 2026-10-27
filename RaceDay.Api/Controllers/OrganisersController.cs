@@ -3,10 +3,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
-using RaceDay.Contracts;
+
+using RaceDay.Contracts.ProfileDTO;
+using System.Collections.Immutable;
 using System.Security.Claims;
+using OrganiserProfileDTO = RaceDay.Contracts.ProfileDTO.OrganiserProfileDTO;
 
 
 namespace RaceDay.Api.Controllers
@@ -18,16 +22,18 @@ namespace RaceDay.Api.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RacedayDbContext _context;
 
-        public OrganisersController(UserManager<ApplicationUser> userManager)
+        public OrganisersController(UserManager<ApplicationUser> userManager,
+            RacedayDbContext context)
         {
             _userManager = userManager;
+            _context = context;
             
         }
 
 
         // POST: api/Organisers
-        [HttpPost]
-    
+        [HttpPost("create-organiser/{id}")]
+        [Authorize]
         public async Task<ActionResult<ApplicationUser>> CreateOrganiser(string id )
         {
             var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -42,19 +48,12 @@ namespace RaceDay.Api.Controllers
             var participant = await _userManager.FindByIdAsync(id);
             if (participant == null || participant.profileRole != ProfileRole.Participant)
             {
-                return NotFound("Participant not found.");
+                return NotFound("Organiser not found.");
             }
-
+            participant.profileRole = ProfileRole.Organiser;
+            await _userManager.UpdateAsync(participant);
             return Ok(participant);
         }
-
-
-
-
-
-
-
-
 
 
         // View my own profile details (Accessible by logged-in Participants)
@@ -126,7 +125,7 @@ namespace RaceDay.Api.Controllers
 
             // 3. Apply updates to the Identity model properties
             user.FirstName = organiserProfileDTO.FirstName;
-            user.Surname = organiserProfileDTO.Surname;
+            user.Surname = organiserProfileDTO.LastName;
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -137,19 +136,75 @@ namespace RaceDay.Api.Controllers
             return Ok(new { Message = "Profile updated successfully." });
         }
 
-     
-        // GET: api/Organisers
-        [HttpGet]
-        [Authorize(Roles = "Organiser,Participant")]
-        public async Task<ActionResult<IEnumerable<OrganiserDTO>>> GetOrganisers()
+        //view
+        [HttpGet("AllOrganisers")]
+        [Authorize]
+        public async Task<ActionResult<List<OrganiserDetailsDTO>>> GetAllOrganisers()
         {
-            return Ok();
-        }
-            
-        
-           
-            
+            var organisers = await (from organiser in _context.Organisers
+                                    join user in _context.Users on organiser.ApplicationUserId equals user.Id
+                                    select new OrganiserDetailsDTO
+                                    {
+                                        Id = organiser.ApplicationUserId,
+                                        FirstName = user.FirstName,
+                                        Surname = user.Surname
+                                    }).ToListAsync();
 
-       
+            return Ok(organisers);
+        }
+        //create
+        [HttpPost]
+        public async Task<IActionResult> createOrganiser([FromBody] ViewOrganiserDetailsDTO OrganiserprofileDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+            if (string.IsNullOrEmpty(requestorId)) return Unauthorized();
+
+
+            var requestor = await _userManager.FindByIdAsync(requestorId);
+            if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
+            {
+                return Forbid("Only registered organisers are permitted to create new organiser profiles.");
+            }
+            var NewOrganiser = new ApplicationUser
+            {
+
+                UserName = OrganiserprofileDTO.Email, // Identity framework requires a unique username
+                Email = OrganiserprofileDTO.Email,
+                FirstName = OrganiserprofileDTO.FirstName,
+                Surname = OrganiserprofileDTO.Surname,
+                Location = OrganiserprofileDTO.Location, 
+                profileRole = ProfileRole.Organiser
+            };
+
+           var result = await _userManager.CreateAsync(NewOrganiser, OrganiserprofileDTO.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+            var OrganiserEntity = new Organiser
+            {
+                ApplicationUserId = NewOrganiser.Id,
+                FirstName = NewOrganiser.FirstName,
+                Surname = NewOrganiser.Surname,
+            };
+            _context.Organisers.Add(OrganiserEntity);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetOrganiserbyID),
+                new { id = NewOrganiser.Id },
+                OrganiserEntity
+                 );
+        }
+
     }
+
+
+
+
+
+
 }
