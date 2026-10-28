@@ -46,6 +46,10 @@ namespace RaceDay.Api.Controllers
         public async Task<ActionResult<List<Categories>>> GetAllCategories()
         {
             var Categories = await _context.Categories.ToListAsync();
+            if(Categories == null)
+            {
+                return NotFound();
+            }
             return Ok(Categories);
         }
 
@@ -77,44 +81,7 @@ namespace RaceDay.Api.Controllers
 
         }
 
-        //organisers update category
-        //testing only
-        //[HttpPut]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateCategoryAsync(int CategoryID, Categories category)
-        //{
-
-        //    if (CategoryID != category.CategoryID)
-        //    {
-        //        return BadRequest("Category not found");
-        //    }
-        //    var existingCategory = await _context.Categories
-        //        .FindAsync();
-
-        //    return Ok("Category Update successfull");
-        //}
-
-
-
-
-
-        //organisers can delete category
-        //[HttpDelete]
-        //[Authorize(Roles = "Organiser")]
-        //public async Task<IActionResult> DeleteCategory(int CategoryID)
-        //{
-        //    var category = await _context.Categories.FindAsync(CategoryID);
-        //    if (category == null)
-        //    {
-        //        return BadRequest("Category not found");
-        //    }
-
-        //    _context.Categories.Remove(category);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok("Category deleted successfully");
-        //}
-
+  
 
 
     }

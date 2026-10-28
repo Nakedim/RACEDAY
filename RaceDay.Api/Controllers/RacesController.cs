@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims; 
 using System.Threading.Tasks;
+using RaceDTO = RaceDay.Contracts.RaceRequestDTO.RaceDTO;
+
 
 namespace RaceDay.Api.Controllers
 {
@@ -40,16 +42,16 @@ namespace RaceDay.Api.Controllers
                .ToListAsync();
         }
 
-        [HttpGet("{RaceID:int}", Name = "GetRaceByID")]
+        [HttpGet("{id:int}", Name = "GetRaceByID")]
         [Authorize]
-        public async Task<ActionResult<Races>> GetRace(int RaceID)
+        public async Task<ActionResult<Races>> GetRace(int id)
         {
-            var races = await _context.Races.FindAsync(RaceID);
-            if (races == null)
+            var race = await _context.Races.FindAsync(id);
+            if (race == null)
             {
                 return NotFound();
             }
-            return Ok(races);
+            return Ok(race);
         }
 
         // Organisers create events
@@ -70,12 +72,13 @@ namespace RaceDay.Api.Controllers
             var caller = await _userManager.FindByIdAsync(authenticatedUserId);
             if (caller == null || caller.profileRole != ProfileRole.Organiser)
             {
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, new { Error = "Access denied. Only organisers are allowed." });
             }
 
             var NewRace = new Races
             {
                 RaceName = racedto.RaceName,
+                CategoryID = racedto.CategoryID,
                 StartTime = racedto.StartTime,
                 EventID = racedto.EventID,
                 Location = racedto.Location,
@@ -85,7 +88,8 @@ namespace RaceDay.Api.Controllers
             _context.Races.Add(NewRace);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetRace), new { RaceID = NewRace.RaceID }, NewRace);
+            return CreatedAtAction(nameof(GetRace), new { id= NewRace.RaceID }, NewRace);
+            //return CreatedAtAction(nameof(GetRace), new { RaceID = NewRace.RaceID }, NewRace);
 
         }
     }

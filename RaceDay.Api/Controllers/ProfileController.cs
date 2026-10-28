@@ -21,14 +21,12 @@ namespace RaceDay.Api.Controllers
         public async Task<IActionResult> GetProfile()
         {
             // Fixed session key casing to match your Login setup ("UserId")
-            var userId = HttpContext.Session.GetString("UserId");
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
             {
-                // Fixed typo from UnAuthorized -> Unauthorized
-                return Unauthorized(new { Error = "You must be logged in to view your profile." });
+                return Unauthorized(new { Error = "User identification missing from authentication token." });
             }
-
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {

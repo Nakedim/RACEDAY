@@ -22,8 +22,8 @@ namespace RaceDay.Api.Controllers
         private readonly RacedayDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        
-    public RaceEventsController(RacedayDbContext context, UserManager<ApplicationUser> userManager)
+
+        public RaceEventsController(RacedayDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -52,10 +52,10 @@ namespace RaceDay.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Organiser")]
+        [Authorize]
         public async Task<ActionResult<RaceEvent>> createEvent([FromBody] EventsCreateDTO eventDTO)
         {
-         
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -72,15 +72,44 @@ namespace RaceDay.Api.Controllers
             {
                 Title = eventDTO.Title,
                 Description = eventDTO.Description,
+                Location = eventDTO.Location,
                 CategoryID = eventDTO.CategoryID,
                 EventType = eventDTO.EventType,
                 OrganiserID = eventDTO.OrganiserID
             };
+            _context.RaceEvents.Add(RaceEvents);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetRaceById),
-                new {id = RaceEvents.EventID},
+                new { id = RaceEvents.EventID },
                 RaceEvents
                 );
         }
+
+        //[HttpPut]
+        //[Authorize]
+
+        //public IActionResult updateEvents(int id, [FromBody] UpdateEventDTO update)
+        //{
+        //    var eventlookup = await _context.RaceEvents.FindAsync(id);
+        //    if(eventlookup == null)
+        //    {
+        //        return NotFound(new { message = "Event not exits or wrong id provided" });
+        //    }
+
+        //    var newEvent = new UpdateEventDTO
+        //    {
+        //        Title = update.Title,
+        //        Description = update.Description,
+        //        Location = update.Location,
+        //        CategoryID = update.CategoryID,
+        //        EventType = update.EventType,
+        //        OrganiserID = update.OrganiserID
+        //    };
+        //    _context.RaceEvents.Add(newEvent);
+        //    await _context.SaveChangesAsync();
+        //    return NoContent();
+        //}
     }
 
 }

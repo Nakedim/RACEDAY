@@ -29,16 +29,15 @@ namespace RaceDay.Api.Models
         }
 
         [HttpPost]
-        [Authorize]//Organiser
-
-        public async Task<ActionResult<RaceEntries>> CreateEvent([FromBody] CreateRaceEntryDTO raceEntryDTO)
-        {
-            var raceEntry = await _context.RaceEntries.FindAsync(raceEntryDTO.RaceEntryID);
+        [Authorize]
+        public async Task<ActionResult<RaceEntries>> CreateEvent([FromBody] CreateRaceEventEntryDTO raceEntryDTO)
+        { 
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            //check if the user is loggedin
             var authenticatedUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(authenticatedUserId))
             {
@@ -49,24 +48,22 @@ namespace RaceDay.Api.Models
             {
                 return NotFound(new { Error = "User profile context not found." });
             }
+            //if role is not participant disallow
             if (user.profileRole != ProfileRole.Participant)
             {
-                return Forbid(); 
+                return StatusCode(StatusCodes.Status403Forbidden, new { Error = "Access denied. Only participants are allowed." });
             }
-            //var raceExists = await _context.RaceEvents.AnyAsync(r => r.RaceID == model.RaceID);
-            //var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == model.CategoryID);
-
-
+            
             var newEntry = new RaceEntries
             {
-                RaceEventID = raceEntryDTO.RaceID,
+                RaceEventID = raceEntryDTO.RaceEventID,
                 CategoryID = raceEntryDTO.CategoryID,
-                ParticipantID = raceEntryDTO.ParticipantID,
-                RegistrationDate = raceEntryDTO.RegistrationDate
+                ParticipantID = user.Id,
+                RegistrationDate = DateTime.UtcNow
             };
             _context.RaceEntries.Add(newEntry);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEntriesById), new { RaceEntryID = newEntry.RaceEntryID }, newEntry);
+            return CreatedAtAction(nameof(GetEntriesById), new { id = newEntry.RaceEntryID }, newEntry);
 
         }
 
@@ -80,7 +77,7 @@ namespace RaceDay.Api.Models
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+     
         public async Task<ActionResult<List<RaceEntries>>> GetEntriesById(int id)
         {
             var entry = await _context.RaceEntries.FindAsync(id);
@@ -90,58 +87,6 @@ namespace RaceDay.Api.Models
             }
             return Ok(entry);
         }
-
-
-
-        // GET: api/RaceEntries
-        // Organisers can view all race entries.
-        //[HttpGet]
-        //[Authorize(Roles = "Organiser")]
-        //public async Task<ActionResult<IEnumerable<RaceEntriesDTO>>> GetRaceEntries()
-        //{
-        //    var entries = await _context.RaceEntries
-        //        .Select(re => new RaceEntriesDTO
-        //        {
-        //            RaceEntryID = re.RaceEntryID,
-
-        //        })
-        //        .ToListAsync();
-
-        //    return Ok(entries);
-        //}
-
-        //// POST: api/RaceEntries/enter
-        //// Participants can enter a race.
-        //[HttpPost("enter")]
-        //[Authorize(Roles = "Participant")]
-        //public async Task<IActionResult> EnterRace(
-        //    [FromBody] CreateRaceEntryDTO model)
-        //{
-        //    // Check that the race exists.
-        //    var raceExists = await _context.Races
-        //        .AnyAsync(r => r.RaceID == model.RaceID);
-
-        //    if (!raceExists)
-        //    {
-        //        return NotFound("Race not found.");
-        //    }
-
-        //    // Check that the category exists.
-        //    var categoryExists = await _context.Categories
-        //        .AnyAsync(c => c.CategoryID == model.CategoryID);
-
-        //    if (!categoryExists)
-        //    {
-        //        return NotFound("Category not found.");
-        //    }
-
-        //    return BadRequest(
-        //        "Race and category are valid, but the participant " +
-        //        "must be linked to their authenticated account " +
-        //        "before the entry can be saved.");
-        //}
-
-
 
     }
 }

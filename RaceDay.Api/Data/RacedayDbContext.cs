@@ -67,13 +67,15 @@ namespace RaceDay.Api.Data
             .HasOne(r => r.Category)
             .WithMany()  
              .HasForeignKey(r => r.CategoryID)
-                .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.Restrict);
 
             // 7. Setup RaceEvent -> Organiser (ApplicationUser) relationship
             modelBuilder.Entity<RaceEvent>()
             .HasOne(e => e.Organiser)
-            .WithMany() 
+            .WithMany(o => o.RaceEvents)
             .HasForeignKey(e => e.OrganiserID);
+            
+            
       
         }
     }

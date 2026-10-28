@@ -185,7 +185,7 @@ namespace RaceDay.Api.Controllers
             {
                 return Unauthorized(new
                 {
-                    Error = "Invalid email or password."
+                    Error = "Invalid email or password. Looks like no Account has been created"
                 });
             }
 

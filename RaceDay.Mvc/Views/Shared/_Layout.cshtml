@@ -4,10 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RaceDay.Mvc</title>
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RaceDay.Mvc.styles.css" asp-append-version="true" />
+    <style>
+        .split-screen {
+        min-height: 100vh;
+        }
+
+        .slider-column {
+        background-color: #1e293b;
+        }
+
+        .carousel-item img {
+        height: 100vh;
+        object-fit: cover;
+        filter: brightness(0.6);
+        }
+    </style>
 </head>
 <body>
     <header>

@@ -335,7 +335,7 @@
     "Parameters": [
       {
         "Name": "raceEntryDTO",
-        "Type": "RaceDay.Contracts.EntryRequest.CreateRaceEntryDTO",
+        "Type": "RaceDay.Contracts.RacesEntry.CreateRaceEventEntryDTO",
         "IsRequired": true
       }
     ],
@@ -557,7 +557,7 @@
     "Parameters": [
       {
         "Name": "racedto",
-        "Type": "RaceDay.Contracts.RaceDTO",
+        "Type": "RaceDay.Contracts.RaceRequestDTO.RaceDTO",
         "IsRequired": true
       }
     ],
@@ -566,13 +566,13 @@
   {
     "ContainingType": "RaceDay.Api.Controllers.RacesController",
     "Method": "GetRace",
-    "RelativePath": "api/Races/{RaceID}",
+    "RelativePath": "api/Races/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "RaceID",
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
       }
