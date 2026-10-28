@@ -26,7 +26,7 @@ namespace RaceDay.Api.Models
         public virtual RaceEvent RaceEvent { get; set; } = null!;
 
         // Foreign key to ApplicationUser
-        public string ParticipantID { get; set; } = string.Empty;
+        public int ParticipantID { get; set; } 
 
         [ForeignKey(nameof(ParticipantID))]
         public virtual ApplicationUser Participant { get; set; } = null!;

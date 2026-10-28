@@ -13,16 +13,17 @@ namespace RaceDay.Api.Models
     {
         [Key]
         public int ParticipantID { get; set; }
-
-
-        [ForeignKey("UserID")]
      
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public int Age { get; set; }
         public string Location { get; set; } = string.Empty;
 
-        public string ApplicationUserId { get; internal set; } = string.Empty;
+        public int ApplicationUserId { get; set; }
+
+        // 3. Explicitly links this participant record to the core ApplicationUser account entity
+        [ForeignKey(nameof(ApplicationUserId))]
+        public ApplicationUser User { get; set; } = null!;
     }
     
 

@@ -9,17 +9,17 @@ namespace RaceDay.Api.Models
         Organiser = 0,
         Participant =1
     }
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<int>
     {
         public string Location { get; set; }
 
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
-
+        public int Age { get; set; }
 
         public ProfileRole profileRole { get; set; } = ProfileRole.Participant;
-        public ICollection<RaceEvent> RaceEvents { get; set; } = new List<RaceEvent>();
-        public int Age { get; set; }
+     
+        
       
     }
 

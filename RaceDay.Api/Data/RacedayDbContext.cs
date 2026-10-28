@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
 using RaceDay.Api.Models.RaceDay.Api.Models;
 
 namespace RaceDay.Api.Data
 {
-    public class RacedayDbContext : IdentityDbContext<ApplicationUser>
+    public class RacedayDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public RacedayDbContext(DbContextOptions<RacedayDbContext> options) : base(options)
         {
@@ -71,12 +72,21 @@ namespace RaceDay.Api.Data
 
             // 7. Setup RaceEvent -> Organiser (ApplicationUser) relationship
             modelBuilder.Entity<RaceEvent>()
-            .HasOne(e => e.Organiser)
-            .WithMany(o => o.RaceEvents)
-            .HasForeignKey(e => e.OrganiserID);
-            
-            
-      
+             .HasOne(e => e.Organiser)      
+             .WithMany(o => o.RaceEvents)    
+             .HasForeignKey(e => e.OrganiserID);
+
+            modelBuilder.Entity<Organiser>()
+              .HasOne(o => o.User)
+              .WithMany()
+             .HasForeignKey(o => o.ApplicationUserId);
+
+            modelBuilder.Entity<Participant>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.ApplicationUserId);
+
+
         }
     }
 }

@@ -100,7 +100,7 @@ namespace RaceDay.Api.Controllers
         }
 
         // Updates the logged-in organiser's personal profile information
-        [HttpPut("profile")]
+        [HttpPut("Ownprofile-Update")]
         [Authorize]
         public async Task<IActionResult> UpdateOrgProfile([FromBody] OrganiserProfileDTO organiserProfileDTO)
         {
@@ -141,64 +141,67 @@ namespace RaceDay.Api.Controllers
         [Authorize]
         public async Task<ActionResult<List<OrganiserDetailsDTO>>> GetAllOrganisers()
         {
-            var organisers = await (from organiser in _context.Organisers
-                                    join user in _context.Users on organiser.ApplicationUserId equals user.Id
-                                    select new OrganiserDetailsDTO
-                                    {
-                                        Id = organiser.ApplicationUserId,
-                                        FirstName = user.FirstName,
-                                        Surname = user.Surname
-                                    }).ToListAsync();
+            var organisers = await (
+                from organiser in _context.Organisers
+                join user in _context.Users
+                    on organiser.ApplicationUserId equals user.Id
+                select new OrganiserDetailsDTO
+                {
+                    Id = organiser.ApplicationUserId,
+                    FirstName = user.FirstName,
+                    Surname = user.Surname
+                }
+            ).ToListAsync();
 
             return Ok(organisers);
         }
         //create
-        [HttpPost]
-        public async Task<IActionResult> createOrganiser([FromBody] ViewOrganiserDetailsDTO OrganiserprofileDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
-            if (string.IsNullOrEmpty(requestorId)) return Unauthorized();
+        //[HttpPost]
+        //public async Task<IActionResult> createOrganiser([FromBody] ViewOrganiserDetailsDTO OrganiserprofileDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        //    if (string.IsNullOrEmpty(requestorId)) return Unauthorized();
 
 
-            var requestor = await _userManager.FindByIdAsync(requestorId);
-            if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
-            {
-                return Forbid("Only registered organisers are permitted to create new organiser profiles.");
-            }
-            var NewOrganiser = new ApplicationUser
-            {
+        //    var requestor = await _userManager.FindByIdAsync(requestorId);
+        //    if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
+        //    {
+        //        return Forbid("Only registered organisers are permitted to create new organiser profiles.");
+        //    }
+        //    var NewOrganiser = new ApplicationUser
+        //    {
 
-                UserName = OrganiserprofileDTO.Email, // Identity framework requires a unique username
-                Email = OrganiserprofileDTO.Email,
-                FirstName = OrganiserprofileDTO.FirstName,
-                Surname = OrganiserprofileDTO.Surname,
-                Location = OrganiserprofileDTO.Location, 
-                profileRole = ProfileRole.Organiser
-            };
+        //        UserName = OrganiserprofileDTO.Email, // Identity framework requires a unique username
+        //        Email = OrganiserprofileDTO.Email,
+        //        FirstName = OrganiserprofileDTO.FirstName,
+        //        Surname = OrganiserprofileDTO.Surname,
+        //        Location = OrganiserprofileDTO.Location, 
+        //        profileRole = ProfileRole.Organiser
+        //    };
 
-           var result = await _userManager.CreateAsync(NewOrganiser, OrganiserprofileDTO.Password);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-            var OrganiserEntity = new Organiser
-            {
-                ApplicationUserId = NewOrganiser.Id,
-                FirstName = NewOrganiser.FirstName,
-                Surname = NewOrganiser.Surname,
-            };
-            _context.Organisers.Add(OrganiserEntity);
-            await _context.SaveChangesAsync();
+        //   var result = await _userManager.CreateAsync(NewOrganiser, OrganiserprofileDTO.Password);
+        //    if (!result.Succeeded)
+        //    {
+        //        return BadRequest(result.Errors);
+        //    }
+        //    var OrganiserEntity = new Organiser
+        //    {
+        //        ApplicationUserId = NewOrganiser.Id,
+        //        FirstName = NewOrganiser.FirstName,
+        //        Surname = NewOrganiser.Surname,
+        //    };
+        //    _context.Organisers.Add(OrganiserEntity);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetOrganiserbyID),
-                new { id = NewOrganiser.Id },
-                OrganiserEntity
-                 );
-        }
+        //    return CreatedAtAction(nameof(GetOrganiserbyID),
+        //        new { id = NewOrganiser.Id },
+        //        OrganiserEntity
+        //         );
+        //}
 
     }
 

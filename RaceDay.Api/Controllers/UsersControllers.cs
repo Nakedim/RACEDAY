@@ -1,4 +1,5 @@
 
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +17,21 @@ namespace RaceDay.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class AuthUsersController : ControllerBase
     {
+        private readonly RoleManager<IdentityRole <int>> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly RacedayDbContext _context;
-
 
         public AuthUsersController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<IdentityRole<int>> roleManager,
             IConfiguration configuration,
-            RacedayDbContext context
-            )
+            RacedayDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -39,6 +39,7 @@ namespace RaceDay.Api.Controllers
             _configuration = configuration;
             _context = context;
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
@@ -56,17 +57,19 @@ namespace RaceDay.Api.Controllers
 
             string roleName = assignedRole.ToString();
 
-            // Ensure the identity role exists
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
-                var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                var identityRole = new IdentityRole<int>
+                { 
+                    Name = roleName
+                };
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole<int>(roleName));
                 if (!roleResult.Succeeded)
                 {
                     return StatusCode(500, roleResult.Errors);
                 }
             }
 
-            // 1. Instantiate and save the core Login user credentials
             var newUser = new ApplicationUser
             {
                 UserName = model.Email,
@@ -74,7 +77,8 @@ namespace RaceDay.Api.Controllers
                 FirstName = model.FirstName,
                 Surname = model.Surname,
                 Location = model.Location,
-                profileRole = assignedRole
+                profileRole = assignedRole,
+                Age = model.Age
             };
 
             var createResult = await _userManager.CreateAsync(newUser, model.Password);
@@ -83,14 +87,13 @@ namespace RaceDay.Api.Controllers
                 return BadRequest(createResult.Errors);
             }
 
-            // 2. Build out specific domain extension table fields safely
             try
             {
                 if (assignedRole == ProfileRole.Organiser)
                 {
                     var organiserEntity = new Organiser
                     {
-                        ApplicationUserId = newUser.Id, // Foreign Key link
+                        ApplicationUserId = newUser.Id,
                         FirstName = newUser.FirstName,
                         Surname = newUser.Surname
                     };
@@ -103,7 +106,7 @@ namespace RaceDay.Api.Controllers
                         ApplicationUserId = newUser.Id,
                         FirstName = newUser.FirstName,
                         Surname = newUser.Surname,
-                        Age = model.Age,       
+                        Age = model.Age,
                         Location = model.Location
                     };
                     _context.Participants.Add(participantEntity);
@@ -113,12 +116,10 @@ namespace RaceDay.Api.Controllers
             }
             catch (Exception e)
             {
-                // Fail-safe cleanup: deletes the user if profile assignment fails
                 await _userManager.DeleteAsync(newUser);
                 return StatusCode(500, new { Error = "Failed to create database profile row.", Details = e.Message });
             }
 
-            // 3. Assign structural security roles
             var assignRoleResult = await _userManager.AddToRoleAsync(newUser, roleName);
             if (!assignRoleResult.Succeeded)
             {
@@ -134,16 +135,24 @@ namespace RaceDay.Api.Controllers
                 Role = roleName
             });
         }
-        //
 
         [HttpGet("{id}")]
-        [Authorize] // Allows any authenticated user to enter
+        [Authorize] 
         public async Task<ActionResult<ApplicationUser>> GetParticipantById(string id)
         {
-            // 1. Get the logged-in user making the request
+       
             var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var requestor = await _userManager.FindByIdAsync(requestorId!);
+            if (string.IsNullOrEmpty(requestorId))
+            {
+                requestorId = HttpContext.Session.GetString("UserId");
+            }
 
+            if (string.IsNullOrEmpty(requestorId))
+            {
+                return Unauthorized();
+            }
+
+            var requestor = await _userManager.FindByIdAsync(requestorId);
             if (requestor == null)
             {
                 return Unauthorized();
@@ -156,16 +165,14 @@ namespace RaceDay.Api.Controllers
                 return NotFound("User profile not found.");
             }
 
-            // 💡 THE FIX: Allow the request if the requestor is an Organiser, 
-            // OR if the requestor is looking at their own profile data.
+            // Allow access if requestor is an Organiser or looking at their own profile data.
             if (requestor.profileRole != ProfileRole.Organiser && requestorId != id)
             {
-                return Forbid(); // Deny access if they are another participant trying to nose around
+                return Forbid();
             }
 
             return Ok(participant);
         }
-
 
         // POST: api/AuthUsers/login
         [HttpPost("login")]
@@ -173,120 +180,73 @@ namespace RaceDay.Api.Controllers
         {
             if (model == null || !ModelState.IsValid)
             {
-                return BadRequest(new
-                {
-                    Error = "Invalid login data."
-                });
+                return BadRequest(new { Error = "Invalid login data." });
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-
             if (user == null)
             {
-                return Unauthorized(new
-                {
-                    Error = "Invalid email or password. Looks like no Account has been created"
-                });
+                return Unauthorized(new { Error = "Invalid email or password. Looks like no Account has been created" });
             }
 
-            var passwordResult =
-                await _signInManager.CheckPasswordSignInAsync(
-                    user,
-                    model.Password,
-                    lockoutOnFailure: false);
-
+            var passwordResult = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
             if (!passwordResult.Succeeded)
             {
-                return Unauthorized(new
-                {
-                    Error = "Invalid email or password."
-                });
+                return Unauthorized(new { Error = "Invalid email or password." });
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-
             if (roles.Count == 0)
             {
-                return StatusCode(403, new
-                {
-                    Error = "This account has no assigned role."
-                });
+                return StatusCode(403, new { Error = "This account has no assigned role." });
             }
 
             var jwtKey = _configuration["Jwt:Key"];
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
 
-            if (string.IsNullOrWhiteSpace(jwtKey) ||
-                string.IsNullOrWhiteSpace(issuer) ||
-                string.IsNullOrWhiteSpace(audience))
+            if (string.IsNullOrWhiteSpace(jwtKey) || string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
             {
-                return StatusCode(500, new
-                {
-                    Error = "JWT configuration is incomplete."
-                });
+                return StatusCode(500, new { Error = "JWT configuration is incomplete." });
             }
 
+            // --- 💡 AUTH OVERLAP FIXES ---
+
+            // A. Trigger Identity Cookie creation for Session testing workflows
+            await _signInManager.SignInAsync(user, isPersistent: true);
+
+            // B. Populate Session State Cache string variable (Survives hot reload reboots)
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+
+            // C. Build out Standard structural claims array for JWT Token Generation
             var authClaims = new List<Claim>
             {
-                new Claim(
-                    ClaimTypes.NameIdentifier, user.Id),
-
-                new Claim(
-                    ClaimTypes.Name, user.Email ?? user.UserName ?? ""),
-
-                new Claim(
-                    JwtRegisteredClaimNames.Jti,
-                    Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             foreach (var role in roles)
             {
-                authClaims.Add(
-                    new Claim(ClaimTypes.Role, role));
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+                authClaims.Add(new Claim("role", role));
             }
 
-            var signingKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtKey));
-
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var token = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
                 expires: DateTime.UtcNow.AddHours(3),
                 claims: authClaims,
-                signingCredentials: new SigningCredentials(
-                    signingKey,
-                    SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
 
-            var tokenString =
-                new JwtSecurityTokenHandler().WriteToken(token);
-
             return Ok(new
             {
-                Message = "Login successful.",
-                Token = tokenString,
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiration = token.ValidTo,
-                User = new
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    Surname = user.Surname,
-                    Roles = roles
-                }
-            });
-        }
-
-        // POST: api/AuthUsers/logout
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-
-            return Ok(new
-            {
-                Message = "Session cleared. Discard your JWT token."
+                User = new { user.Id, user.Email, user.FirstName, user.Surname, Role = roles.FirstOrDefault() }
             });
         }
     }

@@ -7,8 +7,6 @@ using RaceDay.Api.Models;
 using RaceDay.Contracts.ResultsDTO;
 using System.Security.Claims;
 
-
-
 namespace RaceDay.Api.Controllers
 {
     [ApiController]
@@ -51,18 +49,25 @@ namespace RaceDay.Api.Controllers
             }
 
             // 1. Validate that the requesting user profile is an Organiser
-            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                                      ?? HttpContext.Session.GetString("UserId");
+
             if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
 
+            // 💡 FIX: FindByIdAsync requires a string token parameter argument, which it then parses internally to an integer under the hood.
             var caller = await _userManager.FindByIdAsync(authenticatedUserId);
             if (caller == null || caller.profileRole != ProfileRole.Organiser)
             {
                 return Forbid();
             }
 
+
             // 2. Verify that the targeted participant account exists in the system
-            var participantExists = await _userManager.Users
-                .AnyAsync(u => u.Id == resultsDto.ParticipantID && u.profileRole == ProfileRole.Participant);
+            var participantExists = await _context.Participants
+               .Include(p => p.User) // Loads the ApplicationUser relation
+               .AnyAsync(p => p.ParticipantID == resultsDto.ParticipantID
+                && p.User != null
+                && p.User.profileRole == ProfileRole.Participant);
 
             if (!participantExists)
             {
@@ -72,7 +77,7 @@ namespace RaceDay.Api.Controllers
             
             var newResults = new RaceResults
             {
-                RaceID = int.Parse(resultsDto.RaceID),
+                RaceID = resultsDto.RaceID,
                 ParticipantID = resultsDto.ParticipantID,
                 FinishTime = resultsDto.FinishTime,
                 Position = resultsDto.Position

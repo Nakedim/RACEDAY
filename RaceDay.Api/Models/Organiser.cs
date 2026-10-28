@@ -9,16 +9,15 @@ namespace RaceDay.Api.Models
         [Key]
         [Column("OrganiserID")]
         public int OrganiserID { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string Surname { get; set; } = string.Empty;
-        public required string ApplicationUserId { get; set; }
 
-     
-        [ForeignKey(nameof(ApplicationUserId))]
-        public ApplicationUser? User { get; set; }
+        public int ApplicationUserId { get; set; }
+
+        public ApplicationUser User { get; set; } = null!;
+
+        public string FirstName { get; set; } = string.Empty;
+
+        public string Surname { get; set; } = string.Empty;
 
         public ICollection<RaceEvent> RaceEvents { get; set; } = new List<RaceEvent>();
-        
-        
     }
 }

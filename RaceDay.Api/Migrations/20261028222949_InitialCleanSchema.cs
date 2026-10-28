@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RaceDay.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateRacedaySchema : Migration
+    public partial class InitialCleanSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,8 @@ namespace RaceDay.Api.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -29,9 +30,12 @@ namespace RaceDay.Api.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
                     profileRole = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -67,42 +71,12 @@ namespace RaceDay.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Organiser",
-                columns: table => new
-                {
-                    OrganiserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Organiser", x => x.OrganiserID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Participant",
-                columns: table => new
-                {
-                    ParticipantID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Participant", x => x.ParticipantID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -123,7 +97,7 @@ namespace RaceDay.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -145,7 +119,7 @@ namespace RaceDay.Api.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,8 +136,8 @@ namespace RaceDay.Api.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,7 +160,7 @@ namespace RaceDay.Api.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -203,26 +177,110 @@ namespace RaceDay.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Organisers",
+                columns: table => new
+                {
+                    OrganiserID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Organisers", x => x.OrganiserID);
+                    table.ForeignKey(
+                        name: "FK_Organisers_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Participants",
+                columns: table => new
+                {
+                    ParticipantID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Participants", x => x.ParticipantID);
+                    table.ForeignKey(
+                        name: "FK_Participants_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RaceEvents",
                 columns: table => new
                 {
                     EventID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganiserID = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
-                    EventType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EventType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganiserID = table.Column<int>(type: "int", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RaceEvents", x => x.EventID);
                     table.ForeignKey(
-                        name: "FK_RaceEvents_Organiser_OrganiserID",
+                        name: "FK_RaceEvents_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RaceEvents_Organisers_OrganiserID",
                         column: x => x.OrganiserID,
-                        principalTable: "Organiser",
+                        principalTable: "Organisers",
                         principalColumn: "OrganiserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RaceEntries",
+                columns: table => new
+                {
+                    RaceEntryID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RaceEventID = table.Column<int>(type: "int", nullable: false),
+                    ParticipantID = table.Column<int>(type: "int", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RaceEntries", x => x.RaceEntryID);
+                    table.ForeignKey(
+                        name: "FK_RaceEntries_AspNetUsers_ParticipantID",
+                        column: x => x.ParticipantID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RaceEntries_Categories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RaceEntries_RaceEvents_RaceEventID",
+                        column: x => x.RaceEventID,
+                        principalTable: "RaceEvents",
+                        principalColumn: "EventID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -233,14 +291,22 @@ namespace RaceDay.Api.Migrations
                     RaceID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RaceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EventID = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Distance = table.Column<int>(type: "int", nullable: false)
+                    Distance = table.Column<int>(type: "int", nullable: false),
+                    OrganiserID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Races", x => x.RaceID);
+                    table.ForeignKey(
+                        name: "FK_Races_Categories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Races_RaceEvents_EventID",
                         column: x => x.EventID,
@@ -250,61 +316,27 @@ namespace RaceDay.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RaceEntries",
-                columns: table => new
-                {
-                    RaceEntryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RaceID = table.Column<int>(type: "int", nullable: false),
-                    ParticipantID = table.Column<int>(type: "int", nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: false),
-                    EntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RacesRaceID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RaceEntries", x => x.RaceEntryID);
-                    table.ForeignKey(
-                        name: "FK_RaceEntries_Categories_CategoryID",
-                        column: x => x.CategoryID,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RaceEntries_Participant_ParticipantID",
-                        column: x => x.ParticipantID,
-                        principalTable: "Participant",
-                        principalColumn: "ParticipantID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RaceEntries_Races_RacesRaceID",
-                        column: x => x.RacesRaceID,
-                        principalTable: "Races",
-                        principalColumn: "RaceID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Results",
+                name: "RaceResults",
                 columns: table => new
                 {
                     ResultID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RaceID = table.Column<int>(type: "int", nullable: false),
                     ParticipantID = table.Column<int>(type: "int", nullable: false),
-                    FinishTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FinishTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Position = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Results", x => x.ResultID);
+                    table.PrimaryKey("PK_RaceResults", x => x.ResultID);
                     table.ForeignKey(
-                        name: "FK_Results_Participant_ParticipantID",
+                        name: "FK_RaceResults_AspNetUsers_ParticipantID",
                         column: x => x.ParticipantID,
-                        principalTable: "Participant",
-                        principalColumn: "ParticipantID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Results_Races_RaceID",
+                        name: "FK_RaceResults_Races_RaceID",
                         column: x => x.RaceID,
                         principalTable: "Races",
                         principalColumn: "RaceID",
@@ -351,6 +383,16 @@ namespace RaceDay.Api.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Organisers_ApplicationUserId",
+                table: "Organisers",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participants_ApplicationUserId",
+                table: "Participants",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RaceEntries_CategoryID",
                 table: "RaceEntries",
                 column: "CategoryID");
@@ -361,9 +403,14 @@ namespace RaceDay.Api.Migrations
                 column: "ParticipantID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RaceEntries_RacesRaceID",
+                name: "IX_RaceEntries_RaceEventID",
                 table: "RaceEntries",
-                column: "RacesRaceID");
+                column: "RaceEventID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RaceEvents_ApplicationUserId",
+                table: "RaceEvents",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RaceEvents_OrganiserID",
@@ -371,19 +418,24 @@ namespace RaceDay.Api.Migrations
                 column: "OrganiserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Races_EventID",
-                table: "Races",
-                column: "EventID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Results_ParticipantID",
-                table: "Results",
+                name: "IX_RaceResults_ParticipantID",
+                table: "RaceResults",
                 column: "ParticipantID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Results_RaceID",
-                table: "Results",
+                name: "IX_RaceResults_RaceID",
+                table: "RaceResults",
                 column: "RaceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Races_CategoryID",
+                table: "Races",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Races_EventID",
+                table: "Races",
+                column: "EventID");
         }
 
         /// <inheritdoc />
@@ -405,31 +457,31 @@ namespace RaceDay.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Participants");
+
+            migrationBuilder.DropTable(
                 name: "RaceEntries");
 
             migrationBuilder.DropTable(
-                name: "Results");
+                name: "RaceResults");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Races");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Participant");
-
-            migrationBuilder.DropTable(
-                name: "Races");
-
-            migrationBuilder.DropTable(
                 name: "RaceEvents");
 
             migrationBuilder.DropTable(
-                name: "Organiser");
+                name: "Organisers");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

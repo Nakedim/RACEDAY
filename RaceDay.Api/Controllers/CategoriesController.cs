@@ -68,7 +68,7 @@ namespace RaceDay.Api.Controllers
             var caller = await _userManager.FindByIdAsync(authenticatedUserId);
             if (caller == null || caller.profileRole != ProfileRole.Organiser)
             {
-                return Forbid();
+                return Unauthorized("Please login as an Organiser");
             }
             var Newcategory = new Categories()
             {

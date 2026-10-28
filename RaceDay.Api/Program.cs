@@ -25,7 +25,7 @@ builder.Services.AddDbContext<RacedayDbContext>(options =>
                Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
 // 3. ASP.NET Core Identity Configuration
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole <int>>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
@@ -72,7 +72,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
+
 });
+
+
 
 // 6. JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -96,6 +99,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+       .RequireAuthenticatedUser()
+       .AddAuthenticationSchemes(
+           JwtBearerDefaults.AuthenticationScheme,
+           IdentityConstants.ApplicationScheme 
+       )
+       .Build();
+});
 // 7. Distributed Cache & Session Management
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -149,14 +163,20 @@ static async Task SeedRolesAsync(IServiceProvider services)
     try
     {
         var roleManager = scope.ServiceProvider
-          .GetRequiredService<RoleManager<IdentityRole>>();
+          .GetRequiredService<RoleManager<IdentityRole<int>>>();
         string[] roles = Enum.GetNames<ProfileRole>();
 
         foreach (var roleName in roles)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                var result = await roleManager.CreateAsync(new IdentityRole(roleName));
+                // Fix: Instantiate and set Name manually
+                var identityRole = new IdentityRole<int>
+                {
+                    Name = roleName
+                };
+
+                var result = await roleManager.CreateAsync(identityRole);
                 if (!result.Succeeded)
                 {
                     var errors = string.Join("; ", result.Errors.Select(error => error.Description));

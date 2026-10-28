@@ -7,6 +7,7 @@ using RaceDay.Api.Models;
 using RaceDay.Contracts.ParticipantDTO;
 using RaceDay.Contracts.ProfileDTO;
 using System.Security.Claims;
+using ParticipantProfileDTO = RaceDay.Contracts.ProfileDTO.ParticipantProfileDTO;
 namespace RaceDay.Api.Controllers
 {
     [ApiController]
@@ -42,7 +43,6 @@ namespace RaceDay.Api.Controllers
                 Surname = participantDTO.Surname,
                 Location = participantDTO.Location,
                 Age = participantDTO.Age,
-                
                 profileRole = ProfileRole.Participant
             };
 
@@ -127,7 +127,7 @@ namespace RaceDay.Api.Controllers
             }
             var profileDto = new ParticipantProfileDTO
             {
-                Id = Guid.Parse(participant.Id),
+                Id = participant.Id,
                 FirstName = participant.FirstName,
                 LastName = participant.Surname,
                 Email = participant.Email!
@@ -156,11 +156,11 @@ namespace RaceDay.Api.Controllers
 
             var profileDto = new ParticipantProfileDTO
             {
-                Id = Guid.Parse(userProfile.Id),
+                Id = userProfile.Id,
                 FirstName = userProfile.FirstName,
                 LastName = userProfile.Surname,
                 Email = userProfile.Email!
-            
+
             };
 
             return Ok(profileDto);

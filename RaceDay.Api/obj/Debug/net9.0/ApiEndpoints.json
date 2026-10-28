@@ -43,16 +43,6 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
-    "Method": "Logout",
-    "RelativePath": "api/AuthUsers/logout",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.AuthUsersController",
     "Method": "Register",
     "RelativePath": "api/AuthUsers/register",
     "HttpMethod": "POST",
@@ -114,22 +104,6 @@
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
-    "Method": "createOrganiser",
-    "RelativePath": "api/Organisers",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "OrganiserprofileDTO",
-        "Type": "RaceDay.Contracts.ProfileDTO.ViewOrganiserDetailsDTO",
         "IsRequired": true
       }
     ],
@@ -199,6 +173,22 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
+    "Method": "UpdateOrgProfile",
+    "RelativePath": "api/Organisers/Ownprofile-Update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "organiserProfileDTO",
+        "Type": "RaceDay.Contracts.ProfileDTO.OrganiserProfileDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
     "Method": "ViewOwnParticipantInfo",
     "RelativePath": "api/Organisers/profile",
     "HttpMethod": "GET",
@@ -216,22 +206,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
-    "Method": "UpdateOrgProfile",
-    "RelativePath": "api/Organisers/profile",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "organiserProfileDTO",
-        "Type": "RaceDay.Contracts.ProfileDTO.OrganiserProfileDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.ParticipantController",
