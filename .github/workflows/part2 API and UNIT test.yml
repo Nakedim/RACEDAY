@@ -15,46 +15,31 @@ permissions:
   contents: read
 
 jobs:
-  api-integration-tests:
-    name: Database, Authentication & Unit Tests
+  test:
     runs-on: ubuntu-latest
-
-    services:
-      sqlserver:
-        image: ://microsoft.com
-        env:
-          ACCEPT_EULA: "Y"
-          MSSQL_PID: "Developer"
-          MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd
-          -S localhost -U sa
-          -P \"$MSSQL_SA_PASSWORD\"
-          -C -Q 'SELECT 1'
-          || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 20
-          --health-start-period 30s
-
+    
+    # Environment variables for the entire job
     env:
       MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=${{ secrets.DB_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
-      Jwt__Secret: "LocalTestingKeyMustBeAtLeast32CharactersLong123!"
+      ConnectionStrings__DefaultConnection: "Server=localhost;Database=TestDb;User Id=sa;Password=${{ secrets.DB_PASSWORD }};"
       ASPNETCORE_ENVIRONMENT: Testing
 
+    services:
+      mssql:
+        image: ://microsoft.com
+        ports:
+          - 1433:1433
+        # Add the options block here if needed...
+
     steps:
-      # 1. Download the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install .NET 9
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.0.x"
+          dotnet-version: '9.0'
+
 
       # 3. Confirm SQL Server is ready
       - name: Verify SQL Server connection
