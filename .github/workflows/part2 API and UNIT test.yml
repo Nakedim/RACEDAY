@@ -1,3 +1,4 @@
+
 name: "Part 2: API, Database & Unit Tests"
 
 on:
@@ -19,54 +20,128 @@ jobs:
     name: Database, Authentication & Unit Tests
     runs-on: ubuntu-latest
 
+    # SQL Server 2022
     services:
       sqlserver:
-        image: ://microsoft.com
+        image: mcr.microsoft.com/mssql/server:2022-latest
+
         env:
           ACCEPT_EULA: "Y"
           MSSQL_PID: "Developer"
           MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
         ports:
           - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd
-          -S localhost -U sa
-          -P \"$MSSQL_SA_PASSWORD\"
-          -C -Q 'SELECT 1'
-          || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 20
-          --health-start-period 30s
 
+    # Environment configuration
     env:
       MSSQL_SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
       ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=RacedayDb;User Id=sa;Password=${{ secrets.DB_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
+
       Jwt__Secret: "LocalTestingKeyMustBeAtLeast32CharactersLong123!"
+
       ASPNETCORE_ENVIRONMENT: Testing
 
     steps:
-      # 1. Download the repository
+
+      # --------------------------------------------------
+      # 1. CHECKOUT SOURCE CODE
+      # --------------------------------------------------
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install .NET 9
+      # --------------------------------------------------
+      # 2. SETUP .NET 9
+      # --------------------------------------------------
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
 
-      # 3. Confirm SQL Server is ready
-      - name: Verify SQL Server connection
+      # --------------------------------------------------
+      # 3. VALIDATE DATABASE PASSWORD
+      # --------------------------------------------------
+
+      - name: Validate database configuration
         shell: bash
         run: |
           set -euo pipefail
 
-          for attempt in $(seq 1 30); do
-            if docker exec \
-              "$(docker ps -q \
-                --filter ancestor=://microsoft.com \
-                | head -n 1)" \
+          if [ -z "$MSSQL_SA_PASSWORD" ]; then
+            echo "ERROR: DB_PASSWORD GitHub secret is missing."
+            exit 1
+          fi
+
+          echo "Database password configuration found."
+
+      # --------------------------------------------------
+      # 4. RESTORE API PROJECT
+      # --------------------------------------------------
+
+      - name: Restore API dependencies
+        run: |
+          dotnet restore RaceDay.Api/RaceDay.Api.csproj
+
+      # --------------------------------------------------
+      # 5. INSTALL ENTITY FRAMEWORK TOOLS
+      # --------------------------------------------------
+
+      - name: Install EF Core CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dotnet tool install --global dotnet-ef --version 9.0.0
+
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      # --------------------------------------------------
+      # 6. GENERATE DATABASE MIGRATION SCRIPT
+      # --------------------------------------------------
+
+      - name: Generate EF Core migration script
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dotnet ef migrations script \
+            --project RaceDay.Api/RaceDay.Api.csproj \
+            --startup-project RaceDay.Api/RaceDay.Api.csproj \
+            --configuration Release \
+            --idempotent \
+            --output RaceDay.Api/RaceDayDB_v2.sql
+
+          echo "Migration script generated successfully."
+
+      # --------------------------------------------------
+      # 7. WAIT FOR SQL SERVER AND INITIALIZE DATABASE
+      # --------------------------------------------------
+
+      - name: Initialize SQL Server database
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SQL_IMAGE="mcr.microsoft.com/mssql/server:2022-latest"
+
+          CONTAINER_ID=$(docker ps \
+            --filter "ancestor=$SQL_IMAGE" \
+            --format "{{.ID}}" | head -n 1)
+
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "ERROR: SQL Server container was not found."
+            exit 1
+          fi
+
+          echo "SQL Server container: $CONTAINER_ID"
+
+          # Wait for SQL Server to become available.
+          for attempt in $(seq 1 60); do
+
+            if docker exec "$CONTAINER_ID" \
               /opt/mssql-tools18/bin/sqlcmd \
               -S localhost \
               -U sa \
@@ -74,53 +149,25 @@ jobs:
               -C \
               -b \
               -Q "SELECT 1" >/dev/null 2>&1; then
+
               echo "SQL Server is ready."
-              exit 0
+              break
             fi
 
-            echo "Waiting for SQL Server ($attempt/30)..."
+            if [ "$attempt" -eq 60 ]; then
+              echo "ERROR: SQL Server failed to start."
+
+              docker logs "$CONTAINER_ID"
+
+              exit 1
+            fi
+
+            echo "Waiting for SQL Server ($attempt/60)..."
             sleep 5
           done
 
-          echo "ERROR: SQL Server did not become ready."
-          exit 1
-
-      # 4. Generate the database initialization script dynamically via EF Core Migrations
-      - name: Generate EF Migrations Script
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "Installing EF Core CLI tools..."
-          dotnet tool install --global dotnet-ef
-
-          export PATH="$PATH:$HOME/.dotnet/tools"
-
-          echo "Generating idempotent SQL script in API root..."
-          dotnet ef migrations script \
-            --project RaceDay.Api/RaceDay.Api.csproj \
-            --output RaceDay.Api/RaceDayDB_v2.sql \
-            --idempotent
-
-          echo "EF Migrations script generated successfully."
-
-      # 5. Initialize SQL Server database using the runtime generated schema
-      - name: Initialize database schema
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          CONTAINER_ID=$(docker ps -q \
-            --filter ancestor=://microsoft.com \
-            | head -n 1)
-
-          if [ -z "$CONTAINER_ID" ]; then
-            echo "ERROR: SQL Server container not found."
-            exit 1
-          fi
-
-          docker cp "RaceDay.Api/RaceDayDB_v2.sql" \
-            "$CONTAINER_ID:/tmp/RaceDayDB_v2.sql"
+          # Create database if it does not exist.
+          echo "Creating RacedayDb if necessary..."
 
           docker exec "$CONTAINER_ID" \
             /opt/mssql-tools18/bin/sqlcmd \
@@ -129,30 +176,57 @@ jobs:
             -P "$MSSQL_SA_PASSWORD" \
             -C \
             -b \
+            -Q "IF DB_ID(N'RacedayDb') IS NULL CREATE DATABASE [RacedayDb];"
+
+          # Copy migration script into SQL Server container.
+          echo "Copying migration script..."
+
+          docker cp \
+            RaceDay.Api/RaceDayDB_v2.sql \
+            "$CONTAINER_ID:/tmp/RaceDayDB_v2.sql"
+
+          # Execute migrations against RacedayDb.
+          echo "Applying EF Core migrations..."
+
+          docker exec "$CONTAINER_ID" \
+            /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost \
+            -U sa \
+            -P "$MSSQL_SA_PASSWORD" \
+            -C \
+            -b \
+            -d RacedayDb \
             -i /tmp/RaceDayDB_v2.sql
 
-          echo "Database schema migrated successfully."
+          echo "Database initialized successfully."
 
-      # 6. Restore, build and test the solution or projects
+      # --------------------------------------------------
+      # 8. RESTORE, BUILD AND TEST
+      # --------------------------------------------------
+
       - name: Restore, build and test
         shell: bash
         run: |
           set -euo pipefail
 
-          # Prefer a solution file if one exists.
+          # Look for solution file.
           SOLUTION=$(find . -maxdepth 4 \
             \( -name '*.sln' -o -name '*.slnx' \) \
             -print -quit)
 
           if [ -n "$SOLUTION" ]; then
-            echo "Using solution: $SOLUTION"
 
+            echo "Solution found: $SOLUTION"
+
+            # Restore all solution dependencies.
             dotnet restore "$SOLUTION"
 
+            # Build solution.
             dotnet build "$SOLUTION" \
               --configuration Release \
               --no-restore
 
+            # Execute all solution tests.
             dotnet test "$SOLUTION" \
               --configuration Release \
               --no-build \
@@ -160,38 +234,42 @@ jobs:
               --verbosity normal
 
           else
-            echo "No solution found. Searching for API and test projects."
 
+            echo "No solution file found."
+
+            # Locate API project.
             API_PROJECT=$(find . -maxdepth 4 \
               -name 'RaceDay.Api.csproj' \
               -print -quit)
 
             if [ -z "$API_PROJECT" ]; then
-              echo "ERROR: RaceDay.Api.csproj was not found."
-              find . -maxdepth 4 -name '*.csproj' -print
+              echo "ERROR: API project not found."
               exit 1
             fi
 
-            # Restore and build the API.
+            # Build API.
             dotnet restore "$API_PROJECT"
 
             dotnet build "$API_PROJECT" \
               --configuration Release \
               --no-restore
 
-            # Find test projects by their project filename.
+            # Locate test projects.
             mapfile -t TEST_PROJECTS < <(
-              find . -maxdepth 5 -name '*Tests.csproj' -print
+              find . -maxdepth 5 \
+                -name '*Tests.csproj' \
+                -print
             )
 
             if [ "${#TEST_PROJECTS[@]}" -eq 0 ]; then
-              echo "ERROR: No *Tests.csproj project was found."
-              echo "Add your test project or update this workflow."
+              echo "ERROR: No test projects found."
               exit 1
             fi
 
+            # Restore, build and test each project.
             for TEST_PROJECT in "${TEST_PROJECTS[@]}"; do
-              echo "Testing project: $TEST_PROJECT"
+
+              echo "Testing: $TEST_PROJECT"
 
               dotnet restore "$TEST_PROJECT"
 
@@ -204,5 +282,23 @@ jobs:
                 --no-build \
                 --no-restore \
                 --verbosity normal
+
             done
+
           fi
+
+      # --------------------------------------------------
+      # 9. PIPELINE SUCCESS
+      # --------------------------------------------------
+
+      - name: Pipeline completed
+        if: success()
+        run: |
+          echo "=================================="
+          echo "RACEDAY PART 2 PIPELINE PASSED"
+          echo "=================================="
+          echo "SQL Server: Connected"
+          echo "Database: RacedayDb"
+          echo "EF Core: Migrations applied"
+          echo "API: Build successful"
+          echo "Unit Tests: Passed"
