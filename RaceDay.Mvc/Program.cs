@@ -1,7 +1,28 @@
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient("RaceDayApi", Client =>
+{
+    string baseURl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("ApiSettings:BaseURL is Missing");
+
+    Client.BaseAddress = new Uri(baseURl);
+});
+//builder.Services.AddScoped<RaceDayApiClient>();
 
 var app = builder.Build();
 

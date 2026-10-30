@@ -22,6 +22,27 @@ namespace RaceDay.Mvc.Controllers
         {
             return View();
         }
+        public IActionResult ContactUs()
+        {
+            ViewBag.Message = "Contact us if you have something";
+            return View();
+        }
+        public IActionResult Register()
+        {
+            return View();
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult organiserDash()
+        {
+            return View();
+        }
+        public IActionResult ParticipantDash()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

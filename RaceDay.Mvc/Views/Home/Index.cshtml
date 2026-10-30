@@ -1,145 +1,77 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Create an Account";
 }
-<div class="container-fluid p-0">
-    <div class="row g-0 split-screen">
 
-        <!-- Left Side: Form Column -->
-        <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center justify-content-center p-5 bg-white">
-            <div class="w-100" style="max-width: 400px;">
-                <div class="mb-4 text-center text-md-start">
-                    <i class="bi bi-box-seam text-primary fs-1"></i>
-                    <h2 class="fw-bold mt-3">Welcome back</h2>
-                    <p class="text-muted">Please enter your details to sign in.</p>
+<!-- Unified Standalone Layout Wrapper -->
+<div class="container-fluid vh-100">
+    <div class="row h-100 justify-content-center align-items-center bg-light">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+
+            <!-- Register Card Wrap -->
+            <div class="card border-0 shadow-sm p-4 p-sm-5 my-4">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Get Started</h2>
+                    <p class="text-muted small">Create your account to access the dashboard</p>
                 </div>
 
-                <form>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control form-control-lg" id="password" placeholder="••••••••" required>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
+                <form method="post">
+                    <!-- Row for First and Last Name fields -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-sm-6">
+                            <label for="firstName" class="form-label text-muted small fw-semibold">First name</label>
+                            <input type="text" class="form-control form-control-lg" id="firstName" placeholder="John" required>
                         </div>
-                        <a href="#" class="text-decoration-none small fw-semibold">Forgot password?</a>
+                        <div class="col-12 col-sm-6">
+                            <label for="lastName" class="form-label text-muted small fw-semibold">Last name</label>
+                            <input type="text" class="form-control form-control-lg" id="lastName" placeholder="Doe" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Sign in</button>
+
+                    <!-- Email field -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label text-muted small fw-semibold">Email address</label>
+                        <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" required autocomplete="username">
+                    </div>
+
+                    <!-- Password field -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label text-muted small fw-semibold">Password</label>
+                        <input type="password" class="form-control form-control-lg" id="password" placeholder="••••••••" required autocomplete="new-password">
+                        <div class="form-text text-muted small">Must be at least 8 characters long.</div>
+                    </div>
+
+                    <!-- Confirm Password field -->
+                    <div class="mb-4">
+                        <label for="confirmPassword" class="form-label text-muted small fw-semibold">Confirm password</label>
+                        <input type="password" class="form-control form-control-lg" id="confirmPassword" placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+
+                    <!-- Terms and Conditions check -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label text-muted small" for="terms">
+                            I agree to the <a href="#" class="text-decoration-none fw-semibold">Terms of Service</a> and <a href="#" class="text-decoration-none fw-semibold">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Create account</button>
                     <button type="button" class="btn btn-outline-secondary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-google"></i> Sign in with Google
+                        <i class="bi bi-google"></i> Sign up with Google
                     </button>
                 </form>
 
+                <!-- Navigation link back to Login -->
                 <div class="mt-4 text-center">
-                    <p class="text-muted small">Don't have an account? <a href="register.html" class="text-decoration-none fw-semibold">Sign up</a></p>
+                    <p class="text-muted small mb-0">Already have an account? <a href="/Account/Login" class="text-decoration-none fw-semibold">Sign in</a></p>
                 </div>
             </div>
-        </div>
 
-        <!-- Right Side: Slider Column (Hidden on mobile) -->
-        <div class="col-md-6 col-lg-7 d-none d-md-block slider-column position-relative">
-            <div id="loginCarousel" class="carousel slide h-100" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#loginCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-                    <button type="button" data-bs-target="#loginCarousel" data-bs-slide-to="1"></button>
-                </div>
-                <div class="carousel-inner h-100">
-                    <div class="carousel-item active h-100">
-                        <img src="https://unsplash.com" class="d-block w-100" alt="Slide 1">
-                        <div class="carousel-caption d-none d-lg-block text-start px-4 mb-5">
-                            <h3 class="fw-bold">Accelerate your workflow</h3>
-                            <p>Manage your business operations, metrics, and real-time statistics all from a single workspace.</p>
-                        </div>
-                    </div>
-                    <div class="carousel-item h-100">
-                        <img src="https://unsplash.com" class="d-block w-100" alt="Slide 2">
-                        <div class="carousel-caption d-none d-lg-block text-start px-4 mb-5">
-                            <h3 class="fw-bold">Secure and reliable analytics</h3>
-                            <p>Your data is encrypted safely and available on demand across all syncable devices.</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- Footer Resources Component Links -->
+            <div class="text-center mt-3 mb-4">
+                <p class="text-muted small">Learn about <a href="https://learn.microsoft.com/aspnet/core" target="_blank" rel="noopener">building Web apps with ASP.NET Core</a>.</p>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
-
-<!-- Bootstrap Bundle with Popper JS -->
-<script src="https://jsdelivr.net"></script>
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Dashboard Overview</h1>
-        </div>
-
-        <!-- Metric Cards Grid -->
-        <div class="row g-4 mb-4">
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-muted mb-1">Monthly Revenue</h6>
-                            <h3 class="mb-0">$24,500</h3>
-                        </div>
-                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded">
-                            <i class="bi bi-currency-dollar fs-4"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-muted mb-1">Active Users</h6>
-                            <h3 class="mb-0">1,250</h3>
-                        </div>
-                        <div class="bg-success bg-opacity-10 text-success p-3 rounded">
-                            <i class="bi bi-people fs-4"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Table Section -->
-        <h2>Recent Activity</h2>
-        <div class="table-responsive">
-            <table class="table table-striped table-sm align-middle">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">User</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>#1042</td>
-                        <td>Alex Rivera</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                        <td>Oct 27, 2026</td>
-                    </tr>
-                    <tr>
-                        <td>#1041</td>
-                        <td>Jordan Lee</td>
-                        <td><span class="badge bg-warning text-dark">Pending</span></td>
-                        <td>Oct 26, 2026</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
