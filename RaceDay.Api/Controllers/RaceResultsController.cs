@@ -74,7 +74,7 @@ namespace RaceDay.Api.Controllers
                 return BadRequest(new { Error = "The provided ParticipantID does not belong to a valid participant profile." });
             }
 
-            
+
             var newResults = new RaceResults
             {
                 RaceID = resultsDto.RaceID,

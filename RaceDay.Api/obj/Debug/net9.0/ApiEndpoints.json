@@ -147,32 +147,6 @@
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
-    "Method": "CreateOrganiser",
-    "RelativePath": "api/Organisers/create-organiser/{id}",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "RaceDay.Api.Models.ApplicationUser",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RaceDay.Api.Controllers.OrganisersController",
     "Method": "UpdateOrgProfile",
     "RelativePath": "api/Organisers/Ownprofile-Update",
     "HttpMethod": "PUT",
@@ -290,16 +264,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RaceDay.Api.Controllers.ProfileController",
-    "Method": "GetProfile",
-    "RelativePath": "api/Profile",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "RaceDay.Api.Models.RaceEntriesController",
     "Method": "CreateEvent",
     "RelativePath": "api/RaceEntries",
@@ -315,7 +279,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "RaceDay.Api.Models.RaceDay.Api.Models.RaceEntries",
+        "Type": "RaceDay.Api.Models.RaceEntries",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -341,7 +305,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "RaceDay.Api.Models.RaceDay.Api.Models.RaceEntries",
+        "Type": "RaceDay.Api.Models.RaceEntries",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -367,7 +331,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[RaceDay.Api.Models.RaceDay.Api.Models.RaceEntries, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[RaceDay.Api.Models.RaceEntries, RaceDay.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -422,6 +386,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "RaceDay.Api.Controllers.RaceEventsController",
+    "Method": "updateEventsAsync",
+    "RelativePath": "api/RaceEvents",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "update",
+        "Type": "RaceDay.Contracts.CreateEventRequest_.UpdateEventDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "RaceDay.Api.Controllers.RaceEventsController",

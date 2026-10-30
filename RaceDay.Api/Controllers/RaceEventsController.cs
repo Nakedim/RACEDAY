@@ -86,30 +86,45 @@ namespace RaceDay.Api.Controllers
                 );
         }
 
-        //[HttpPut]
-        //[Authorize]
+        [HttpPut]
+        [Authorize]
+       public async Task<IActionResult> updateEventsAsync(int id, [FromBody] UpdateEventDTO update)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId))
+            {
+                return Unauthorized();
+            }
 
-        //public IActionResult updateEvents(int id, [FromBody] UpdateEventDTO update)
-        //{
-        //    var eventlookup = await _context.RaceEvents.FindAsync(id);
-        //    if(eventlookup == null)
-        //    {
-        //        return NotFound(new { message = "Event not exits or wrong id provided" });
-        //    }
+            // 2. Fetch the profile record
+            var user = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (user == null || user.profileRole != ProfileRole.Organiser)
+            {
+                return Forbid("Only registered organisers can modify this profile.");
+            }
 
-        //    var newEvent = new UpdateEventDTO
-        //    {
-        //        Title = update.Title,
-        //        Description = update.Description,
-        //        Location = update.Location,
-        //        CategoryID = update.CategoryID,
-        //        EventType = update.EventType,
-        //        OrganiserID = update.OrganiserID
-        //    };
-        //    _context.RaceEvents.Add(newEvent);
-        //    await _context.SaveChangesAsync();
-        //    return NoContent();
-        //}
+            var eventlookup = await _context.RaceEvents.FindAsync(id);
+            if (eventlookup == null)
+            {
+                return NotFound(new { message = "Event not exits or wrong id provided" });
+            }
+
+            var newEvent = new UpdateEventDTO
+            {
+                Title = update.Title,
+                Description = update.Description,
+                Location = update.Location,
+                CategoryID = update.CategoryID,
+                EventType = update.EventType,
+                OrganiserID = update.OrganiserID
+            };
+            return Ok();
+            
+        }
     }
 
 }

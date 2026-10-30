@@ -8,7 +8,7 @@ using RaceDay.Api.Data;
 using RaceDay.Contracts.EntryRequest;
 using RaceDay.Api.Models;
 using RaceDay.Contracts.RacesEntry;
-using RaceDay.Api.Models.RaceDay.Api.Models;
+
 
 
 

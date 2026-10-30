@@ -1,12 +1,4 @@
-﻿
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace RaceDay.Api.Models
-{
-
-    using System;
+﻿   
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,9 +8,7 @@ namespace RaceDay.Api.Models
         public class RaceEntries
         {
             [Key]
-            public int RaceEntryID { get; set; }
-
-
+        public int RaceEntryID { get; set; }
         // Foreign key to RaceEvent
         public int RaceEventID { get; set; }
 
@@ -43,4 +33,4 @@ namespace RaceDay.Api.Models
         }
 
     }
-}
+

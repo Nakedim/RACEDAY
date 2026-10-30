@@ -89,7 +89,7 @@ namespace RaceDay.Api.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetRace), new { id= NewRace.RaceID }, NewRace);
-            //return CreatedAtAction(nameof(GetRace), new { RaceID = NewRace.RaceID }, NewRace);
+         
 
         }
     }

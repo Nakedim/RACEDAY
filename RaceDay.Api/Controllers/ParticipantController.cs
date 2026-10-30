@@ -24,7 +24,7 @@ namespace RaceDay.Api.Controllers
             RacedayDbContext context)
         {
             _userManager = userManager;
-             _context = context;
+            _context = context;
         }
 
         [HttpPost("Register")]
@@ -131,7 +131,7 @@ namespace RaceDay.Api.Controllers
                 FirstName = participant.FirstName,
                 LastName = participant.Surname,
                 Email = participant.Email!
-              
+
             };
 
 
@@ -165,5 +165,7 @@ namespace RaceDay.Api.Controllers
 
             return Ok(profileDto);
         }
+
+     
     }
 }

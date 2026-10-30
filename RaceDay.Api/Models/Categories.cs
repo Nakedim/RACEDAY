@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RaceDay.Api.Models.RaceDay.Api.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

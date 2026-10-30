@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
-using RaceDay.Api.Models.RaceDay.Api.Models;
 
 namespace RaceDay.Api.Data
 {
@@ -11,8 +10,6 @@ namespace RaceDay.Api.Data
         public RacedayDbContext(DbContextOptions<RacedayDbContext> options) : base(options)
         {
         }
-
-        // DbSets representing your database tables
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Organiser> Organisers { get; set; }
         public DbSet<RaceEvent> RaceEvents { get; set; }

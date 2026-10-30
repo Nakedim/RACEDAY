@@ -15,6 +15,16 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient("RaceDay.Api", client =>
+{
+
+    //'https://localhost:7087/api/AuthUsers/1' 
+
+    client.BaseAddress = new Uri("https://localhost:7087/api");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
@@ -130,6 +140,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "RACEDAY API v1");
+      
     });
 }
 

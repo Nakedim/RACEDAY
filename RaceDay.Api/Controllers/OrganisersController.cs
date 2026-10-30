@@ -32,28 +32,28 @@ namespace RaceDay.Api.Controllers
 
 
         // POST: api/Organisers
-        [HttpPost("create-organiser/{id}")]
-        [Authorize]
-        public async Task<ActionResult<ApplicationUser>> CreateOrganiser(string id )
-        {
-            var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var requestor = await _userManager.FindByIdAsync(requestorId!);
+        //[HttpPost("create-organiser/{id}")]
+        //[Authorize]
+        //public async Task<ActionResult<ApplicationUser>> CreateOrganiser(string id )
+        //{
+        //    var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var requestor = await _userManager.FindByIdAsync(requestorId!);
 
-            if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
-            {
-                return Forbid();
-            }
+        //    if (requestor == null || requestor.profileRole != ProfileRole.Organiser)
+        //    {
+        //        return Forbid();
+        //    }
 
-            // 2. Find the target user profile
-            var participant = await _userManager.FindByIdAsync(id);
-            if (participant == null || participant.profileRole != ProfileRole.Participant)
-            {
-                return NotFound("Organiser not found.");
-            }
-            participant.profileRole = ProfileRole.Organiser;
-            await _userManager.UpdateAsync(participant);
-            return Ok(participant);
-        }
+        //    // 2. Find the target user profile
+        //    var participant = await _userManager.FindByIdAsync(id);
+        //    if (participant == null || participant.profileRole != ProfileRole.Participant)
+        //    {
+        //        return NotFound("Organiser not found.");
+        //    }
+        //    participant.profileRole = ProfileRole.Organiser;
+        //    await _userManager.UpdateAsync(participant);
+        //    return Ok(participant);
+        //}
 
 
         // View my own profile details (Accessible by logged-in Participants)
