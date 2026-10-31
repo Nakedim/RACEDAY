@@ -1,23 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
 using RaceDay.Mvc.Models;
 using System.Diagnostics;
-
 namespace RaceDay.Mvc.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _httpClient;
+
+       
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
-        }
+            _httpClient = httpClientFactory.CreateClient("RaceDayApi");
+           
 
+        }
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var model = new RegisterView();
+         
+            return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult register(RegisterView model)
+        {
+            if (!ModelState.IsValid)
+            {
+               
+                return View("index", model);
+            }
+            return RedirectToAction("index", "Organiser Dashboard");
+        }
         public IActionResult Privacy()
         {
             return View();

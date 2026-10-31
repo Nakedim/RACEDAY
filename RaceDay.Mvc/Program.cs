@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -16,13 +18,13 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddHttpClient("RaceDayApi", Client =>
+builder.Services.AddHttpClient("RaceDayApi", client =>
 {
-    string baseURl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("ApiSettings:BaseURL is Missing");
+    client.BaseAddress = new Uri("https://localhost:7087/api/");
+    client.DefaultRequestHeaders.Add("Accept", "Application/Json");
 
-    Client.BaseAddress = new Uri(baseURl);
 });
-//builder.Services.AddScoped<RaceDayApiClient>();
+
 
 var app = builder.Build();
 

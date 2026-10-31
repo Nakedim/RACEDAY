@@ -10,4 +10,10 @@
     <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Events\" />
+    <Folder Include="Views\Entries\" />
+    <Folder Include="Views\Races\" />
+  </ItemGroup>
+
 </Project>

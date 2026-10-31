@@ -2,7 +2,7 @@
     ViewData["Title"] = "Login";
 }
 
-@model IEnumerable<RaceDay.Mvc.Models.LoginView> 
+@model LoginView
 
 <div class="container-fluid vh-100">
     <div class="row h-100 justify-content-center align-items-center bg-light">
@@ -18,21 +18,21 @@
                 <form method="post">
                     <!-- Email field -->
                     <div class="mb-3">
-                        <label for="email" class="form-label text-muted small fw-semibold">Email address</label>
+                        <label asp-for ="Username" class="form-label text-muted small fw-semibold">Email address</label>
                         <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" required autocomplete="username">
                     </div>
 
                     <!-- Password field -->
                     <div class="mb-3">
-                        <label for="password" class="form-label text-muted small fw-semibold">Password</label>
+                        <label asp-for="Password" class="form-label text-muted small fw-semibold">Password</label>
                         <input type="password" class="form-control form-control-lg" id="password" placeholder="••••••••" required autocomplete="current-password">
                     </div>
 
                     <!-- Utilities -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label text-muted small" for="rememberMe">Remember me</label>
+                            <input asp-for ="RememberMe" class="form-check-input" type="checkbox" id="rememberMe">
+                            <label asp-for ="RememberMe" class="form-check-label text-muted small" for="rememberMe">Remember me</label>
                         </div>
                         <a href="#" class="text-decoration-none small fw-semibold">Forgot password?</a>
                     </div>
