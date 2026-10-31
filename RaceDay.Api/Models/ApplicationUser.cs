@@ -11,7 +11,7 @@ namespace RaceDay.Api.Models
     }
     public class ApplicationUser : IdentityUser<int>
     {
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
 
         public string FirstName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;

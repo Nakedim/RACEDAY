@@ -78,7 +78,7 @@ namespace RaceDay.Api.Controllers
             return Ok(userProfile);
         }
         // View an organiser's profile details by their alphanumeric Identity ID string
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [Authorize] // Requires being logged in
         public async Task<ActionResult> GetOrganiserbyID(string id)
         {
@@ -137,7 +137,7 @@ namespace RaceDay.Api.Controllers
         }
 
         //view
-        [HttpGet("AllOrganisers")]
+        [HttpGet("searchAllOrganisers/{all}")]
         [Authorize]
         public async Task<ActionResult<List<OrganiserDetailsDTO>>> GetAllOrganisers()
         {

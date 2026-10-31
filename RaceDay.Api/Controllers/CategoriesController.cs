@@ -24,7 +24,7 @@ namespace RaceDay.Api.Controllers
 
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [Authorize]
         public async Task<ActionResult> GetCategory(int id)
         {

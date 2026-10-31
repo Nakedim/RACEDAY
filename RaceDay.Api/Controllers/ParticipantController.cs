@@ -86,7 +86,7 @@ namespace RaceDay.Api.Controllers
 
 
         // View all users who have the Participant role (Accessible only by Organisers)
-        [HttpGet]
+        [HttpGet("ViewAll")]
 
         public async Task<ActionResult<List<ApplicationUser>>> ViewAllParticipants()
         {
@@ -106,9 +106,9 @@ namespace RaceDay.Api.Controllers
         }
 
         // View a specific participant profile by their string Identity ID
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> ViewParticipantById(string id)
+        public async Task<ActionResult<ApplicationUser>> ViewParticipantById(int id)
         {
             // 1. Verify the caller is an Organiser
             var requestorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -120,7 +120,7 @@ namespace RaceDay.Api.Controllers
             }
 
             // 2. Find the target user profile
-            var participant = await _userManager.FindByIdAsync(id);
+            var participant = await _userManager.FindByIdAsync(id.ToString());
             if (participant == null || participant.profileRole != ProfileRole.Participant)
             {
                 return NotFound("Participant not found.");
@@ -139,7 +139,7 @@ namespace RaceDay.Api.Controllers
         }
 
         // View my own profile details (Accessible by logged-in Participants)
-        [HttpGet("profile")]
+        [HttpGet("profile/{OwnParticipantProfile}")]
         public async Task<ActionResult<ParticipantProfileDTO>> ViewOwnParticipantInfo()
         {
             var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -67,7 +67,7 @@ namespace RaceDay.Api.Models
 
         }
 
-        [HttpGet("{all}")]
+        [HttpGet("search/{all}")]
         [Authorize]
         public async Task<ActionResult<RaceEntries>> GetAllEntries()
         {
@@ -76,7 +76,7 @@ namespace RaceDay.Api.Models
             return Ok(entries);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
      
         public async Task<ActionResult<List<RaceEntries>>> GetEntriesById(int id)
         {
