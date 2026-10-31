@@ -66,13 +66,13 @@ jobs:
       # --------------------------------------------------
       # 4. RESTORE AND BUILD API PROJECT
       # --------------------------------------------------
-      - name: Restore API dependencies
+      - name: Restore dependencies
         run: |
-          dotnet restore RaceDay.Api/RaceDay.Api.csproj
+          dotnet restore
 
-      - name: Build API project
+      - name: Build entire solution
         run: |
-          dotnet build RaceDay.Api/RaceDay.Api.csproj --configuration Release --no-restore
+          dotnet build --configuration Release --no-restoree
 
       # --------------------------------------------------
       # 5. INSTALL ENTITY FRAMEWORK TOOLS & GENERATE SCRIPT
