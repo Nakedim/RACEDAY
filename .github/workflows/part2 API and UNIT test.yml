@@ -89,23 +89,19 @@ jobs:
       # 5. INSTALL ENTITY FRAMEWORK TOOLS
       # --------------------------------------------------
 
-      - name: Install EF Core CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          dotnet tool install --global dotnet-ef --version 9.0.0
-
-          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-
-      # --------------------------------------------------
+           # --------------------------------------------------
       # 6. GENERATE DATABASE MIGRATION SCRIPT
       # --------------------------------------------------
-
+      - name: Install EF Core CLI
+        run: dotnet tool install --global dotnet-ef
+        
       - name: Generate EF Core migration script
         shell: bash
         run: |
           set -euo pipefail
+          
+          # Add the global tools directory to the PATH so bash can find 'dotnet-ef'
+          export PATH="$PATH:$HOME/.dotnet/tools"
 
           dotnet ef migrations script \
             --project RaceDay.Api/RaceDay.Api.csproj \
