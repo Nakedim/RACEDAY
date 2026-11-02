@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+@model RaceDay.Mvc.Models.RegisterView
+
+<div class="container-fluid vh-100">
+    <div class="row h-100 justify-content-center align-items-center bg-light">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+
+            <!-- Register Card Wrap -->
+            <div class="card border-0 shadow-sm p-4 p-sm-5 my-4">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Get Started</h2>
+                    <p class="text-muted small">Create your account to access the dashboard</p>
+                </div>
+
+                <form asp-controller="UsersAuth" asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    
+                    <!-- Preserves the role query parameter (Participant or Organiser) -->
+                    <input type="hidden" name="role" asp-for ="Role" />
+                     <div asp-validation-summary="ModelOnly" class="alert alert-danger small p-2 mb-3" role="alert"></div>
+                    <!-- Row for First and Last Name fields -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-sm-6">
+                            <label asp-for="FirstName" class="form-label text-muted small fw-semibold">First name</label>
+                            <input asp-for="FirstName" type="text" class="form-control form-control-lg" placeholder="Your Name" required>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label asp-for="Surname" class="form-label text-muted small fw-semibold">Last name</label>
+                            <input asp-for="Surname" type="text" class="form-control form-control-lg" placeholder="Your Surname" required>
+                            <span asp-validation-for="Surname" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email field -->
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label text-muted small fw-semibold">Email address</label>
+                        <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="name@example.com" required autocomplete="username">
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                     <div class="row g-3 mb-3">
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="PhoneNumber" class="form-label text-muted small fw-semibold">Phone number</label>
+                        <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg" placeholder="e.g. +27 123 4567" required>
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="DateOfBirth" class="form-label text-muted small fw-semibold">Date of birth</label>
+                        <input asp-for="DateOfBirth" type="date" class="form-control form-control-lg" required>
+                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                    </div>
+                </div>
+                    <!-- Password field -->
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label text-muted small fw-semibold">Password</label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="••••••••" required autocomplete="new-password">
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                        <div class="form-text text-muted small">Must be at least 8 characters long.</div>
+                    </div>
+
+                    <!-- Confirm Password field -->
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label text-muted small fw-semibold">Confirm password</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg" placeholder="••••••••" required autocomplete="new-password">
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Terms and Conditions check -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label text-muted small" for="terms">
+                            I agree to the <a href="#" class="text-decoration-none fw-semibold">Terms of Service</a> and <a href="#" class="text-decoration-none fw-semibold">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Create account</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-google"></i> Sign up with Google
+                    </button>
+                </form>
+
+                <!-- Navigation link -->
+                <div class="mt-4 text-center">
+                    <p class="text-muted small mb-0">Already have an account? <a href="@Url.Action("Login", "UsersAuth")" class="text-decoration-none fw-semibold">Sign in</a></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

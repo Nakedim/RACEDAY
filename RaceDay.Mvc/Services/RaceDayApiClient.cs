@@ -18,7 +18,7 @@ namespace RaceDay.Mvc.Services
 
         public async Task<string?> LoginAsync(LoginView loginModel)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/login", loginModel);
+            var response = await _httpClient.PostAsJsonAsync("api/authusers/register", model);
 
             if (response.IsSuccessStatusCode)
             {
@@ -28,7 +28,7 @@ namespace RaceDay.Mvc.Services
             }
             return null;
         }
-        public class LoginResponse
+    public class LoginResponse
         {
             public string Token { get; set; } = string.Empty;
         }
