@@ -15,11 +15,18 @@
                     <p class="text-muted small">Create your account to access the dashboard</p>
                 </div>
 
+                @if (TempData["SuccessMessage"] != null)
+                  {
+                 <div class="alert alert-success">
+                 @TempData["SuccessMessage"]
+                               </div>
+}
+
                 <form asp-controller="UsersAuth" asp-action="Register" method="post">
                     @Html.AntiForgeryToken()
                     
                     <!-- Preserves the role query parameter (Participant or Organiser) -->
-                    <input type="hidden" name="role" asp-for ="Role" />
+                    <input type="hidden" asp-for="Role" />
                      <div asp-validation-summary="ModelOnly" class="alert alert-danger small p-2 mb-3" role="alert"></div>
                     <!-- Row for First and Last Name fields -->
                     <div class="row g-3 mb-3">

@@ -5,8 +5,6 @@ using RaceDay.Mvc.Models;
 
 namespace RaceDay.Mvc.Services
 {
-
-
     public class RaceDayApiClient
     {
         private readonly HttpClient _httpClient;
@@ -18,17 +16,26 @@ namespace RaceDay.Mvc.Services
 
         public async Task<string?> LoginAsync(LoginView loginModel)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/authusers/register", model);
+          
+            var response = await _httpClient.PostAsJsonAsync("api/authusers/login", loginModel);
 
             if (response.IsSuccessStatusCode)
             {
-              
                 var results = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                return results.Token;
+                return results?.Token;
             }
+
             return null;
         }
-    public class LoginResponse
+        public async Task<bool> RegisterAsync(RegisterView registerModel)
+        {
+            
+            var response = await _httpClient.PostAsJsonAsync("api/authusers/register", registerModel);
+            return response.IsSuccessStatusCode;
+        }
+
+
+        public class LoginResponse
         {
             public string Token { get; set; } = string.Empty;
         }

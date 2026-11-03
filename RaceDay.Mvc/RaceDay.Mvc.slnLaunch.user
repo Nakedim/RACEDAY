@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "..\\RaceDay.Api\\RaceDay.Api.csproj",
+        "Path": "RaceDay.Mvc.csproj",
         "Action": "Start"
       },
       {
-        "Path": "RaceDay.Mvc.csproj",
+        "Path": "..\\RaceDay.Api\\RaceDay.Api.csproj",
         "Action": "Start"
       }
     ]
