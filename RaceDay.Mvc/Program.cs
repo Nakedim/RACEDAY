@@ -1,7 +1,18 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Register MVC and Session Cache Memory
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(
+
+
+    );
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/UsersAuth/Login"; // Where to send users if they aren't logged in
+        options.AccessDeniedPath = "/UserAuth/AccessDenied"; // Where to send users if they have the wrong role
+    });
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -20,6 +31,9 @@ builder.Services.AddHttpClient("RaceDayApi", client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
+
+
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -33,6 +47,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession(); // Elements can read/write to Session memory after this point
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,0 +1,62 @@
+﻿
+
+@{
+    ViewData["Title"] = "Enter a Race Event";
+}
+@model RaceDay.Mvc.Models.EntriesModel
+
+
+
+
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h5 mb-0"><i class="bi bi-ticket-perforated me-2"></i>Race Registration Form</h2>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-4">Complete this form to register your entry into an upcoming race event.</p>
+
+                    <form asp-action="EnterRace" method="post" id="EnterRaceForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+
+                        <!-- Race Event Choice Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="RaceEventID" class="form-label fw-bold">Select Upcoming Event</label>
+                            <select asp-for="RaceEventID" class="form-select" asp-items="ViewBag.RaceEvents">
+                                <option value="">-- Choose an Event --</option>
+                            </select>
+                            <span asp-validation-for="RaceEventID" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Division / Category Choice Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="CategoryID" class="form-label fw-bold">Select Racing Category / Division</label>
+                            <select asp-for="CategoryID" class="form-select" asp-items="ViewBag.Categories">
+                                <option value="">-- Choose a Category --</option>
+                            </select>
+                            <span asp-validation-for="CategoryID" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Informational notice -->
+                        <div class="alert alert-light border small text-muted my-3">
+                            <i class="bi bi-info-circle me-1"></i> Your registration date will automatically record as today.
+                        </div>
+
+                        <!-- Action Submit Triggers -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                            <button type="submit" class="btn btn-success px-4">Submit Registration</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

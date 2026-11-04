@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewData["Title"] = "Races List";
+}
+@model IEnumerable<RaceDay.Mvc.Models.RaceModel>
+
+
+<div class="container my-5">
+    <!-- Header Block -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom pb-3 mb-4">
+        <div>
+            <h1 class="h2 text-slate-800 fw-bold mb-1">🏁 Upcoming Races</h1>
+            <p class="text-muted mb-0">Browse and discover open competitive events happening across circuits.</p>
+        </div>
+        <div class="mt-3 mt-sm-0">
+            <a asp-action="Create" class="btn btn-primary d-inline-flex align-items-center shadow-sm">
+                <i class="bi bi-plus-circle-fill me-2"></i> Add New Race
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var race in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm hover-shadow border-0 transition-all">
+
+                        <!-- Card Ribbon/Header info styling -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge bg-info bg-opacity-10 text-info px-2.5 py-1.5 fw-semibold rounded-pill small">
+                                    ID: @race.CategoryID
+                                </span>
+                                <span class="badge bg-success px-3 py-1.5 rounded-pill fw-bold">
+                                    🏃 @race.Distance km
+                                </span>
+                            </div>
+
+                            <!-- Race Primary Meta Information -->
+                            <h3 class="h5 card-title fw-bold text-dark mb-2">
+                                @race.RaceName
+                            </h3>
+
+                            <p class="text-muted small mb-4 flex-grow-1">
+                                <i class="bi bi-grid-1x2 me-1"></i> Connected Event Reference ID: <strong class="text-dark">@race.EventID</strong>
+                            </p>
+
+                            <hr class="text-muted opacity-25 my-3" />
+
+                            <!-- Race Logistic Metadata Layout elements -->
+                            <div class="space-y-2 mb-4 text-sm text-secondary">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                                    <span>@race.Location</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-calendar3 text-primary me-2"></i>
+                                    <span>@race.StartTime.ToString("f")</span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Registration Core Triggers -->
+                            <div class="mt-auto d-flex gap-2">
+                                <a asp-action="EnterRace"
+                                   asp-route-raceEventId="@race.EventID"
+                                   asp-route-categoryId="@race.CategoryID"
+                                   class="btn btn-success w-100 fw-semibold shadow-sm btn-sm">
+                                    Enter Race
+                                </a>
+                                <a asp-action="Details"
+                                   asp-route-id="@race.EventID"
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Empty Placeholder fallback fallback state element panel -->
+            <div class="col-12">
+                <div class="card border border-dashed text-center py-5 px-4 bg-light">
+                    <div class="card-body">
+                        <div class="display-4 text-muted mb-3">📋</div>
+                        <h3 class="h5 fw-bold text-dark mb-2">No Races Configured</h3>
+                        <p class="text-muted small max-w-md mx-auto mb-4">
+                            There are currently no competitive sub-races running under scheduled calendar events. Create one to get started.
+                        </p>
+                        <a asp-action="Create" class="btn btn-sm btn-primary">Create the First Race</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
