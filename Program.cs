@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-using RACEDAY.Data;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
