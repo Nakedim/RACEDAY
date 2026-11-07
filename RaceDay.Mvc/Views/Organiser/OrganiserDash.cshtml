@@ -1,18 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Organiser Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Inject the updated colors into the page scope -->
 @section Styles {
     <style>
         :root {
-            --primary-lime: #7cb305; /* Brighter prototype green */
+            --primary-lime: #7cb305;
             --dark-lime: #5b8c00;
             --sidebar-light: #e6e8eb;
         }
 
-        /* Overriding layout elements for this specific dashboard style */
         .sidebar {
             background-color: var(--sidebar-light) !important;
             color: #333 !important;
@@ -35,62 +33,153 @@
         .footer-banner {
             background-color: var(--primary-lime) !important;
         }
+
+        .content-block {
+            min-height: 180px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+        }
+
+        .header-bar {
+            background-color: var(--primary-lime);
+            color: white;
+            font-weight: 600;
+        }
     </style>
 }
 
-<div class="text-center my-3">
-    <div class="text-muted small">Hi, @Model.UserName</div>
+<div class="container-fluid">
+
+    <!-- Greeting -->
+    <div class="text-center my-4">
+        <div class="text-muted small">
+            Welcome, @User.Identity?.Name
+        </div>
+
+        <h2 class="fw-bold">Organiser Dashboard</h2>
+    </div>
+
+    <!-- Feature Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+
+            <div class="content-block rounded-1 w-100 p-3"
+                 style="min-height: 280px;">
+
+                <h4 class="fw-bold">Dashboard Overview</h4>
+
+                <p class="text-muted">
+                    Manage your events, races and results from one place.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="row g-4 mb-5">
+
+        <!-- My Events -->
+        <div class="col-lg-4">
+
+            <div class="header-bar text-center py-2 mb-2 rounded-1">
+                My Events
+            </div>
+
+            <div class="content-block p-3 rounded-1">
+
+                @if (Model?.Events != null && Model.Events.Any())
+                {
+                    <ul class="list-group list-group-flush">
+
+                        @foreach (var ev in Model.Events)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                @ev.Name
+
+                                <span class="badge bg-success rounded-pill">
+                                    @ev.Date.ToString("dd/MM")
+                                </span>
+
+                            </li>
+                        }
+
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted text-center pt-4">
+                        No events found.
+                    </p>
+                }
+
+                <div class="text-center mt-3">
+
+                    <a asp-controller="Home"
+                       asp-action="CreateEvent"
+                       class="btn btn-success">
+                        Create Event
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Race Results -->
+        <div class="col-lg-4">
+
+            <div class="header-bar text-center py-2 mb-2 rounded-1">
+                Race Results
+            </div>
+
+            <div class="content-block p-3 rounded-1">
+
+                <p class="text-muted text-center pt-4">
+                    Manage and review race results.
+                </p>
+
+                <div class="text-center mt-3">
+
+                    <a asp-controller="Home"
+                       asp-action="EnterResults"
+                       class="btn btn-success">
+                        Enter Results
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- My Race -->
+        <div class="col-lg-4">
+
+            <div class="header-bar text-center py-2 mb-2 rounded-1">
+                My Race
+            </div>
+
+            <div class="content-block p-3 rounded-1">
+
+                <p class="text-muted text-center pt-4">
+                    Manage your race activities.
+                </p>
+
+                <div class="text-center mt-3">
+
+                    <a asp-controller="Home"
+                       asp-action="CreateRace"
+                       class="btn btn-success">
+                        Create Race
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
 </div>
-
-<!-- Large Feature Header Block -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="content-block rounded-1 w-100" style="min-height: 280px;">
-            <!-- Intended for featured banners, charts, or primary system stats -->
-            @RenderSection("FeatureBlockContent", required: false)
-        </div>
-    </div>
-</div>
-
-<!-- Lower Content Tri-Columns -->
-<div class="row g-4 mb-5">
-    <!-- My Events -->
-    <div class="col-lg-4">
-        <div class="header-bar text-center py-2 mb-2 rounded-1">My Events</div>
-        <div class="content-block p-3 rounded-1 bg-white border">
-            @if (Model.Events != null && Model.Events.Any())
-            {
-                <ul class="list-group list-group-flush">
-                    @foreach (var ev in Model.Events)
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @ev.Name
-                            <span class="badge bg-success rounded-pill">@ev.Date.ToString("MM/dd")</span>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p class="text-muted text-center pt-4">No events found.</p>
-            }
-        </div>
-    </div>
-
-    <!-- Race Results -->
-    <div class="col-lg-4">
-        <div class="header-bar text-center py-2 mb-2 rounded-1">Race results</div>
-        <div class="content-block p-3 rounded-1 bg-white border">
-            <!-- Table content populated via ViewModel -->
-        </div>
-    </div>
-
-    <!-- My Race -->
-    <div class="col-lg-4">
-        <div class="header-bar text-center py-2 mb-2 rounded-1">My Race</div>
-        <div class="content-block p-3 rounded-1 bg-white border">
-            <!-- Active race overview or quick action toggles -->
-        </div>
-    </div>
-</div>
-

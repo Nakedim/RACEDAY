@@ -1,62 +1,57 @@
-﻿using System.Text;
-using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using RaceDay.Mvc.Models;
+﻿
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using RaceDay.Mvc.Models;
 using RaceDay.Mvc.Services;
 
 namespace RaceDay.Mvc.Controllers
 {
     public class UsersAuthController : Controller
     {
-        // FIXED: Inject your centralized client wrapper instead of raw HttpClient factory
         private readonly RaceDayApiClient _apiClient;
+
+        private const string OrganiserRole = "Organiser";
+        private const string ParticipantRole = "Participant";
 
         public UsersAuthController(RaceDayApiClient apiClient)
         {
             _apiClient = apiClient;
         }
 
+        // GET: Login
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                if (User.IsInRole("Organiser"))
-                {
-                    return RedirectToAction("OrganiserDash", "Home");
-                }
-
-                if (User.IsInRole("Participant"))
-                {
-                    return RedirectToAction("ParticipantDash", "Home");
-                }
+                return RedirectToRoleDashboard();
             }
 
             return View();
         }
 
-        // GET: Display registration form
+        // GET: Register
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult Register(string role = "Participant")
+        public IActionResult Register(string role = ParticipantRole)
         {
-            if (role != "Organiser" && role != "Participant")
+            if (role != OrganiserRole && role != ParticipantRole)
             {
-                role = "Participant";
+                role = ParticipantRole;
             }
 
-            var model = new RegisterView
+            return View(new RegisterView
             {
                 Role = role
-            };
-
-            return View(model);
+            });
         }
 
-        // POST: Register user through RaceDay API
+        // POST: Register
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterView model)
@@ -66,97 +61,169 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
-            if (model.Role != "Organiser" && model.Role != "Participant")
+            if (model.Role != OrganiserRole &&
+                model.Role != ParticipantRole)
             {
-                ModelState.AddModelError("Role", "Invalid user role.");
+                ModelState.AddModelError(
+                    nameof(model.Role),
+                    "Invalid user role."
+                );
+
                 return View(model);
             }
 
             if (model.DateOfBirth.Date > DateTime.Today)
             {
-                ModelState.AddModelError("DateOfBirth", "Date of birth cannot be in the future.");
+                ModelState.AddModelError(
+                    nameof(model.DateOfBirth),
+                    "Date of birth cannot be in the future."
+                );
+
                 return View(model);
             }
 
-            // Calculate user's age safely
-            int calculatedAge = DateTime.Today.Year - model.DateOfBirth.Year;
-            if (model.DateOfBirth.Date > DateTime.Today.AddYears(-calculatedAge))
-            {
-                calculatedAge--;
-            }
-
-            // Route execution straight through your central ApiClient
             bool isRegistered = await _apiClient.RegisterAsync(model);
 
             if (isRegistered)
             {
-                TempData["SuccessMessage"] = "Registration successful! Please log in.";
-                return RedirectToAction("Login", "UsersAuth");
+                TempData["SuccessMessage"] =
+                    "Registration successful! Please log in.";
+
+                return RedirectToAction(nameof(Login));
             }
 
-            ModelState.AddModelError(string.Empty, "Registration failed. Please check your details or connection.");
+            ModelState.AddModelError(
+                string.Empty,
+                "Registration failed. Please check your details or try again."
+            );
+
             return View(model);
         }
 
-        // POST: Authenticate user and issue Cookie state
+        // POST: Login
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginView model, string? returnUrl)
+        public async Task<IActionResult> Login(
+            LoginView model,
+            string? returnUrl)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
             var result = await _apiClient.LoginAsync(model);
 
             if (result?.User == null)
             {
-                ModelState.AddModelError("", "Invalid username or password.");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Invalid username or password."
+                );
+
                 return View(model);
             }
 
-            string role = result.User.Role?.Trim() ?? "";
+            string role = result.User.Role?.Trim() ?? string.Empty;
 
-            if (role != "Organiser" && role != "Participant")
+            if (role != OrganiserRole &&
+                role != ParticipantRole)
             {
-                ModelState.AddModelError("", "Invalid user role returned by API.");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Invalid user role returned by the API."
+                );
+
                 return View(model);
             }
 
-            // Clear any previous session information
+            string email = result.User.Email ?? string.Empty;
+            string userId = result.User.Id.ToString();
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "The API returned an invalid user account."
+                );
+
+                return View(model);
+            }
+
+            // Clear previous session information.
             HttpContext.Session.Clear();
 
-            // Store user information in Session
-            HttpContext.Session.SetString("Username", result.User.Email);
-            HttpContext.Session.SetString("UserId", result.User.Id.ToString());
+            // Store authenticated user information.
+            HttpContext.Session.SetString("Username", email);
+            HttpContext.Session.SetString("UserId", userId);
             HttpContext.Session.SetString("Role", role);
 
-            // Create authenticated identity
+            // Create authentication claims.
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, result.User.Email),
-        new Claim(ClaimTypes.NameIdentifier, result.User.Id.ToString()),
-        new Claim(ClaimTypes.Role, role)
-    };
+            {
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Role, role)
+            };
 
             var identity = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme
             );
 
+            var principal = new ClaimsPrincipal(identity);
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity)
+                principal
             );
 
-            // Redirect according to actual role
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            // Respect safe local return URLs.
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                Url.IsLocalUrl(returnUrl))
+            {
                 return Redirect(returnUrl);
+            }
 
-            if (role == "Organiser")
-                return RedirectToAction("OrganiserDash", "Home");
-
-            return RedirectToAction("ParticipantDash", "Home");
+            // Otherwise redirect according to the authenticated role.
+            return RedirectToRoleDashboard(role);
         }
+
+        // Redirect to the correct dashboard.
+        private IActionResult RedirectToRoleDashboard(string? role = null)
+        {
+            role ??= User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (role == OrganiserRole)
+            {
+                return RedirectToAction(
+                    "OrganiserDash",
+                    "Home"
+                );
+            }
+
+            if (role == ParticipantRole)
+            {
+                return RedirectToAction(
+                    "ParticipantDash",
+                    "Home"
+                );
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: Access Denied
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        // POST: Logout
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -168,66 +235,6 @@ namespace RaceDay.Mvc.Controllers
             HttpContext.Session.Clear();
 
             return RedirectToAction("Index", "Home");
-        }
-
-
-        private string? GetRoleFromToken(string token)
-        {
-            try
-            {
-                var parts = token.Split('.');
-
-                if (parts.Length != 3)
-                    return null;
-
-                string payload = parts[1];
-
-                payload = payload.Replace('-', '+').Replace('_', '/');
-
-                switch (payload.Length % 4)
-                {
-                    case 2:
-                        payload += "==";
-                        break;
-                    case 3:
-                        payload += "=";
-                        break;
-                }
-
-                var jsonBytes = Convert.FromBase64String(payload);
-
-                using var document = JsonDocument.Parse(jsonBytes);
-
-                var root = document.RootElement;
-
-                string[] roleClaims =
-                {
-            "role",
-            "roles",
-            ClaimTypes.Role
-        };
-
-                foreach (string claimName in roleClaims)
-                {
-                    if (root.TryGetProperty(claimName, out var role))
-                    {
-                        if (role.ValueKind == JsonValueKind.String)
-                            return role.GetString();
-
-                        if (role.ValueKind == JsonValueKind.Array &&
-                            role.GetArrayLength() > 0)
-                        {
-                            return role[0].GetString();
-                        }
-                    }
-                }
-
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
         }
     }
 }

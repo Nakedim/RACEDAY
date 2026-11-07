@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+    <ProjectReference Include="..\Raceday.Shared\Raceday.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

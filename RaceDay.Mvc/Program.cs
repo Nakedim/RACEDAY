@@ -1,14 +1,39 @@
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using RaceDay.Mvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add MVC Framework services
+// ==========================================
+// MVC SERVICES
+// ==========================================
+
 builder.Services.AddControllersWithViews();
 
-// Configure Cookie Authentication
+// ==========================================
+// SESSION CONFIGURATION
+// ==========================================
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+
+    options.Cookie.Name = "RaceDay.Session";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+// ==========================================
+// AUTHENTICATION
+// ==========================================
+
 builder.Services
-    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddAuthentication(
+        CookieAuthenticationDefaults.AuthenticationScheme
+    )
     .AddCookie(options =>
     {
         options.LoginPath = "/UsersAuth/Login";
@@ -17,36 +42,66 @@ builder.Services
         options.Cookie.Name = "RaceDay.Auth";
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
     });
 
-// Configure Authorization rules
+// ==========================================
+// AUTHORIZATION
+// ==========================================
+
 builder.Services.AddAuthorization();
 
-// Configure Distributed Memory Cache and Session State
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
+// ==========================================
+// HTTP CONTEXT ACCESSOR
+// ==========================================
 
-// Accessor for current HTTP Context inside custom services
 builder.Services.AddHttpContextAccessor();
 
-// This properly binds your base URL to the client class instance
+// ==========================================
+// RACE DAY API CLIENT
+// ==========================================
+
+// Read API URL from configuration.
+// Falls back to your existing development API address.
+var apiBaseUrl =
+    builder.Configuration["RaceDayApi:BaseUrl"]
+    ?? "https://localhost:7087/";
+
+if (!Uri.TryCreate(
+        apiBaseUrl,
+        UriKind.Absolute,
+        out var apiUri))
+{
+    throw new InvalidOperationException(
+        "The RaceDay API base URL is invalid."
+    );
+}
+
 builder.Services.AddHttpClient<RaceDayApiClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7087/");
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.BaseAddress = apiUri;
+
+    client.DefaultRequestHeaders.Accept.ParseAdd(
+        "application/json"
+    );
+
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
+
+// ==========================================
+// BUILD APPLICATION
+// ==========================================
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// ==========================================
+// HTTP REQUEST PIPELINE
+// ==========================================
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -54,17 +109,26 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
-// Order is critical here: Session -> Auth -> Routing Maps
+// Session must be available before authentication
+// and authorization are processed.
 app.UseSession();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
+// ==========================================
+// ROUTING
+// ==========================================
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();
