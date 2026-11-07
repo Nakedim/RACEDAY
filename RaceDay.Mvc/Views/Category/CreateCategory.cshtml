@@ -1,0 +1,47 @@
+﻿@model RaceDay.Mvc.Models.CategoryModel
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Event Category</h4>
+                </div>
+                <div class="card-body">
+
+                    <form asp-action="CreateCategory" method="post">
+                        <!-- Validation Summary for server errors -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <!-- Category Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="CategoryName" class="form-label">Category Name</label>
+                            <input asp-for="CategoryName" class="form-control" placeholder="e.g., Marathon, Cycling, Swimming" />
+                            <span asp-validation-for="CategoryName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between align-items-center pt-2">
+                            <a asp-action="CreateEvent" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Create Event
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Category
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Optional: client-side validation to prevent unnecessary form submissions -->
+    <partial name="_ValidationScriptsPartial" />
+}

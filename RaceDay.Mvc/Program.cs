@@ -1,20 +1,32 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using RaceDay.Mvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Register MVC and Session Cache Memory
-builder.Services.AddControllersWithViews(
+// Add MVC Framework services
+builder.Services.AddControllersWithViews();
 
-
-    );
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+// Configure Cookie Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/UsersAuth/Login"; // Where to send users if they aren't logged in
-        options.AccessDeniedPath = "/UserAuth/AccessDenied"; // Where to send users if they have the wrong role
-    });
-builder.Services.AddDistributedMemoryCache();
+        options.LoginPath = "/UsersAuth/Login";
+        options.AccessDeniedPath = "/UsersAuth/AccessDenied";
 
+        options.Cookie.Name = "RaceDay.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+    });
+
+// Configure Authorization rules
+builder.Services.AddAuthorization();
+
+// Configure Distributed Memory Cache and Session State
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -22,20 +34,19 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// Accessor for current HTTP Context inside custom services
 builder.Services.AddHttpContextAccessor();
 
-// 2. Configure the HTTP Client pointing to the Root API Engine port
-builder.Services.AddHttpClient("RaceDayApi", client =>
+// This properly binds your base URL to the client class instance
+builder.Services.AddHttpClient<RaceDayApiClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7087/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
-
-
-
 var app = builder.Build();
 
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -46,7 +57,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseSession(); // Elements can read/write to Session memory after this point
+
+// Order is critical here: Session -> Auth -> Routing Maps
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

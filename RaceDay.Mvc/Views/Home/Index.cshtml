@@ -1,8 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Welcome to Raceday";
 }
-@*Views/Auth/Register.cshtml*@
-@model RegisterView
 
 <style>
     /* Custom Color Variables & Utility Overrides */
@@ -45,24 +43,89 @@
             </div>
 
             <!-- Participant Card -->
-            <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm border border-light">
-                <h6 class="fw-bold mb-1 text-sm">Are you the participant?</h6>
-                <p class="text-muted mb-2" style="font-size: 0.75rem;">Sign up to manage and track your raceday stats.</p>
-                <a href="@Url.Action("Register", "UsersAuth", new { role = "Participant" })" class="btn btn-primary btn-sm w-100 mb-2 fw-semibold">Create an Account</a>
-                <div class="text-center" style="font-size: 0.7rem;">
-                    Already have an account? <a href="@Url.Action("Login", "UsersAuth")" class="text-decoration-none fw-semibold">Sign in</a>
-                </div>
-            </div>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
+                    <h6 class="fw-bold">Welcome!</h6>
 
-            <!-- Organiser Card -->
-            <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm border border-light">
-                <h6 class="fw-bold mb-1 text-sm">Are you the event organiser?</h6>
-                <p class="text-muted mb-2" style="font-size: 0.75rem;">Sign up to manage your events and races.</p>
-                <a href="@Url.Action("Register", "UsersAuth", new { role = "Organiser" })" class="btn btn-primary btn-sm w-100 mb-2 fw-semibold">Create an Account</a>
-                <div class="text-center" style="font-size: 0.7rem;">
-                    Already have an account? <a href="@Url.Action("Login", "UsersAuth")" class="text-decoration-none fw-semibold">Sign in</a>
+                    <p class="text-muted small">
+                        @User.Identity.Name
+                    </p>
+
+                    @if (User.IsInRole("Organiser"))
+                    {
+                        <a asp-controller="Home"
+                           asp-action="OrganiserDash"
+                           class="btn btn-primary btn-sm w-100 mb-2">
+                            Organiser Dashboard
+                        </a>
+                    }
+                    else if (User.IsInRole("Participant"))
+                    {
+                        <a asp-controller="Home"
+                           asp-action="ParticipantDash"
+                           class="btn btn-primary btn-sm w-100 mb-2">
+                            Participant Dashboard
+                        </a>
+                    }
+
+                    <form asp-controller="UsersAuth"
+                          asp-action="Logout"
+                          method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                                class="btn btn-outline-danger btn-sm w-100">
+                            Sign Out
+                        </button>
+                    </form>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
+                    <h6 class="fw-bold">Are you a participant?</h6>
+
+                    <p class="text-muted small">
+                        Sign up to manage and track your race statistics.
+                    </p>
+
+                    <a asp-controller="UsersAuth"
+                       asp-action="Register"
+                       asp-route-role="Participant"
+                       class="btn btn-primary btn-sm w-100 mb-2">
+                        Create an Account
+                    </a>
+
+                    <a asp-controller="UsersAuth"
+                       asp-action="Login"
+                       class="small">
+                        Already have an account? Sign in
+                    </a>
+                </div>
+
+                <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
+                    <h6 class="fw-bold">Are you an event organiser?</h6>
+
+                    <p class="text-muted small">
+                        Sign up to manage your events and races.
+                    </p>
+
+                    <a asp-controller="UsersAuth"
+                       asp-action="Register"
+                       asp-route-role="Organiser"
+                       class="btn btn-primary btn-sm w-100 mb-2">
+                        Create an Account
+                    </a>
+
+                    <a asp-controller="UsersAuth"
+                       asp-action="Login"
+                       class="small">
+                        Already have an account? Sign in
+                    </a>
+                </div>
+            }
+
+        
         </aside>
 
         <!-- ================= MAIN CONTENT AREA (Right Side) ================= -->

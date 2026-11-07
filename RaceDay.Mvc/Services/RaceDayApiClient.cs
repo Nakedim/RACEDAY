@@ -1,7 +1,9 @@
-﻿using System.Net.Http;
+﻿using RaceDay.Mvc.Models;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
-using RaceDay.Mvc.Models;
 
 namespace RaceDay.Mvc.Services
 {
@@ -14,26 +16,98 @@ namespace RaceDay.Mvc.Services
             _httpClient = httpClient;
         }
 
-        public async Task<string?> LoginAsync(LoginView loginModel)
+        public async Task<bool> CreateEventAsync(RaceEventModel newEvent)
         {
-          
-            var response = await _httpClient.PostAsJsonAsync("api/authusers/login", loginModel);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var results = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                return results?.Token;
+                var response = await _httpClient.PostAsJsonAsync("api/raceevents", newEvent);
+                return response.IsSuccessStatusCode;
             }
-
-            return null;
+            catch (HttpRequestException)
+            {
+                return false;
+            }
         }
+
+        public async Task<ApiResponseProfile?> LoginAsync(LoginView loginModel)
+        {
+            try
+            {
+                var apiPayload = new
+                {
+                    Email = loginModel.Username,
+                    Username = loginModel.Username,
+                    Password = loginModel.Password
+                };
+
+                var response = await _httpClient.PostAsJsonAsync("api/authusers/login", apiPayload);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<ApiResponseProfile>(
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // FIXED: Removed the stray "Use code with caution." text that was causing syntax errors
         public async Task<bool> RegisterAsync(RegisterView registerModel)
         {
-            
-            var response = await _httpClient.PostAsJsonAsync("api/authusers/register", registerModel);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/authusers/register", registerModel);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                return false;
+            }
         }
 
+        public async Task<List<RaceEventModel>> GetEventsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<List<RaceEventModel>>("api/raceevents");
+                return response ?? new List<RaceEventModel>();
+            }
+            catch
+            {
+                return new List<RaceEventModel>();
+            }
+        }
+
+        public async Task<IEnumerable<CategoryModel>?> GetCategoriesAsync()
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<CategoryModel>>("api/categories");
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> CreateCategoryAsync(CategoryModel newCategory)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/categories", newCategory);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                return false;
+            }
+        }
+       
 
         public class LoginResponse
         {
