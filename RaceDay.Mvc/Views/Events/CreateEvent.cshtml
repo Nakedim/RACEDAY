@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Create Events";
+}
+
+@model RaceDay.Mvc.Models.RaceEventModel
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h1 class="h2">Create New Race Event</h1>
+</div>
+
+<form asp-action="Create" method="post" id="CreateRaceEventForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <!-- Event Title -->
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label fw-bold">Event Name</label>
+        <input asp-for="Title" class="form-control" placeholder="e.g. Annual Summer Marathon" />
+        <span asp-validation-for="Title" class="text-danger small"></span>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label fw-bold">Event Description</label>
+        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Provide details about the race route, entry requirements, etc."></textarea>
+        <span asp-validation-for="Description" class="text-danger small"></span>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-3">
+        <label asp-for="Location" class="form-label fw-bold">Location / Venue</label>
+        <input asp-for="Location" class="form-control" placeholder="e.g. Kyalami Grand Prix Circuit, Midrand" />
+        <span asp-validation-for="Location" class="text-danger small"></span>
+    </div>
+
+    <div class="row">
+        <!-- Category Dropdown -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="CategoryID" class="form-label fw-bold">Event Category</label>
+            <select asp-for="CategoryID" class="form-select">
+                <option value="">-- Select Category --</option>
+                <option value="1">Cycling</option>
+                <option value="2">Running</option>
+                <option value="3">Motorsport</option>
+            </select>
+            <span asp-validation-for="CategoryID" class="text-danger small"></span>
+        </div>
+
+        <!-- Event Type -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="EventType" class="form-label fw-bold">Event Type</label>
+            <input asp-for="EventType" class="form-control" placeholder="e.g. Time Trial, Sprint, Charity" />
+            <span asp-validation-for="EventType" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <!-- 🌟 SECURE CHANGE: Hidden OrganiserID input removed entirely. Handled dynamically via Controller session/claims -->
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        <button type="submit" class="btn btn-success px-4">Create Event</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

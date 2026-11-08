@@ -1,0 +1,136 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = RaceDay.Mvc
+build_property.RootNamespace = RaceDay.Mvc
+build_property.ProjectDir = C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Category/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Entries/CreateEntries.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW50cmllc1xDcmVhdGVFbnRyaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Entries/RaceEntries.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW50cmllc1xSYWNlRW50cmllcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Events/CreateEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXENyZWF0ZUV2ZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Events/Events.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXEV2ZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Events/RaceEvents.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXFJhY2VFdmVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/About.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/EventMaps.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxFdmVudE1hcHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/ParticipantDash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQYXJ0aWNpcGFudERhc2guY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/ThankYou.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxUaGFua1lvdS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Organiser/OrganiserDash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pc2VyXE9yZ2FuaXNlckRhc2guY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Organiser/Organisers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pc2VyXE9yZ2FuaXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Participant/ParticipantDash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcUGFydGljaXBhbnREYXNoLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Races/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFjZXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Races/CreateRace.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFjZXNcQ3JlYXRlUmFjZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Races/Races.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmFjZXNcUmFjZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Results/EnterResults.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdWx0c1xFbnRlclJlc3VsdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Results/Results.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdWx0c1xSZXN1bHRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/UsersAuth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNBdXRoXExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/UsersAuth/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNBdXRoXFJlZ2lzdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-nk28w9dwcj

@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Races";
+}
+@model RaceDay.Mvc.Models.RaceModel
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h1 class="h2">Add New Race</h1>
+</div>
+
+<form asp-action="Create" method="post" id="CreateRaceForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <!-- Race Name -->
+    <div class="mb-3">
+        <label asp-for="RaceName" class="form-label fw-bold">Race Name</label>
+        <input asp-for="RaceName" class="form-control" placeholder="e.g. 10km Elite Sprint" />
+        <span asp-validation-for="RaceName" class="text-danger small"></span>
+    </div>
+
+    <div class="row">
+        <!-- Associated Event Dropdown (Foreign Key) -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="EventID" class="form-label fw-bold">Select Race Event</label>
+            <select asp-for="EventID" class="form-select" asp-items="ViewBag.EventsList">
+                <option value="">-- Select Event Parent --</option>
+            </select>
+            <span asp-validation-for="EventID" class="text-danger small"></span>
+        </div>
+
+        <!-- Category Dropdown (Foreign Key) -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="CategoryID" class="form-label fw-bold">Race Category</label>
+            <select asp-for="CategoryID" class="form-select" asp-items="ViewBag.CategoriesList">
+                <option value="">-- Select Category --</option>
+            </select>
+            <span asp-validation-for="CategoryID" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Start Time -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="StartTime" class="form-label fw-bold">Start Date & Time</label>
+            <input asp-for="StartTime" type="datetime-local" class="form-control" />
+            <span asp-validation-for="StartTime" class="text-danger small"></span>
+        </div>
+
+        <!-- Distance -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="Distance" class="form-label fw-bold">Distance (km)</label>
+            <input asp-for="Distance" type="number" min="1" class="form-control" placeholder="e.g. 10" />
+            <span asp-validation-for="Distance" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-3">
+        <label asp-for="Location" class="form-label fw-bold">Specific Track / Starting Location</label>
+        <input asp-for="Location" class="form-control" placeholder="e.g. Main Gate, Kings Park Stadium" />
+        <span asp-validation-for="Location" class="text-danger small"></span>
+    </div>
+
+    <!-- Hidden Field for Organiser ID -->
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        <button type="submit" class="btn btn-success px-4">Save Race</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

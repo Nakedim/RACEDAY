@@ -1,0 +1,143 @@
+﻿@model RaceDay.Mvc.Models.EntriesModel
+
+@{
+    ViewData["Title"] = "Enter a Race Event";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                <!-- Header -->
+                <div class="card-header bg-primary text-white py-3">
+
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-ticket-perforated me-2"></i>
+                        Race Registration Form
+                    </h2>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <p class="text-muted small mb-4">
+                        Complete this form to register your entry
+                        into an upcoming race event.
+                    </p>
+
+                    <!-- Success Message -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            @TempData["SuccessMessage"]
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert">
+                            </button>
+                        </div>
+                    }
+
+                    <!-- Registration Form -->
+                    <form asp-controller="RaceEntries"
+                          asp-action="EnterRace"
+                          method="post"
+                          id="EnterRaceForm">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger small">
+                        </div>
+
+                        <!-- Race Event -->
+                        <div class="mb-3">
+
+                            <label asp-for="RaceEventID"
+                                   class="form-label fw-bold">
+                                Select Upcoming Event
+                            </label>
+
+                            <select asp-for="RaceEventID"
+                                    class="form-select"
+                                    asp-items="ViewBag.RaceEvents">
+
+                                <option value="">
+                                    -- Choose an Event --
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="RaceEventID"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+
+                            <label asp-for="CategoryID"
+                                   class="form-label fw-bold">
+                                Select Racing Category / Division
+                            </label>
+
+                            <select asp-for="CategoryID"
+                                    class="form-select"
+                                    asp-items="ViewBag.Categories">
+
+                                <option value="">
+                                    -- Choose a Category --
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="CategoryID"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <!-- Registration Information -->
+                        <div class="alert alert-light border small text-muted my-3">
+
+                            <i class="bi bi-info-circle me-1"></i>
+
+                            Your registration date will automatically
+                            be recorded when you submit your entry.
+
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+
+                            <a asp-controller="Home"
+                               asp-action="ParticipantDash"
+                               class="btn btn-outline-secondary btn-sm">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+                                Submit Registration
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

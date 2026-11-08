@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewData["Title"] = "Race Events";
+}
+
+@model List<RaceDay.Mvc.Models.RaceEventModel>
+
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Upcoming Race Events</h1>
+        <p class="text-muted">
+            Discover races, challenge yourself and join the RaceDay community.
+        </p>
+    </div>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+    else if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            No race events are currently available.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+
+            @foreach (var raceEvent in Model)
+            {
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow h-100">
+
+                        <div class="card-body">
+
+                            <h4 class="card-title">
+                                @raceEvent.Title
+                            </h4>
+
+                            <p class="card-text">
+                                @raceEvent.Description
+                            </p>
+
+                            <hr />
+
+                            <p>
+                                <strong>Location:</strong>
+                                @raceEvent.Location
+                            </p>
+
+                            <p>
+                                <strong>Category ID:</strong>
+                                @raceEvent.CategoryID
+                            </p>
+
+                            <p>
+                                <strong>Event Type:</strong>
+                                @raceEvent.EventType
+                            </p>
+
+                            <a asp-controller="Events"
+                               asp-action="Details"
+                               asp-route-id="@raceEvent.EventID"
+                               class="btn btn-primary">
+                                View Details
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

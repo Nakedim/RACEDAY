@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "gizJ+nj8KIA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\nmontsho\\source\\repos\\RaceDay-MonoRepo\\Raceday.Shared\\Raceday.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.20\\microsoft.windowsdesktop.app.ref.9.0.20.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.20\\microsoft.netcore.app.ref.9.0.20.nupkg.sha512",
+    "C:\\Users\\nmontsho\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.20\\microsoft.aspnetcore.app.ref.9.0.20.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,12 @@
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\bin\Debug\net9.0\Raceday.Shared.deps.json
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\bin\Debug\net9.0\Raceday.Shared.dll
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\bin\Debug\net9.0\Raceday.Shared.pdb
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.AssemblyInfoInputs.cache
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.AssemblyInfo.cs
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.csproj.CoreCompileInputs.cache
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.sourcelink.json
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.dll
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\refint\Raceday.Shared.dll
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.pdb
+C:\Users\nmontsho\source\repos\RACEDAY\Raceday.Shared\obj\Debug\net9.0\ref\Raceday.Shared.dll

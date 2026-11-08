@@ -1,0 +1,98 @@
+﻿@model RaceDay.Mvc.Models.RaceModel
+@{
+    ViewData["Title"] = "Add New Race";
+}
+
+<div class="container my-5" style="max-width: 700px;">
+    <!-- Card wrapper context for form alignment alignment structural flow panels -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white p-4">
+            <div class="d-flex align-items-center">
+                <div class="fs-2 me-3">🏁</div>
+                <div>
+                    <h2 class="h4 mb-0 fw-bold">Configure New Sub-Race</h2>
+                    <p class="small text-white-50 mb-0">Create and map a competitive category run track underneath scheduled calendar events.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+
+                <!-- Global Validation Summary Alert Box wrapper panel logic element components -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger shadow-sm small fw-bold mb-4" role="alert">
+                        <div asp-validation-summary="ModelOnly"></div>
+                    </div>
+                }
+
+                <div class="row g-3">
+                    <!-- Race Name input box wrapper element -->
+                    <div class="col-12">
+                        <label asp-for="RaceName" class="form-label fw-semibold text-secondary">Race Name / Title</label>
+                        <input asp-for="RaceName" class="form-control" placeholder="e.g. Elite Men Criterium, Morning Sprint" required />
+                        <span asp-validation-for="RaceName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Category ID selection parameter track indexers mapping elements -->
+                    <div class="col-md-6">
+                        <label asp-for="CategoryID" class="form-label fw-semibold text-secondary">Category Reference ID</label>
+                        <input asp-for="CategoryID" type="number" class="form-control" min="1" placeholder="e.g. 10" required />
+                        <span asp-validation-for="CategoryID" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Event ID mapping target configuration options indexing elements -->
+                    <div class="col-md-6">
+                        <label asp-for="EventID" class="form-label fw-semibold text-secondary">Parent Event Reference ID</label>
+                        <input asp-for="EventID" type="number" class="form-control" min="1" placeholder="e.g. 4" required />
+                        <span asp-validation-for="EventID" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Distance numeric constraints box component properties parameter elements -->
+                    <div class="col-md-6">
+                        <label asp-for="Distance" class="form-label fw-semibold text-secondary">Race Track Distance (km)</label>
+                        <div class="input-group">
+                            <input asp-for="Distance" type="number" class="form-control" min="1" placeholder="e.g. 42" required />
+                            <span class="input-group-text bg-light text-muted">km</span>
+                        </div>
+                        <span asp-validation-for="Distance" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Start date operational system timeline tracker calendar date clock pickup components element box -->
+                    <div class="col-md-6">
+                        <label asp-for="StartTime" class="form-label fw-semibold text-secondary">Scheduled Start Date & Time</label>
+                        <input asp-for="StartTime" type="datetime-local" class="form-control" required />
+                        <span asp-validation-for="StartTime" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Circuit Location address properties tracking text maps element component parameter boxes -->
+                    <div class="col-12 mb-2">
+                        <label asp-for="Location" class="form-label fw-semibold text-secondary">Race Location / Circuit Address</label>
+                        <input asp-for="Location" class="form-control" placeholder="e.g. Kyalami Grand Prix Circuit, Sector 4 Main Track" required />
+                        <span asp-validation-for="Location" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="text-muted opacity-25 my-4" />
+
+                <!-- Action Button Trigger Control Deck Panels Components Element Triggers Layout -->
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-dark px-4 fw-semibold shadow-sm">
+                        <i class="bi bi-cloud-upload me-2"></i> Publish Race
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Essential structural client side forms evaluation syntax execution modules framework layout scripts -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
