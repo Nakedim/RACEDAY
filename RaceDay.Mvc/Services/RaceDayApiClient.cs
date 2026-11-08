@@ -60,25 +60,66 @@ namespace RaceDay.Mvc.Services
         }
 
         // Register user
-        public async Task<bool> RegisterAsync(
-            RegisterView registerModel)
+        public async Task<string?> RegisterAsync(RegisterView view)
         {
+            if (view == null)
+                return "Registration information is missing.";
+
+            // Calculate age from Date of Birth.
+            int calculatedAge = DateTime.Today.Year - view.DateOfBirth.Year;
+
+            if (view.DateOfBirth.Date > DateTime.Today.AddYears(-calculatedAge))
+            {
+                calculatedAge--;
+            }
+
+            // Match the API RegisterRequest DTO exactly.
+            var apiPayload = new
+            {
+                Age = calculatedAge,
+                FirstName = view.FirstName,
+                Surname = view.Surname,
+                Email = view.Email,
+                PhoneNumber = view.PhoneNumber,
+                Location = view.Location,
+                Password = view.Password,
+                ConfirmPassword = view.ConfirmPassword,
+                ProfileRole = view.Role
+            };
+
             try
             {
                 using var response = await _httpClient.PostAsJsonAsync(
-                    "api/authusers/register",
-                    registerModel
+                    "api/AuthUsers/register",
+                    apiPayload
                 );
 
-                return response.IsSuccessStatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                // Read the actual validation error returned by the API.
+                string errorMessage = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(errorMessage))
+                {
+                    return $"Registration failed. Server returned: {response.StatusCode}";
+                }
+
+                return errorMessage;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                return false;
+                return $"Could not connect to the RaceDay API: {ex.Message}";
             }
             catch (TaskCanceledException)
             {
-                return false;
+                return "The registration request timed out.";
+            }
+            catch (JsonException ex)
+            {
+                return $"There was a problem processing the API response: {ex.Message}";
             }
         }
 

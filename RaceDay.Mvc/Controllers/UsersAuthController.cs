@@ -61,17 +61,19 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
+            // Validate the selected role.
             if (model.Role != OrganiserRole &&
                 model.Role != ParticipantRole)
             {
                 ModelState.AddModelError(
                     nameof(model.Role),
-                    "Invalid user role."
+                    "Please select a valid registration role."
                 );
 
                 return View(model);
             }
 
+            // Validate Date of Birth.
             if (model.DateOfBirth.Date > DateTime.Today)
             {
                 ModelState.AddModelError(
@@ -82,19 +84,21 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
-            bool isRegistered = await _apiClient.RegisterAsync(model);
+            // Send registration details to the API.
+            string? registrationError = await _apiClient.RegisterAsync(model);
 
-            if (isRegistered)
+            if (registrationError == null)
             {
                 TempData["SuccessMessage"] =
-                    "Registration successful! Please log in.";
+                    "Registration successful! You can now log in.";
 
                 return RedirectToAction(nameof(Login));
             }
 
+            // Display the actual API error.
             ModelState.AddModelError(
                 string.Empty,
-                "Registration failed. Please check your details or try again."
+                registrationError
             );
 
             return View(model);

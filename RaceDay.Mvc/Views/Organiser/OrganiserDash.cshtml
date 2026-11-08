@@ -11,29 +11,74 @@
             --sidebar-light: #e6e8eb;
         }
 
+        /* Layout structure wrappers */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: calc(100vh - 60px); /* Adjust based on global layout navbar height if needed */
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 1.5rem;
+            background-color: #f4f5f7;
+        }
+
+        /* Sidebar Styles */
         .sidebar {
+            width: 240px;
             background-color: var(--sidebar-light) !important;
             color: #333 !important;
+            flex-shrink: 0;
+            border-right: 1px solid #dee2e6;
         }
 
             .sidebar .brand-header {
                 background-color: var(--primary-lime);
                 color: white;
+                font-weight: bold;
+                font-size: 1.5rem;
+                padding: 1rem;
+                text-align: left;
             }
 
             .sidebar .nav-link {
                 color: white !important;
                 background-color: var(--primary-lime) !important;
+                margin: 0.5rem 1rem;
+                border-radius: 4px;
+                text-align: center;
+                font-weight: 500;
+                transition: background-color 0.2s ease;
             }
 
                 .sidebar .nav-link:hover {
                     background-color: var(--dark-lime) !important;
                 }
 
-        .footer-banner {
-            background-color: var(--primary-lime) !important;
+            .sidebar .logout-link {
+                background-color: #bd0926 !important;
+            }
+
+                .sidebar .logout-link:hover {
+                    background-color: #96071e !important;
+                }
+
+        /* Top Action Bar Profiles */
+        .top-navbar-profile {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1.25rem;
+            padding-bottom: 1rem;
         }
 
+            .top-navbar-profile i {
+                font-size: 1.3rem;
+                cursor: pointer;
+                color: #333;
+            }
+
+        /* Component Blocks */
         .content-block {
             min-height: 180px;
             background-color: white;
@@ -45,141 +90,150 @@
             color: white;
             font-weight: 600;
         }
+
+        .footer-banner {
+            background-color: var(--primary-lime) !important;
+        }
     </style>
+    <!-- Bootstrap Icons for Top Right Navigation panel -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
 }
 
-<div class="container-fluid">
+<div class="dashboard-wrapper">
 
-    <!-- Greeting -->
-    <div class="text-center my-4">
-        <div class="text-muted small">
-            Welcome, @User.Identity?.Name
+    <!-- Left Panel Sidebar Section -->
+    <div class="sidebar d-flex flex-column justify-content-between">
+        <div class="w-100">
+            <div class="brand-header">
+                Raceday
+            </div>
+            <ul class="nav flex-column mt-3">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="ViewEvents">View Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="ViewResults">View Results</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="ViewEntries">View Entries</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="ViewParticipants">View Participants</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="ViewCategory">View Category</a>
+                </li>
+            </ul>
         </div>
 
-        <h2 class="fw-bold">Organiser Dashboard</h2>
-    </div>
-
-    <!-- Feature Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-
-            <div class="content-block rounded-1 w-100 p-3"
-                 style="min-height: 280px;">
-
-                <h4 class="fw-bold">Dashboard Overview</h4>
-
-                <p class="text-muted">
-                    Manage your events, races and results from one place.
-                </p>
-
-            </div>
-
+        <!-- Bottom Logout Action -->
+        <div class="w-100 mb-3">
+            <a class="nav-link logout-link text-center" asp-controller="Account" asp-action="Logout">Logout</a>
         </div>
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="row g-4 mb-5">
+    <!-- Main Active Workspace -->
+    <div class="main-workspace">
+        <div class="container-fluid">
 
-        <!-- My Events -->
-        <div class="col-lg-4">
-
-            <div class="header-bar text-center py-2 mb-2 rounded-1">
-                My Events
+            <!-- Top Action Header Profile (Hi, James + Icons) -->
+            <div class="top-navbar-profile">
+                <span class="me-auto text-dark fw-medium fs-5">
+                    Hi, @(User.Identity?.Name ?? "Guest")
+                </span>
+                <i class="bi bi-envelope" title="Messages"></i>
+                <i class="bi bi-bell" title="Notifications"></i>
+                <i class="bi bi-person-circle" title="Profile"></i>
+                <i class="bi bi-gear" title="Settings"></i>
             </div>
 
-            <div class="content-block p-3 rounded-1">
+            <!-- Feature Header Overview -->
+            <div class="row mb-4 mt-2">
+                <div class="col-12">
+                    <div class="content-block rounded-1 w-100 p-4" style="min-height: 160px;">
+                        <h4 class="fw-bold">Dashboard Overview</h4>
+                        <p class="text-muted m-0">
+                            Manage your events, races and results from one place.
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-                @if (Model?.Events != null && Model.Events.Any())
-                {
-                    <ul class="list-group list-group-flush">
+            <!-- Dashboard Columns Grid Content -->
+            <div class="row g-4 mb-5">
 
-                        @foreach (var ev in Model.Events)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <!-- My Events -->
+                <div class="col-lg-4">
+                    <div class="header-bar text-center py-2 mb-2 rounded-1">
+                        My Events
+                    </div>
+                    <div class="content-block p-3 rounded-1 d-flex flex-column justify-content-between">
+                        <div>
+                            @if (Model?.Events != null && Model.Events.Any())
+                            {
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var ev in Model.Events)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            @ev.Name
+                                            <span class="badge bg-success rounded-pill">
+                                                @ev.Date.ToString("dd/MM")
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted text-center pt-4">
+                                    No events found.
+                                </p>
+                            }
+                        </div>
+                        <div class="text-center mt-3">
+                            <a asp-controller="Home" asp-action="CreateEvent" class="btn btn-success" style="background-color: var(--dark-lime); border-color: var(--dark-lime);">
+                                Create Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-                                @ev.Name
+                <!-- Race Results -->
+                <div class="col-lg-4">
+                    <div class="header-bar text-center py-2 mb-2 rounded-1">
+                        Race Results
+                    </div>
+                    <div class="content-block p-3 rounded-1 d-flex flex-column justify-content-between">
+                        <p class="text-muted text-center pt-4">
+                            Manage and review race results.
+                        </p>
+                        <div class="text-center mt-3">
+                            <a asp-controller="Home" asp-action="EnterResults" class="btn btn-success" style="background-color: var(--dark-lime); border-color: var(--dark-lime);">
+                                Enter Results
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-                                <span class="badge bg-success rounded-pill">
-                                    @ev.Date.ToString("dd/MM")
-                                </span>
-
-                            </li>
-                        }
-
-                    </ul>
-                }
-                else
-                {
-                    <p class="text-muted text-center pt-4">
-                        No events found.
-                    </p>
-                }
-
-                <div class="text-center mt-3">
-
-                    <a asp-controller="Home"
-                       asp-action="CreateEvent"
-                       class="btn btn-success">
-                        Create Event
-                    </a>
-
+                <!-- My Race -->
+                <div class="col-lg-4">
+                    <div class="header-bar text-center py-2 mb-2 rounded-1">
+                        My Race
+                    </div>
+                    <div class="content-block p-3 rounded-1 d-flex flex-column justify-content-between">
+                        <p class="text-muted text-center pt-4">
+                            Manage your race activities.
+                        </p>
+                        <div class="text-center mt-3">
+                            <a asp-controller="Home" asp-action="CreateRace" class="btn btn-success" style="background-color: var(--dark-lime); border-color: var(--dark-lime);">
+                                Create Race
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>
+
         </div>
-
-        <!-- Race Results -->
-        <div class="col-lg-4">
-
-            <div class="header-bar text-center py-2 mb-2 rounded-1">
-                Race Results
-            </div>
-
-            <div class="content-block p-3 rounded-1">
-
-                <p class="text-muted text-center pt-4">
-                    Manage and review race results.
-                </p>
-
-                <div class="text-center mt-3">
-
-                    <a asp-controller="Home"
-                       asp-action="EnterResults"
-                       class="btn btn-success">
-                        Enter Results
-                    </a>
-
-                </div>
-
-            </div>
-        </div>
-
-        <!-- My Race -->
-        <div class="col-lg-4">
-
-            <div class="header-bar text-center py-2 mb-2 rounded-1">
-                My Race
-            </div>
-
-            <div class="content-block p-3 rounded-1">
-
-                <p class="text-muted text-center pt-4">
-                    Manage your race activities.
-                </p>
-
-                <div class="text-center mt-3">
-
-                    <a asp-controller="Home"
-                       asp-action="CreateRace"
-                       class="btn btn-success">
-                        Create Race
-                    </a>
-
-                </div>
-
-            </div>
-        </div>
-
     </div>
-
 </div>
