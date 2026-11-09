@@ -1,0 +1,12 @@
+<Solution>
+<<<<<<< HEAD
+  <Project Path="RaceDay.Api.Tests/RaceDay.Api.Tests.csproj" />
+  <Project Path="RaceDay.Api/RaceDay.Api.csproj" />
+  <Project Path="RaceDay.Contracts/RaceDay.Contracts.csproj" />
+=======
+  <Project Path="../Users/nmontsho/source/repos/RaceDay.Api.Tests/RaceDay.Api.Tests.csproj" Id="b5980c3d-9098-4b99-847e-f3c6031b739a" />
+  <Project Path="../Users/nmontsho/source/repos/RaceDay.Api/RaceDay.Api.csproj" Id="d75716b9-e73c-427c-9a24-3826c537fd2c" />
+  <Project Path="../Users/nmontsho/source/repos/RaceDay.Contracts/RaceDay.Contracts.csproj" Id="0b745915-290c-4a4e-be4a-13f3d37af546" />
+  <Project Path="RACEDAY.csproj" />
+>>>>>>> b82c67be31f18183f0168f114889d8e996a1949a
+</Solution>

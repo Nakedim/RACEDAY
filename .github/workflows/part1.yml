@@ -1,0 +1,71 @@
+name: Part 1 Documentation Check
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out your repository
+      - uses: actions/checkout@v4
+
+      # Runs a simple command
+      - name: Run a one-line script
+        run: echo "Hello, world!"
+
+      # Check if the Projectfiles folder exists
+      - name: Check documentation folder
+<<<<<<< HEAD
+        run: test -d Projectfiles
+<<<<<<< HEAD
+
+=======
+>>>>>>> 7d22d40 (Update part1.yml)
+      # Check if the updated ERD/database SQL file exists
+      - name: Check ERD SQL file
+        run: test -f Projectfiles/RacedayDb.sql
+
+      # Check API document
+      - name: Check API Document
+<<<<<<< HEAD
+        run: test -f Projectfiles/POEPart1APIEndpointtable.pdf
+
+      # Check ERD Document
+      - name: Check ERD Document
+        run: test -f Projectfiles/RacedayPOEPart1ERD.pdf
+=======
+        run: test -d Docs
+
+      # Check if the updated ERD/database SQL file exists
+      - name: Check ERD SQL file
+        run: test -f Docs/RacedayDb.sql
+
+      # Check API document
+      - name: Check API Document
+        run: test -f Docs/POEPart1APIEndpointtable.pdf
+
+      # Check ERD Document
+      - name: Check ERD Document
+        run: test -f Docs/RacedayPOEPart1ERD.pdf
+>>>>>>> 8d3d21040fa3315cd6a67c6a4e0a3c3e14357538
+
+      # Check C# project
+    
+=======
+        run: test -f Projectfiles/POE Part 1 API Endpoint table.pdf
+         # Check ERD Document
+      - name: Check API Document
+        run: test -f Projectfiles/Raceday POE Part 1 ERD.pdf
+>>>>>>> 7d22d40 (Update part1.yml)
+
+      # Runs multiple commands
+      - name: Run a multi-line script
+        run: |
+          echo "Add other actions to build,"
+          echo "test, and deploy your project."
