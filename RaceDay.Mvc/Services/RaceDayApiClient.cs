@@ -11,8 +11,7 @@ namespace RaceDay.Mvc.Services
         {
             _httpClient = httpClient;
 
-            // Safety mechanism: If Program.cs fails to map the base address correctly, 
-            // ensure the client fallback points directly to your verified running API port.
+         
             if (_httpClient.BaseAddress == null)
             {
                 _httpClient.BaseAddress = new Uri("https://localhost:7087/");
@@ -65,25 +64,27 @@ namespace RaceDay.Mvc.Services
         }
 
         // POST /api/events
-        public async Task<bool> CreateEventAsync(RaceEventModel model)
-        {
-            var response = await _httpClient.PostAsJsonAsync("/api/events", model);
-            return response.IsSuccessStatusCode;
-        }
 
-        // GET /api/events
-        public async Task<IEnumerable<RaceEventModel>> GetEventsAsync()
+        public async Task<string?> CreateEventAsync(RaceEventModel model)
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<IEnumerable<RaceEventModel>>("/api/events")
-                       ?? new List<RaceEventModel>();
+                var response = await _httpClient.PostAsJsonAsync(
+                    "api/raceevents", model);
+
+                var error = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return null;
+
+                return $"HTTP {(int)response.StatusCode}: {error}";
             }
-            catch
+            catch (Exception ex)
             {
-                return new List<RaceEventModel>();
+                return ex.Message;
             }
         }
+
 
         // ==========================================
         // AUTHENTICATION METHODS
@@ -137,23 +138,6 @@ namespace RaceDay.Mvc.Services
         }
 
 
-        //public async Task<LoginResultModel?> LoginAsync(LoginView model)
-        //{
-        //    try
-        //    {
-        //        var response = await _httpClient.PostAsJsonAsync("/api/usersauth/login", model);
-
-        //        if (!response.IsSuccessStatusCode)
-        //        {
-        //            return null;
-        //        }
-
-        //        return await response.Content.ReadFromJsonAsync<LoginResultModel>();
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
+   
     }
 }

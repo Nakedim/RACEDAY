@@ -156,7 +156,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<RacedayDbContext>();
 
-    await dbContext.Database.EnsureCreatedAsync();
+    //await dbContext.Database.EnsureCreatedAsync();
 
 }
 

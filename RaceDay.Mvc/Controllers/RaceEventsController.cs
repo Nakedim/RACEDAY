@@ -10,8 +10,6 @@ namespace RaceDay.Mvc.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly RaceDayApiClient _apiClient;
-
-        // ✅ Fixed Constructor Setup
         public RaceEventsController(IHttpClientFactory httpClientFactory, RaceDayApiClient apiClient)
         {
             _httpClientFactory = httpClientFactory;
@@ -38,10 +36,15 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
+            // 1. Declare the variable at the method level so it is in scope below
+            int loggedInOrganiserId;
+
             var organiserIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(organiserIdClaim) || !int.TryParse(organiserIdClaim, out int loggedInOrganiserId))
+            // 2. Try parsing the claim first
+            if (string.IsNullOrEmpty(organiserIdClaim) || !int.TryParse(organiserIdClaim, out loggedInOrganiserId))
             {
+                // 3. Fallback to session parsing if the claim fails
                 var sessionUserId = HttpContext.Session.GetString("UserId");
                 if (string.IsNullOrEmpty(sessionUserId) || !int.TryParse(sessionUserId, out loggedInOrganiserId))
                 {
@@ -50,19 +53,23 @@ namespace RaceDay.Mvc.Controllers
                 }
             }
 
+            //  NOW IN SCOPE: This will no longer be underlined!
             model.OrganiserID = loggedInOrganiserId;
 
-            bool isSaved = await _apiClient.CreateEventAsync(model);
+            // Call your API Client (Using Option A from our previous step to handle the string error)
+            string? errorMessage = await _apiClient.CreateEventAsync(model);
 
-            if (isSaved)
+            if (errorMessage == null)
             {
                 TempData["SuccessMessage"] = "Race Event created successfully under your profile name!";
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError(string.Empty, "The system was unable to create the race event. Please try again.");
+            ModelState.AddModelError(string.Empty, $"The system was unable to create the race event. Error: {errorMessage}");
             return View(model);
         }
+
+
 
         [Authorize(Roles = "Organiser")]
         [HttpGet]

@@ -17,6 +17,7 @@ C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.AssemblyInfoInputs.cache
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.AssemblyInfo.cs
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.csproj.CoreCompileInputs.cache
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.sourcelink.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.dll
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\refint\Raceday.Shared.dll
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\Raceday.Shared\obj\Debug\net9.0\Raceday.Shared.pdb

@@ -50,29 +50,29 @@ namespace RaceDay.Mvc.Controllers
             return View("~/Views/Events/CreateEvent.cshtml");
         }
 
-        [Authorize(Roles = "Organiser")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEvent(RaceEventModel newEvent)
-        {
-            if (!ModelState.IsValid)
-            {
-                await LoadCategories();
-                return View("~/Views/Events/CreateEvent.cshtml", newEvent);
-            }
+        //[Authorize(Roles = "Organiser")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateEvent(RaceEventModel newEvent)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        await LoadCategories();
+        //        return View("~/Views/Events/CreateEvent.cshtml", newEvent);
+        //    }
 
-            bool isSaved = await _apiClient.CreateEventAsync(newEvent);
+        //    bool isSaved = await _apiClient.CreateEventAsync(newEvent);
 
-            if (isSaved)
-            {
-                TempData["SuccessMessage"] = "Event created successfully.";
-                return RedirectToAction(nameof(Events));
-            }
+        //    if (isSaved)
+        //    {
+        //        TempData["SuccessMessage"] = "Event created successfully.";
+        //        return RedirectToAction(nameof(Events));
+        //    }
 
-            ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
-            await LoadCategories();
-            return View("~/Views/Events/CreateEvent.cshtml", newEvent);
-        }
+        //    ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
+        //    await LoadCategories();
+        //    return View("~/Views/Events/CreateEvent.cshtml", newEvent);
+        //}
 
         [Authorize(Roles = "Organiser")]
         [HttpGet]
@@ -120,19 +120,19 @@ namespace RaceDay.Mvc.Controllers
             return View("~/Views/Events/RaceEvents.cshtml");
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> GetallEvents()
-        {
-            var eventsList = await _apiClient.GetEventsAsync();
+        //[AllowAnonymous]
+        //[HttpGet]
+        //public async Task<IActionResult> GetallEvents()
+        //{
+        //    var eventsList = await _apiClient.GetEventsAsync();
 
-            if (eventsList == null || !eventsList.Any())
-            {
-                ViewBag.ErrorMessage = "No race events could be retrieved from the server.";
-            }
+        //    if (eventsList == null || !eventsList.Any())
+        //    {
+        //        ViewBag.ErrorMessage = "No race events could be retrieved from the server.";
+        //    }
 
-            return View("~/Views/Events/RaceEvents.cshtml", eventsList);
-        }
+        //    return View("~/Views/Events/RaceEvents.cshtml", eventsList);
+        //}
 
         // ==========================================
         // PRIVATE HELPER METHODS
