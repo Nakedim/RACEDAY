@@ -15,42 +15,34 @@ namespace RaceDay.Mvc.Controllers
             _apiClient = apiClient;
         }
 
-        // GET: Categories/Create
+        // GET: Category/Create
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View("~/Views/Category/Create.cshtml");
         }
 
-        // POST: Categories/Create
+        // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryModel model)
         {
-            // Check MVC validation
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("~/Views/Category/Create.cshtml", model);
             }
 
-            // Send category to backend API
-            bool success = await _apiClient.CreateCategoryAsync(model);
+            var error = await _apiClient.CreateCategoryAsync(model);
 
-            if (success)
+            if (error == null)
             {
-                TempData["SuccessMessage"] =
-                    "Category created successfully!";
-
-                return RedirectToAction(
-                    "OrganiserDash", "Home");
+                TempData["SuccessMessage"] = "Category saved successfully!";
+                return RedirectToAction("OrganiserDash", "Home");
             }
 
-            ModelState.AddModelError(
-                string.Empty,
-                "Unable to create category. Please try again."
-            );
+            ViewBag.ErrorMessage = error;
 
-            return View(model);
+            return View("~/Views/Category/Create.cshtml", model);
         }
     }
 }

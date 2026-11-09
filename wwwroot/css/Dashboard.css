@@ -1,0 +1,56 @@
+﻿/* wwwroot/css/dashboard.css */
+:root {
+    --primary-olive: #6b705c;
+    --dark-olive: #525646;
+    --light-bg: #f4f5f6;
+    --card-gray: #e2e4e6;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: var(--primary-olive);
+    min-height: 100vh;
+    color: white;
+}
+
+    .sidebar .nav-link {
+        color: white;
+        background-color: var(--dark-olive);
+        border-radius: 0;
+        margin-bottom: 2px;
+        transition: background-color 0.2s;
+    }
+
+        .sidebar .nav-link:hover {
+            background-color: #404337;
+        }
+
+/* Component Blocks */
+.header-bar {
+    background-color: var(--card-gray);
+    font-weight: 500;
+}
+
+.metric-box {
+    background-color: var(--card-gray);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.content-block {
+    background-color: var(--card-gray);
+    min-height: 400px;
+}
+
+.footer-banner {
+    background-color: var(--primary-olive);
+    height: 100px;
+}

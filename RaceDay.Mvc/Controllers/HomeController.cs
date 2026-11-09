@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,15 +11,12 @@ namespace RaceDay.Mvc.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly RaceDayApiClient _apiClient;
 
-        public HomeController(
-            ILogger<HomeController> logger,
-            RaceDayApiClient apiClient)
+        public HomeController(ILogger<HomeController> logger, RaceDayApiClient apiClient)
         {
             _logger = logger;
             _apiClient = apiClient;
         }
 
-        // Public home page
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Index()
@@ -28,7 +24,6 @@ namespace RaceDay.Mvc.Controllers
             return View();
         }
 
-        // Organiser dashboard
         [Authorize(Roles = "Organiser")]
         [HttpGet]
         public IActionResult OrganiserDash()
@@ -36,7 +31,6 @@ namespace RaceDay.Mvc.Controllers
             return View("~/Views/Organiser/OrganiserDash.cshtml");
         }
 
-        // Participant dashboard
         [Authorize(Roles = "Participant")]
         [HttpGet]
         public IActionResult ParticipantDash()
@@ -48,57 +42,38 @@ namespace RaceDay.Mvc.Controllers
         // ORGANISER PAGES
         // ==========================================
 
-        // GET: Create Event
         [Authorize(Roles = "Organiser")]
         [HttpGet]
         public async Task<IActionResult> CreateEvent()
         {
             await LoadCategories();
-
             return View("~/Views/Events/CreateEvent.cshtml");
         }
 
-        // POST: Create Event
         [Authorize(Roles = "Organiser")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEvent(
-            RaceEventModel newEvent)
+        public async Task<IActionResult> CreateEvent(RaceEventModel newEvent)
         {
             if (!ModelState.IsValid)
             {
                 await LoadCategories();
-
-                return View(
-                    "~/Views/Events/CreateEvent.cshtml",
-                    newEvent
-                );
+                return View("~/Views/Events/CreateEvent.cshtml", newEvent);
             }
 
             bool isSaved = await _apiClient.CreateEventAsync(newEvent);
 
             if (isSaved)
             {
-                TempData["SuccessMessage"] =
-                    "Event created successfully.";
-
+                TempData["SuccessMessage"] = "Event created successfully.";
                 return RedirectToAction(nameof(Events));
             }
 
-            ModelState.AddModelError(
-                string.Empty,
-                "The API server failed to save this event."
-            );
-
+            ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
             await LoadCategories();
-
-            return View(
-                "~/Views/Events/CreateEvent.cshtml",
-                newEvent
-            );
+            return View("~/Views/Events/CreateEvent.cshtml", newEvent);
         }
 
-        // GET: Create Race
         [Authorize(Roles = "Organiser")]
         [HttpGet]
         public IActionResult CreateRace()
@@ -106,7 +81,6 @@ namespace RaceDay.Mvc.Controllers
             return View("~/Views/Races/CreateRace.cshtml");
         }
 
-        // GET: Race Entries
         [Authorize(Roles = "Organiser")]
         [HttpGet]
         public IActionResult Entries()
@@ -114,59 +88,12 @@ namespace RaceDay.Mvc.Controllers
             return View("~/Views/Entries/RaceEntries.cshtml");
         }
 
-        // GET: Enter Results
         [Authorize(Roles = "Organiser")]
         [HttpGet]
         public IActionResult EnterResults()
         {
             return View("~/Views/Results/EnterResults.cshtml");
         }
-
-        // GET: Create Category
-        [Authorize(Roles = "Organiser")]
-        [HttpGet]
-        public IActionResult CreateCategory()
-        {
-            return View("~/Views/Categories/CreateCategory.cshtml");
-        }
-
-        // POST: Create Category
-        [Authorize(Roles = "Organiser")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCategory(
-            CategoryModel newCategory)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(
-                    "~/Views/Categories/CreateCategory.cshtml",
-                    newCategory
-                );
-            }
-
-            bool isSaved =
-                await _apiClient.CreateCategoryAsync(newCategory);
-
-            if (isSaved)
-            {
-                TempData["SuccessMessage"] =
-                    "Category created successfully.";
-
-                return RedirectToAction(nameof(CreateEvent));
-            }
-
-            ModelState.AddModelError(
-                string.Empty,
-                "The API server failed to save this category."
-            );
-
-            return View(
-                "~/Views/Categories/CreateCategory.cshtml",
-                newCategory
-            );
-        }
-
 
         // ==========================================
         // PUBLIC PAGES
@@ -195,28 +122,16 @@ namespace RaceDay.Mvc.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // GET: Retrieve all events from API
-        [AllowAnonymous]
-        [HttpGet]
         public async Task<IActionResult> GetallEvents()
         {
             var eventsList = await _apiClient.GetEventsAsync();
 
             if (eventsList == null || !eventsList.Any())
             {
-                ViewBag.ErrorMessage =
-                    "No race events could be retrieved from the server.";
+                ViewBag.ErrorMessage = "No race events could be retrieved from the server.";
             }
 
-            return View(
-                "~/Views/Events/RaceEvents.cshtml",
-                eventsList
-            );
+            return View("~/Views/Events/RaceEvents.cshtml", eventsList);
         }
 
         // ==========================================
@@ -226,14 +141,11 @@ namespace RaceDay.Mvc.Controllers
         private async Task LoadCategories()
         {
             var categories = await _apiClient.GetCategoriesAsync();
-
-            var categoryList =
-                categories ?? Enumerable.Empty<CategoryModel>();
+            var categoryList = categories ?? Enumerable.Empty<CategoryModel>();
 
             if (!categoryList.Any())
             {
-                ViewBag.ErrorMessage =
-                    "No categories could be loaded from the API server.";
+                ViewBag.ErrorMessage = "No categories could be loaded from the API server.";
             }
 
             ViewBag.CategoriesList = new SelectList(

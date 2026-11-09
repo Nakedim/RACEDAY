@@ -46,7 +46,7 @@ namespace RaceDay.Mvc.Controllers
 
             return View(new RegisterView
             {
-                Role = role
+                ProfileRole = role
             });
         }
 
@@ -62,11 +62,11 @@ namespace RaceDay.Mvc.Controllers
             }
 
             // Validate the selected role.
-            if (model.Role != OrganiserRole &&
-                model.Role != ParticipantRole)
+            if (model.ProfileRole != OrganiserRole &&
+                model.ProfileRole != ParticipantRole)
             {
                 ModelState.AddModelError(
-                    nameof(model.Role),
+                    nameof(model.ProfileRole),
                     "Please select a valid registration role."
                 );
 

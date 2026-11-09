@@ -1,6 +1,9 @@
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using RaceDay.Mvc.Services;
+// Add this line directly ABOVE WebApplication.CreateBuilder(args)
+Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ==========================================
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<YourProject.Services.ApiService>();
+builder.Services.AddScoped<RaceDay.Mvc.Services.ApiService>();
 // ==========================================
 // SESSION CONFIGURATION
 // ==========================================

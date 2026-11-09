@@ -36,6 +36,6 @@ namespace RaceDay.Mvc.Models
         public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = "Participant";
+        public string ProfileRole { get; set; } = "Participant";
     }
 }
