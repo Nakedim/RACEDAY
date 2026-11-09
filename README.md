@@ -236,4 +236,7 @@ YouTube Link: [https://youtu.be/mkcNyMAOg5M](https://youtu.be/EV9iX0_JtLU)
 
 
 ## Testing
+## Participant can now safely save categories
+<img width="1171" height="482" alt="image" src="https://github.com/user-attachments/assets/33581b50-558b-4212-aa09-83af7250c543" />
+
 
