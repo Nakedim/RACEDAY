@@ -16,7 +16,8 @@ namespace RaceDay.Mvc.Models
         public string Location { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Please select a category.")]
-        public int CategoryID { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
+        public int CategoryId { get; set; }
 
         [Required(ErrorMessage = "Event type is required.")]
         public string EventType { get; set; } = string.Empty;

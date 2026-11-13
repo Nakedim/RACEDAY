@@ -184,7 +184,7 @@ namespace RaceDay.Api.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return Unauthorized(new { Error = "Invalid email or password. Looks like no Account has been created" });
+                return Unauthorized(new { Error = "Invalid email or password. Looks like no Account has been created." });
             }
 
             var passwordResult = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
@@ -199,53 +199,32 @@ namespace RaceDay.Api.Controllers
                 return StatusCode(403, new { Error = "This account has no assigned role." });
             }
 
-            var jwtKey = _configuration["Jwt:Key"];
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-
-            if (string.IsNullOrWhiteSpace(jwtKey) || string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
-            {
-                return StatusCode(500, new { Error = "JWT configuration is incomplete." });
-            }
-
-            // --- 💡 AUTH OVERLAP FIXES ---
-
-            // A. Trigger Identity Cookie creation for Session testing workflows
+            // 1. Create the Identity Auth Cookie (populates User.Claims and handles [Authorize])
             await _signInManager.SignInAsync(user, isPersistent: true);
 
-            // B. Populate Session State Cache string variable (Survives hot reload reboots)
+            // 2. Store user details in Session
             HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("UserRole", roles.First());
 
-            // C. Build out Standard structural claims array for JWT Token Generation
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            foreach (var role in roles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, role));
-                authClaims.Add(new Claim("role", role));
-            }
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                expires: DateTime.UtcNow.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
+            // 3. Return nested User object matching LoginResultModel
             return Ok(new
             {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiration = token.ValidTo,
-                User = new { user.Id, user.Email, user.FirstName, user.Surname, Role = roles.FirstOrDefault() }
+                Message = "Login successful.",
+                User = new
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    Role = roles.First()
+                }
             });
+        }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Logged out successfully." });
         }
     }
 }

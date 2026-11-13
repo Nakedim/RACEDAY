@@ -23,69 +23,69 @@ namespace RaceDay.Mvc.Controllers
         public async Task<IActionResult> ViewEntries()
         {
 
-            //var entries = await _apiClient.GetEntriesAsync();
+            var entries = await _apiClient.GetEntriesAsync();
 
-            //return View(entries);
-            return Ok();
+            return View(entries);
+           
         }
         // GET: /RaceEntries/CreateEntries
-        //[HttpGet]
-        //public async Task<IActionResult> CreateEntries()
-        //{
-        //    await LoadDropdowns();
+        [HttpGet]
+        public async Task<IActionResult> CreateEntries()
+        {
+            await LoadDropdowns();
 
-        //    return View("~/Views/Entries/CreateRaceEntries.cshtml",
-        //        new EntriesModel());
-        //}
+            return View("~/Views/Entries/CreateRaceEntries.cshtml",
+                new EntriesModel());
+        }
 
         // POST: /RaceEntries/EnterRace
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EnterRace(EntriesModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        await LoadDropdowns();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnterRace(EntriesModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await LoadDropdowns();
 
-        //        return View(
-        //            "~/Views/Entries/CreateRaceEntries.cshtml",
-        //            model);
-        //    }
+                return View(
+                    "~/Views/Entries/CreateRaceEntries.cshtml",
+                    model);
+            }
 
-        //    // API submission will be connected once
-        //    // the Entries API endpoint and model are confirmed.
+            // API submission will be connected once
+            // the Entries API endpoint and model are confirmed.
 
-        //    ModelState.AddModelError(
-        //        string.Empty,
-        //        "Race entry submission has not yet been connected to the API."
-        //    );
+            ModelState.AddModelError(
+                string.Empty,
+                "Race entry submission has not yet been connected to the API."
+            );
 
-        //    await LoadDropdowns();
+            await LoadDropdowns();
 
-        //    return View(
-        //        "~/Views/Entries/CreateRaceEntries.cshtml",
-        //        model);
-        //}
+            return View(
+                "~/Views/Entries/CreateRaceEntries.cshtml",
+                model);
+        }
 
-        // Populate event and category dropdowns.
-        //    private async Task LoadDropdowns()
-        //    {
-        //        var events = await _apiClient.GetEventsAsync();
 
-        //        var categories = await _apiClient.GetCategoriesAsync();
+        private async Task LoadDropdowns()
+        {
+            var events = await _apiClient.GetEventsAsync();
 
-        //        ViewBag.RaceEvents = new SelectList(
-        //            events,
-        //            "RaceEventID",
-        //            "Name"
-        //        );
+            var categories = await _apiClient.GetCategoriesAsync();
 
-        //        ViewBag.Categories = new SelectList(
-        //            categories ?? Enumerable.Empty<CategoryModel>(),
-        //            "CategoryId",
-        //            "CategoryName"
-        //        );
-        //    }
-        //}
+            ViewBag.RaceEvents = new SelectList(
+                events,
+                "RaceEventID",
+                "Name"
+            );
+
+            ViewBag.Categories = new SelectList(
+                categories ?? Enumerable.Empty<CategoryModel>(),
+                "CategoryId",
+                "CategoryName"
+            );
+        }
     }
 }
+

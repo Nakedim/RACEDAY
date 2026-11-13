@@ -1,41 +1,40 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
-using System.Text;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Controllers & OpenAPI Docs
+// ==========================================
+// 1. CONTROLLERS & JSON CONFIGURATION
+// ==========================================
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient("RaceDay.Api", client =>
-{
-
-    //'https://localhost:7087/api/AuthUsers/1' 
-
-    client.BaseAddress = new Uri("https://localhost:7087/api");
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
 
-// 2. Database Configuration
+// ==========================================
+// 2. DATABASE CONFIGURATION
+// ==========================================
+
 builder.Services.AddDbContext<RacedayDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-           .ConfigureWarnings(warnings => warnings.Ignore(
-               Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+    .ConfigureWarnings(warnings =>
+        warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
-// 3. ASP.NET Core Identity Configuration
-builder.Services.AddIdentity<ApplicationUser, IdentityRole <int>>(options =>
+// ============================aa==============
+// 3. ASP.NET CORE IDENTITY
+// ==========================================
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
@@ -46,154 +45,147 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole <int>>(options =>
 .AddEntityFrameworkStores<RacedayDbContext>()
 .AddDefaultTokenProviders();
 
-// 4. Swagger Security & UI Configuration
+// ==========================================
+// 4. HTTP CLIENT
+// ==========================================
+
+builder.Services.AddHttpClient("RaceDay.Api", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7087/api/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// ==========================================
+// 5. SWAGGER CONFIGURATION
+// ==========================================
+
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "RACEDAY API", Version = "v1" });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter your bearer token."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
-            Array.Empty<string>()
-        }
+        Title = "RACEDAY API",
+        Version = "v1"
     });
 });
 
-// 5. CORS Policy
+// ==========================================
+// 6. CORS CONFIGURATION
+// ==========================================
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowClient", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://localhost:7087", "https://localhost:7026") 
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
-
 });
+// ==========================================
+// 7. AUTHORIZATION
+// ==========================================
 
-
-
-// 6. JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
-         RoleClaimType = "role",
-        NameClaimType = "sub"
-    };
-});
-
-
-builder.Services.AddAuthorization(options =>
-{
-    options.DefaultPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
-       .RequireAuthenticatedUser()
-       .AddAuthenticationSchemes(
-           JwtBearerDefaults.AuthenticationScheme,
-           IdentityConstants.ApplicationScheme 
-       )
-       .Build();
-});
-// 7. Distributed Cache & Session Management
+builder.Services.AddAuthorization();
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-// Build application
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+});
 var app = builder.Build();
 
-// 8. HTTP Pipeline & Middleware
+// ==========================================
+// 8. HTTP REQUEST PIPELINE
+// ==========================================
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
+
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "RACEDAY API v1");
-      
+        options.SwaggerEndpoint(
+            "/swagger/v1/swagger.json",
+            "RACEDAY API v1");
     });
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+
+app.UseCors("AllowClient");
 app.UseSession();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<RacedayDbContext>();
+// ==========================================
+// 9. SEED IDENTITY ROLES
+// ==========================================
 
-    //await dbContext.Database.EnsureCreatedAsync();
-
-}
-
-// Seed the Organiser and Participant roles
 await SeedRolesAsync(app.Services);
 
 app.Run();
 
-// 10. Role Seeding Method
+// ==========================================
+// 10. ROLE SEEDING METHOD
+// ==========================================
+
 static async Task SeedRolesAsync(IServiceProvider services)
 {
     using var scope = services.CreateScope();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    var logger = scope.ServiceProvider
+        .GetRequiredService<ILogger<Program>>();
 
     try
     {
         var roleManager = scope.ServiceProvider
-          .GetRequiredService<RoleManager<IdentityRole<int>>>();
+            .GetRequiredService<RoleManager<IdentityRole<int>>>();
+
         string[] roles = Enum.GetNames<ProfileRole>();
 
         foreach (var roleName in roles)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                // Fix: Instantiate and set Name manually
                 var identityRole = new IdentityRole<int>
                 {
                     Name = roleName
                 };
 
                 var result = await roleManager.CreateAsync(identityRole);
+
                 if (!result.Succeeded)
                 {
-                    var errors = string.Join("; ", result.Errors.Select(error => error.Description));
-                    throw new InvalidOperationException($"Could not create role '{roleName}': {errors}");
+                    var errors = string.Join("; ",
+                        result.Errors.Select(error => error.Description));
+
+                    throw new InvalidOperationException(
+                        $"Could not create role '{roleName}': {errors}");
                 }
-                logger.LogInformation("Created Identity role: {RoleName}", roleName);
+
+                logger.LogInformation(
+                    "Created Identity role: {RoleName}", roleName);
             }
         }
     }

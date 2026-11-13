@@ -44,5 +44,6 @@ namespace RaceDay.Mvc.Controllers
 
             return View("~/Views/Category/Create.cshtml", model);
         }
+
     }
 }

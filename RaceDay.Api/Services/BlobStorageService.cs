@@ -1,6 +1,9 @@
 ﻿namespace RaceDay.Api.Services
 {
-    public class BlobStorageService
+    public interface BlobStorageService
     {
+        Task<string> UploadFileAsync(IFormFile file, string containerName);
+        Task<Stream> DownloadFileAsync(string fileName, string containerName);
+        Task<bool> DeleteFileAsync(string fileName, string containerName);
     }
 }

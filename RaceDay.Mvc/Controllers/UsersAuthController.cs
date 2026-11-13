@@ -117,6 +117,8 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
+            HttpContext.Session.Clear();
+
             var result = await _apiClient.LoginAsync(model);
 
             if (result?.User == null)
@@ -155,8 +157,7 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
-            // Clear previous session information.
-            HttpContext.Session.Clear();
+     
 
             // Store authenticated user information.
             HttpContext.Session.SetString("Username", email);
@@ -232,7 +233,8 @@ namespace RaceDay.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(
+            //await _apiClient.LogoutAsync(); 
+           await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme
             );
 
@@ -240,5 +242,6 @@ namespace RaceDay.Mvc.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
     }
 }

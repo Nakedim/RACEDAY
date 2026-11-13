@@ -93,8 +93,29 @@ builder.Services.AddHttpClient<RaceDayApiClient>(client =>
     );
 
     client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    UseCookies = false
 });
+builder.Services.AddTransient<CookieForwardingHandler>();
 
+// 2. Attach it to RaceDayApiClient
+builder.Services.AddHttpClient<RaceDayApiClient>(client =>
+{
+    client.BaseAddress = apiUri;
+
+    client.DefaultRequestHeaders.Accept.ParseAdd(
+        "application/json"
+    );
+
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    UseCookies = false
+})
+.AddHttpMessageHandler<CookieForwardingHandler>();
 // ==========================================
 // BUILD APPLICATION
 // ==========================================
