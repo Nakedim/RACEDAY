@@ -27,6 +27,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Category/CreateCategory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcnlcQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Entries/CreateEntries.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW50cmllc1xDcmVhdGVFbnRyaWVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -73,6 +77,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Home/ThankYou.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxUaGFua1lvdS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Images/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1hZ2VzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/nmontsho/source/repos/RaceDay-MonoRepo/RaceDay.Mvc/Views/Organiser/OrganiserDash.cshtml]

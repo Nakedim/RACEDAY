@@ -23,10 +23,10 @@ namespace RaceDay.Mvc.Controllers
         public async Task<IActionResult> ViewEntries()
         {
 
-            //var entries = await _apiClient.GetEntriesAsync();
+            var entries = await _apiClient.GetEntriesAsync();
 
-            //return View(entries);
-            return Ok();
+            return View(entries);
+           
         }
         // GET: /RaceEntries/CreateEntries
         [HttpGet]
@@ -67,7 +67,7 @@ namespace RaceDay.Mvc.Controllers
                 model);
         }
 
-        // Populate event and category dropdowns.
+
         private async Task LoadDropdowns()
         {
             var events = await _apiClient.GetEventsAsync();
@@ -88,3 +88,4 @@ namespace RaceDay.Mvc.Controllers
         }
     }
 }
+

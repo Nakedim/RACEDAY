@@ -17,6 +17,8 @@ namespace RaceDay.Api.Data
         public DbSet<Categories> Categories { get; set; }
         public DbSet<RaceResults> RaceResults { get; set; }
         public DbSet<Races> Races { get; set; }
+        
+        public DbSet<RaceImage> RaceImages { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

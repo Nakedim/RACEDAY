@@ -1,5 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using RaceDay.Mvc.Models;
+using System.Net.Http.Json;
 
 namespace RaceDay.Mvc.Services
 {
@@ -11,8 +12,7 @@ namespace RaceDay.Mvc.Services
         {
             _httpClient = httpClient;
 
-            // Safety mechanism: If Program.cs fails to map the base address correctly, 
-            // ensure the client fallback points directly to your verified running API port.
+         
             if (_httpClient.BaseAddress == null)
             {
                 _httpClient.BaseAddress = new Uri("https://localhost:7087/");
@@ -42,7 +42,7 @@ namespace RaceDay.Mvc.Services
                     return null;
 
                 var error = await response.Content.ReadAsStringAsync();
-
+                
                 return $"HTTP {(int)response.StatusCode}: {error}";
             }
             catch (Exception ex)
@@ -51,51 +51,75 @@ namespace RaceDay.Mvc.Services
             }
         }
         // GET /api/Categories
-        public async Task<IEnumerable<CategoryModel>> GetCategoriesAsync()
+        // GET /api/Categories
+
+        public async Task<List<CategoryModel>> GetCategoriesAsync()
         {
-            try
-            {
-                return await _httpClient.GetFromJsonAsync<IEnumerable<CategoryModel>>("/api/Categories")
-                       ?? new List<CategoryModel>();
-            }
-            catch
-            {
-                return new List<CategoryModel>();
-            }
+            var response = await _httpClient.GetAsync("api/Categories");
+
+            response.EnsureSuccessStatusCode();
+
+            var categories = await response.Content
+                .ReadFromJsonAsync<List<CategoryModel>>();
+
+            return categories ?? new List<CategoryModel>();
         }
+
+
 
         // POST /api/events
-        public async Task<bool> CreateEventAsync(RaceEventModel model)
-        {
-            var response = await _httpClient.PostAsJsonAsync("/api/events", model);
-            return response.IsSuccessStatusCode;
-        }
 
-        // GET /api/events
-        public async Task<IEnumerable<RaceEventModel>> GetEventsAsync()
+        public async Task<string?> CreateEventAsync(RaceEventModel model)
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<IEnumerable<RaceEventModel>>("/api/events")
-                       ?? new List<RaceEventModel>();
+                var response = await _httpClient.PostAsJsonAsync(
+                    "api/raceevents", model);
+
+                var error = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return null;
+
+                return $"HTTP {(int)response.StatusCode}: {error}";
             }
-            catch
+            catch (Exception ex)
             {
-                return new List<RaceEventModel>();
+                return ex.Message;
             }
         }
+
 
         // ==========================================
         // AUTHENTICATION METHODS
         // ==========================================
 
-
         public async Task<string?> RegisterAsync(RegisterView model)
         {
             try
             {
+                var today = DateTime.Today;
+                int age = today.Year - model.DateOfBirth.Year;
+                if (model.DateOfBirth.Date > today.AddYears(-age))
+                {
+                    age--;
+                }
+
+                var request = new
+                {
+                    Age = age,
+                    Location = model.Location,
+                    FirstName = model.FirstName,
+                    Surname = model.Surname,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Password = model.Password,
+                    ConfirmPassword = model.ConfirmPassword,
+                    ProfileRole = model.ProfileRole
+                };
+
                 var response = await _httpClient.PostAsJsonAsync(
-                    "api/authusers/register", model);
+                    "api/authusers/register", request);
 
                 var errorContent = await response.Content.ReadAsStringAsync();
 
@@ -112,6 +136,7 @@ namespace RaceDay.Mvc.Services
                 return $"Registration connection error: {ex.Message}";
             }
         }
+
 
         public async Task<LoginResultModel?> LoginAsync(LoginView model)
         {
@@ -136,24 +161,50 @@ namespace RaceDay.Mvc.Services
             }
         }
 
+        public async Task<List<RaceEventModel>?> GetEventsAsync()
+        {
+            return await _httpClient.GetFromJsonAsync<List<RaceEventModel>>(
+                "api/raceevents");
+        }
 
-        //public async Task<LoginResultModel?> LoginAsync(LoginView model)
-        //{
-        //    try
-        //    {
-        //        var response = await _httpClient.PostAsJsonAsync("/api/usersauth/login", model);
+        // ==========================================
+        // RACE ENTRY METHODS
+        // ==========================================
 
-        //        if (!response.IsSuccessStatusCode)
-        //        {
-        //            return null;
-        //        }
+        // GET /api/RaceEntries
+        public async Task<List<EntriesModel>> GetEntriesAsync()
+        {
+            try
+            {
+                var entries = await _httpClient.GetFromJsonAsync<List<EntriesModel>>(
+                    "api/RaceEntries");
 
-        //        return await response.Content.ReadFromJsonAsync<LoginResultModel>();
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
+                return entries ?? new List<EntriesModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving race entries: {ex.Message}");
+
+                return new List<EntriesModel>();
+            }
+        }
+
+        public async Task LogoutAsync() => await _httpClient.PostAsync("api/authusers/logout", null);
+
+        public async Task<List<EnterResultsModel>> GetResultsAsync()
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<EnterResultsModel>>(
+
+                    "api/RaceResults") ?? new List<EnterResultsModel>();
+            }
+            catch
+            {
+                return new List<EnterResultsModel>();
+            }
+        }
+      
+
     }
 }

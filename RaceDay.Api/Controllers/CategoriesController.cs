@@ -25,7 +25,7 @@ namespace RaceDay.Api.Controllers
 
 
         [HttpGet("{id:int}")]
-        [Authorize]
+        
         public async Task<ActionResult> GetCategory(int id)
         {
 
@@ -42,7 +42,7 @@ namespace RaceDay.Api.Controllers
         }
         //both view gategory
         [HttpGet]
-        [Authorize]
+       
         public async Task<ActionResult<List<Categories>>> GetAllCategories()
         {
             var Categories = await _context.Categories.ToListAsync();
@@ -77,7 +77,7 @@ namespace RaceDay.Api.Controllers
             _context.Categories.Add(Newcategory);
             await _context.SaveChangesAsync();
         
-            return CreatedAtAction(nameof(GetCategory), new { id = Newcategory.CategoryID }, Newcategory);
+            return CreatedAtAction(nameof(GetCategory), new { id = Newcategory.CategoryId }, Newcategory);
 
         }
 

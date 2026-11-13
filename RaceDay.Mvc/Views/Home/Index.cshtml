@@ -1,196 +1,173 @@
 ﻿@{
     ViewData["Title"] = "Welcome to Raceday";
+
+    // Centralized Data Definition for the Carousel Slides
+    var slides = new[] {
+        new { Badge = "Upcoming Events", Class = "bg-primary", TextClass = "text-white-50", Title = "Annual Campus Marathon 2026", Desc = "Registration is now open! Secure your slot today and view event paths.", Img = "https://nowinsa.co.za" },
+        new { Badge = "Important Dates", Class = "bg-danger", TextClass = "text-white-50", Title = "Registration Deadline Approaching", Desc = "All entry forms must be submitted by Friday, November 20th.", Img = "https://shutterstock.com" },
+        new { Badge = "Campus Activities", Class = "bg-success", TextClass = "text-white-50", Title = "Midweek Fun Run & Social Meetup", Desc = "Join us this Wednesday at 4:30 PM outside the main campus student center.", Img = "https://mandela.ac.za" },
+        new { Badge = "General Announcement", Class = "bg-warning text-dark", TextClass = "text-white-50", Title = "New Digital Leaderboards Live", Desc = "Track live tracking telemetry, lap times, and individual runner profiles instantly.", Img = "https://uj.ac.za" }
+    };
+
+    // Centralized Data Definition for the Feature Navigation Cards
+    var navCards = new[] {
+        new { Title = "Past Races", Action = "Index", Controller = "PastRaces" },
+        new { Title = "Organisers", Action = "Index", Controller = "Organisers" },
+        new { Title = "Events Gallery", Action = "Gallery", Controller = "Events" },
+        new { Title = "Leaderboard", Action = "Index", Controller = "Leaderboard" },
+        new { Title = "Upcoming Events", Action = "Upcoming", Controller = "Events" },
+        new { Title = "My Classmates", Action = "Classmates", Controller = "Account" }
+    };
+
+    // Authentication Sidebar Definitions
+    var authRoles = new[] {
+        new { Role = "Participant", Heading = "Are you a participant?", Desc = "Sign up to manage and track your race statistics." },
+        new { Role = "Organiser", Heading = "Are you an event organiser?", Desc = "Sign up to manage your events and races." }
+    };
 }
 
 <style>
-    /* Custom Color Variables & Utility Overrides */
     .bg-custom-dark {
-        background-color: #1e293b !important; /* Slate 800 */
+        background-color: #1e293b !important;
     }
+
     .bg-custom-gray {
-        background-color: #f1f5f9 !important; /* Slate 100 */
+        background-color: #f1f5f9 !important;
     }
-    .text-sm {
-        font-size: 0.875rem !important;
-    }
-    
-    /* Layout Sizing Fixes */
+
     .min-height-hero {
-        min-height: 260px;
+        min-height: 280px;
     }
+
     .min-height-card {
         min-height: 120px;
     }
 
-    /* Micro-interactions & Smooth Hover Animations */
+    /* Interactive Card Micro-animations */
     .card-hover {
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
     }
-    .card-hover:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-        background-color: #e2e8f0 !important; /* Slate 200 on hover */
-    }
 
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            background-color: #e2e8f0 !important;
+        }
+
+    /* Responsive Slider Sizing and Image Handling */
+    .carousel-item {
+        min-height: 280px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
 </style>
+
 <div class="container-fluid p-0">
     <div class="row g-0">
-        
+
         <!-- ================= SIDEBAR CONTAINER (Left Side) ================= -->
         <aside class="col-12 col-md-3 col-lg-2 bg-custom-dark text-white p-3 border-end border-secondary min-vh-100">
             <div class="mb-4">
                 <h2 class="h4 fw-bold mb-0 text-white">Raceday</h2>
             </div>
 
-            <!-- Participant Card -->
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
                     <h6 class="fw-bold">Welcome!</h6>
-
-                    <p class="text-muted small">
-                        @User.Identity.Name
-                    </p>
+                    <p class="text-muted small mb-2">@User.Identity.Name</p>
 
                     @if (User.IsInRole("Organiser"))
                     {
-                        <a asp-controller="Home"
-                           asp-action="OrganiserDash"
-                           class="btn btn-primary btn-sm w-100 mb-2">
-                            Organiser Dashboard
-                        </a>
+                        <a asp-controller="Home" asp-action="OrganiserDash" class="btn btn-primary btn-sm w-100 mb-2">Organiser Dashboard</a>
                     }
                     else if (User.IsInRole("Participant"))
                     {
-                        <a asp-controller="Home"
-                           asp-action="ParticipantDash"
-                           class="btn btn-primary btn-sm w-100 mb-2">
-                            Participant Dashboard
-                        </a>
+                        <a asp-controller="Home" asp-action="ParticipantDash" class="btn btn-primary btn-sm w-100 mb-2">Participant Dashboard</a>
                     }
 
-                    <form asp-controller="UsersAuth"
-                          asp-action="Logout"
-                          method="post">
+                    <form asp-controller="UsersAuth" asp-action="Logout" method="post">
                         @Html.AntiForgeryToken()
-                        <button type="submit"
-                                class="btn btn-outline-danger btn-sm w-100">
-                            Sign Out
-                        </button>
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Sign Out</button>
                     </form>
                 </div>
             }
             else
             {
-                <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
-                    <h6 class="fw-bold">Are you a participant?</h6>
-
-                    <p class="text-muted small">
-                        Sign up to manage and track your race statistics.
-                    </p>
-
-                    <a asp-controller="UsersAuth"
-                       asp-action="Register"
-                       asp-route-role="Participant"
-                       class="btn btn-primary btn-sm w-100 mb-2">
-                        Create an Account
-                    </a>
-
-                    <a asp-controller="UsersAuth"
-                       asp-action="Login"
-                       class="small">
-                        Already have an account? Sign in
-                    </a>
-                </div>
-
-                <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
-                    <h6 class="fw-bold">Are you an event organiser?</h6>
-
-                    <p class="text-muted small">
-                        Sign up to manage your events and races.
-                    </p>
-
-                    <a asp-controller="UsersAuth"
-                       asp-action="Register"
-                       asp-route-role="Organiser"
-                       class="btn btn-primary btn-sm w-100 mb-2">
-                        Create an Account
-                    </a>
-
-                    <a asp-controller="UsersAuth"
-                       asp-action="Login"
-                       class="small">
-                        Already have an account? Sign in
-                    </a>
-                </div>
+                @foreach (var config in authRoles)
+                {
+                    <div class="bg-white text-dark rounded p-3 mb-3 shadow-sm">
+                        <h6 class="fw-bold">@config.Heading</h6>
+                        <p class="text-muted small mb-2">@config.Desc</p>
+                        <a asp-controller="UsersAuth" asp-action="Register" asp-route-role="@config.Role" class="btn btn-primary btn-sm w-100 mb-2">Create an Account</a>
+                        <a asp-controller="UsersAuth" asp-action="Login" class="small d-block text-center">Already have an account? Sign in</a>
+                    </div>
+                }
             }
-
-        
         </aside>
 
         <!-- ================= MAIN CONTENT AREA (Right Side) ================= -->
         <main class="col-12 col-md-9 col-lg-10 bg-light d-flex flex-column min-vh-100">
-
             <div class="p-4 flex-grow-1">
-                
-                <!-- Hero Slider Section -->
-                <section class="bg-custom-gray text-dark rounded p-5 mb-4 shadow-sm border text-center d-flex align-items-center justify-content-center min-height-hero">
-                    <div>
-                        <h1 class="h3 fw-semibold mb-2">Slideshow of Events, important dates, campus activities and general announcements</h1>
-                        <p class="text-muted mb-0">Dynamic slider component placeholder</p>
+
+                <!-- Dynamic Hero Slider Section -->
+                <section class="mb-4 shadow-sm border rounded overflow-hidden">
+                    <div id="racedayHeroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+
+                        <!-- Dynamic Indicators -->
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < slides.Length; i++)
+                            {
+                                <button type="button" data-bs-target="#racedayHeroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                            }
+                        </div>
+
+                        <!-- Dynamic Template Slides -->
+                        <div class="carousel-inner text-center">
+                            @for (int i = 0; i < slides.Length; i++)
+                            {
+                                var item = slides[i];
+                                <div class="carousel-item @(i == 0 ? "active" : "")" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('@item.Img');">
+                                    <div class="d-flex align-items-center justify-content-center min-height-hero p-5 text-white">
+                                        <div class="bg-dark bg-opacity-50 p-4 rounded">
+                                            <span class="badge @item.Class mb-2">@item.Badge</span>
+                                            <h1 class="h3 fw-semibold mb-2 text-white">@item.Title</h1>
+                                            <p class="mb-0 @item.TextClass">@item.Desc</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Fixed Slider Interface Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#racedayHeroCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-secondary rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#racedayHeroCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-secondary rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                 </section>
 
-                <!-- 6-Card Feature Grid -->
+                <!-- Dynamic Feature Grid Matrix -->
                 <section class="row g-4">
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Index", "PastRaces")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">Past Races</h5>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Index", "Organisers")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">Organisers</h5>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Gallery", "Events")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">Events Gallery</h5>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Index", "Leaderboard")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">Leaderboard</h5>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Upcoming", "Events")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">Upcoming Events</h5>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="@Url.Action("Classmates", "Account")" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
-                            <div class="card-body d-flex align-items-center justify-content-center min-height-card">
-                                <h5 class="card-title fw-medium m-0 text-center">My Classmates</h5>
-                            </div>
-                        </a>
-                    </div>
+                    @foreach (var card in navCards)
+                    {
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <a href="@Url.Action(card.Action, card.Controller)" class="card h-100 bg-custom-gray border text-decoration-none text-dark card-hover shadow-sm">
+                                <div class="card-body d-flex align-items-center justify-content-center min-height-card">
+                                    <h5 class="card-title fw-medium m-0 text-center">@card.Title</h5>
+                                </div>
+                            </a>
+                        </div>
+                    }
                 </section>
 
             </div>
-
- 
         </main>
-        
+
     </div>
 </div>

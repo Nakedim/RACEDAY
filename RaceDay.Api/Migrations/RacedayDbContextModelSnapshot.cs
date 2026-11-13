@@ -211,6 +211,9 @@ namespace RaceDay.Api.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ProfileRole")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -224,9 +227,6 @@ namespace RaceDay.Api.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("profileRole")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -318,7 +318,7 @@ namespace RaceDay.Api.Migrations
                     b.ToTable("Participants", (string)null);
                 });
 
-            modelBuilder.Entity("RaceDay.Api.Models.RaceDay.Api.Models.RaceEntries", b =>
+            modelBuilder.Entity("RaceDay.Api.Models.RaceEntries", b =>
                 {
                     b.Property<int>("RaceEntryID")
                         .ValueGeneratedOnAdd()
@@ -357,9 +357,6 @@ namespace RaceDay.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventID"));
 
-                    b.Property<int?>("ApplicationUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
@@ -383,8 +380,6 @@ namespace RaceDay.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EventID");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("OrganiserID");
 
@@ -533,7 +528,7 @@ namespace RaceDay.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RaceDay.Api.Models.RaceDay.Api.Models.RaceEntries", b =>
+            modelBuilder.Entity("RaceDay.Api.Models.RaceEntries", b =>
                 {
                     b.HasOne("RaceDay.Api.Models.Categories", "Category")
                         .WithMany()
@@ -562,10 +557,6 @@ namespace RaceDay.Api.Migrations
 
             modelBuilder.Entity("RaceDay.Api.Models.RaceEvent", b =>
                 {
-                    b.HasOne("RaceDay.Api.Models.ApplicationUser", null)
-                        .WithMany("RaceEvents")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("RaceDay.Api.Models.Organiser", "Organiser")
                         .WithMany("RaceEvents")
                         .HasForeignKey("OrganiserID")
@@ -611,11 +602,6 @@ namespace RaceDay.Api.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("RaceDay.Api.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("RaceEvents");
                 });
 
             modelBuilder.Entity("RaceDay.Api.Models.Organiser", b =>

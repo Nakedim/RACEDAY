@@ -1,75 +1,115 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RaceDay.Mvc.Models;
 using RaceDay.Mvc.Services;
+using System.Security.Claims;
 
 namespace RaceDay.Mvc.Controllers
 {
-    [AllowAnonymous]
     public class RaceEventsController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly RaceDayApiClient _apiClient;
 
-        // ✅ Fixed Constructor Setup
-        public RaceEventsController(IHttpClientFactory httpClientFactory, RaceDayApiClient apiClient)
+        public RaceEventsController(RaceDayApiClient apiClient)
         {
-            _httpClientFactory = httpClientFactory;
             _apiClient = apiClient;
         }
 
+        // ==========================================
+        // LOAD CATEGORIES INTO DROPDOWN
+        // ==========================================
+        private async Task LoadCategoriesDropdownAsync(int? selectedCategoryId = null)
+        {
+            var categories = await _apiClient.GetCategoriesAsync();
+
+            ViewBag.Categories = new SelectList(
+                categories,
+                "CategoryId",
+                "CategoryName",
+                selectedCategoryId
+            );
+        }
+
+        // ==========================================
+        // DISPLAY ALL RACE EVENTS
+        // ==========================================
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var events = await _httpClientFactory.CreateClient("RaceDayApi")
-                .GetFromJsonAsync<List<RaceEventModel>>("api/RaceEvents");
+            var events = await _apiClient.GetEventsAsync()
+                         ?? new List<RaceEventModel>();
 
-            // Pass the events array data model directly to your Razor View!
             return View(events);
         }
 
+        // ==========================================
+        // CREATE EVENT - GET
+        // Automatically loads categories
+        // ==========================================
+        [Authorize(Roles = "Organiser")]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            await LoadCategoriesDropdownAsync();
+
+            return View(new RaceEventModel());
+        }
+
+        // ==========================================
+        // CREATE EVENT - POST
+        // ==========================================
         [Authorize(Roles = "Organiser")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RaceEventModel model)
         {
-            if (!ModelState.IsValid)
+            // 1. Get logged-in organiser ID from session or claims FIRST
+            var organiserIdClaim =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? HttpContext.Session.GetString("UserId");
+
+            if (!int.TryParse(organiserIdClaim, out int organiserId))
             {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Unable to identify the logged-in organiser."
+                );
+
+                await LoadCategoriesDropdownAsync(model.CategoryId);
                 return View(model);
             }
 
-            var organiserIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            // 2. Assign OrganiserID and remove it from ModelState validation
+            model.OrganiserID = organiserId;
+            ModelState.Remove(nameof(model.OrganiserID));
 
-            if (string.IsNullOrEmpty(organiserIdClaim) || !int.TryParse(organiserIdClaim, out int loggedInOrganiserId))
+            // 3. Validate remaining form fields
+            if (!ModelState.IsValid)
             {
-                var sessionUserId = HttpContext.Session.GetString("UserId");
-                if (string.IsNullOrEmpty(sessionUserId) || !int.TryParse(sessionUserId, out loggedInOrganiserId))
-                {
-                    ModelState.AddModelError(string.Empty, "Unable to resolve your Organiser session profile context.");
-                    return View(model);
-                }
+                await LoadCategoriesDropdownAsync(model.CategoryId);
+                return View(model);
             }
 
-            model.OrganiserID = loggedInOrganiserId;
+            // 4. Send event to API
+            string? errorMessage = await _apiClient.CreateEventAsync(model);
 
-            bool isSaved = await _apiClient.CreateEventAsync(model);
-
-            if (isSaved)
+            if (errorMessage == null)
             {
-                TempData["SuccessMessage"] = "Race Event created successfully under your profile name!";
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Race Event created successfully!";
+
+                return RedirectToAction("OrganiserDash", "Home");
             }
 
-            ModelState.AddModelError(string.Empty, "The system was unable to create the race event. Please try again.");
+            ModelState.AddModelError(
+                string.Empty,
+                $"Unable to create race event: {errorMessage}"
+            );
+
+            await LoadCategoriesDropdownAsync(model.CategoryId);
+
             return View(model);
-        }
-
-        [Authorize(Roles = "Organiser")]
-        [HttpGet]
-        public IActionResult Create()
-        {
-            // Returns the blank form view model to the user
-            return View(new RaceEventModel());
         }
     }
 }

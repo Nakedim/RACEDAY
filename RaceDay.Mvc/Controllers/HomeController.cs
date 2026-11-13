@@ -55,24 +55,38 @@ namespace RaceDay.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEvent(RaceEventModel newEvent)
         {
+            if (newEvent == null)
+            {
+                return BadRequest("Event data cannot be null.");
+            }
+
             if (!ModelState.IsValid)
             {
                 await LoadCategories();
-                return View("~/Views/Events/CreateEvent.cshtml", newEvent);
+                return View("CreateEvent", newEvent);
             }
 
-            bool isSaved = await _apiClient.CreateEventAsync(newEvent);
+            //try
+            //{
+            //    bool isSaved = await _apiClient.CreateEventAsync(newEvent);
+            //    if (isSaved)
+            //    {
+            //        TempData["SuccessMessage"] = "Event created successfully.";
+            //        return RedirectToAction(nameof(Events));
+            //    }
 
-            if (isSaved)
-            {
-                TempData["SuccessMessage"] = "Event created successfully.";
-                return RedirectToAction(nameof(Events));
-            }
+            //    ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Consider logging the actual exception (ex) here
+            //    ModelState.AddModelError(string.Empty, "An error occurred while communicating with the server.");
+            //}
 
-            ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
             await LoadCategories();
-            return View("~/Views/Events/CreateEvent.cshtml", newEvent);
+            return View("CreateEvent", newEvent);
         }
+
 
         [Authorize(Roles = "Organiser")]
         [HttpGet]
@@ -124,14 +138,42 @@ namespace RaceDay.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> GetallEvents()
         {
-            var eventsList = await _apiClient.GetEventsAsync();
-
-            if (eventsList == null || !eventsList.Any())
+            try
             {
-                ViewBag.ErrorMessage = "No race events could be retrieved from the server.";
+                var eventsList = await _apiClient.GetEventsAsync();
+
+                if (eventsList == null || !eventsList.Any())
+                {
+                    ViewBag.ErrorMessage = "No race events are currently available.";
+
+                    return View("~/Views/Events/RaceEvents.cshtml",
+                        new List<RaceEventModel>());
+                }
+
+                return View("~/Views/Events/RaceEvents.cshtml", eventsList);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "Unable to retrieve race events. Please try again later.";
+
+                // Log the exception during development
+                Console.WriteLine(ex.Message);
+
+                return View("~/Views/Events/RaceEvents.cshtml",
+                    new List<RaceEventModel>());
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ViewEntries()
+        {
+            var entries = await _apiClient.GetEntriesAsync();
+
+            if (entries == null || !entries.Any())
+            {
+                ViewBag.ErrorMessage = "No race entries are currently available.";
             }
 
-            return View("~/Views/Events/RaceEvents.cshtml", eventsList);
+            return View(entries);
         }
 
         // ==========================================
@@ -141,17 +183,20 @@ namespace RaceDay.Mvc.Controllers
         private async Task LoadCategories()
         {
             var categories = await _apiClient.GetCategoriesAsync();
-            var categoryList = categories ?? Enumerable.Empty<CategoryModel>();
 
-            if (!categoryList.Any())
+            Console.WriteLine($"Categories received: {categories.Count}");
+
+            foreach (var category in categories)
             {
-                ViewBag.ErrorMessage = "No categories could be loaded from the API server.";
+                Console.WriteLine(
+                    $"ID: {category.CategoryId}, Name: {category.CategoryName}"
+                );
             }
 
-            ViewBag.CategoriesList = new SelectList(
-                categoryList,
-                "CategoryId",
-                "CategoryName"
+            ViewBag.Categories = new SelectList(
+                categories,
+                nameof(CategoryModel.CategoryId),
+                nameof(CategoryModel.CategoryName)
             );
         }
     }
