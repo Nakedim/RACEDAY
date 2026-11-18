@@ -62,7 +62,7 @@ namespace RaceDay.Mvc.Controllers
         // ==========================================
         [Authorize(Roles = "Organiser")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+      
         public async Task<IActionResult> Create(RaceEventModel model)
         {
             // 1. Get logged-in organiser ID from session or claims FIRST

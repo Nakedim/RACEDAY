@@ -122,6 +122,7 @@ C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\Rac
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.exe
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.deps.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.runtimeconfig.json
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.runtimeconfig.dev.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.dll
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Mvc.pdb
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\Apache.Arrow.dll
@@ -166,6 +167,11 @@ C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\Rac
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\RaceDay.Contracts.pdb
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\bin\Debug\net9.0\Raceday.Shared.pdb
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\RaceDay.Mvc.csproj.AssemblyReference.cache
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\HotReload\Microsoft.NET.Sdk.BlazorWeb.HotReload.lib.module.js
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\HotReload\Microsoft.NET.Sdk.BlazorWeb.HotReload.BrowserTools.js
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\HotReload\Microsoft.NET.Sdk.BlazorWeb.HotReload.BrowserTools.Config.js
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\HotReload\browser-tools-key.public.json
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\HotReload\browser-tools-key.private.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\rpswa.dswa.cache.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\RaceDay.Mvc.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\RaceDay.Mvc.AssemblyInfoInputs.cache
@@ -178,9 +184,13 @@ C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\Rac
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\jsmodules\jsmodules.build.manifest.json
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\scopedcss\scopedcss.cache
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\scopedcss\bundle\RaceDay.Mvc.styles.css
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\scopedcss\projectbundle\RaceDay.Mvc.bundle.scp.css
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\nelaz8gmze-{0}-tchfgznwy8-tchfgznwy8.gz
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\pp2x5magnr-{0}-nolrq4r057-nolrq4r057.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\f7r25z5dtt-{0}-v6yom7o9wr-v6yom7o9wr.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\oqcoq3xzl1-{0}-3y8m7uxm6z-3y8m7uxm6z.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\g439x8b8p5-{0}-61n19gt1b8-61n19gt1b8.gz
@@ -244,6 +254,8 @@ C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\com
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\b51qg9n63e-{0}-muycvpuwrr-muycvpuwrr.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\644ubejicp-{0}-87fc7y1x7t-87fc7y1x7t.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\ssvtoobwbc-{0}-mlv21k5csn-mlv21k5csn.gz
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\hb9y5po3h4-{0}-v1vy2to33n-v1vy2to33n.gz
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\lshmfv2g9b-{0}-ysew0n4kjn-ysew0n4kjn.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\76cy5pitm3-{0}-iuvg1nafum-iuvg1nafum.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\compressed\shj51qtdmk-{0}-iuvg1nafum-iuvg1nafum.gz
 C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Mvc\obj\Debug\net9.0\staticwebassets.build.json

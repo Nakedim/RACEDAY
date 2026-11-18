@@ -21,7 +21,8 @@
         "runtime": {
           "lib/net8.0/Apache.Arrow.dll": {
             "assemblyVersion": "22.1.0.0",
-            "fileVersion": "22.1.0.0"
+            "fileVersion": "22.1.0.0",
+            "localPath": "Apache.Arrow.dll"
           }
         }
       },
@@ -41,7 +42,8 @@
         "runtime": {
           "lib/net8.0/Azure.Core.dll": {
             "assemblyVersion": "1.60.0.0",
-            "fileVersion": "1.6000.26.33010"
+            "fileVersion": "1.6000.26.33010",
+            "localPath": "Azure.Core.dll"
           }
         }
       },
@@ -54,7 +56,8 @@
         "runtime": {
           "lib/net8.0/Azure.Storage.Blobs.dll": {
             "assemblyVersion": "12.30.1.0",
-            "fileVersion": "12.3000.126.50503"
+            "fileVersion": "12.3000.126.50503",
+            "localPath": "Azure.Storage.Blobs.dll"
           }
         }
       },
@@ -66,7 +69,8 @@
         "runtime": {
           "lib/net8.0/Azure.Storage.Common.dll": {
             "assemblyVersion": "12.29.0.0",
-            "fileVersion": "12.2900.26.48003"
+            "fileVersion": "12.2900.26.48003",
+            "localPath": "Azure.Storage.Common.dll"
           }
         }
       },
@@ -77,7 +81,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
             "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52903"
+            "fileVersion": "9.0.24.52903",
+            "localPath": "Microsoft.AspNetCore.Authentication.JwtBearer.dll"
           }
         }
       },
@@ -85,7 +90,8 @@
         "runtime": {
           "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {
             "assemblyVersion": "10.0.0.9",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Bcl.AsyncInterfaces.dll"
           }
         }
       },
@@ -96,7 +102,8 @@
         "runtime": {
           "lib/net8.0/Microsoft.EntityFrameworkCore.dll": {
             "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52902"
+            "fileVersion": "9.0.24.52902",
+            "localPath": "Microsoft.EntityFrameworkCore.dll"
           }
         }
       },
@@ -104,7 +111,8 @@
         "runtime": {
           "lib/net8.0/Microsoft.EntityFrameworkCore.Abstractions.dll": {
             "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52902"
+            "fileVersion": "9.0.24.52902",
+            "localPath": "Microsoft.EntityFrameworkCore.Abstractions.dll"
           }
         }
       },
@@ -115,7 +123,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Configuration.Abstractions.dll"
           }
         }
       },
@@ -123,7 +132,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.DependencyInjection.Abstractions.dll"
           }
         }
       },
@@ -136,7 +146,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Diagnostics.Abstractions.dll"
           }
         }
       },
@@ -147,7 +158,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.FileProviders.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.FileProviders.Abstractions.dll"
           }
         }
       },
@@ -162,7 +174,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Hosting.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Hosting.Abstractions.dll"
           }
         }
       },
@@ -174,7 +187,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Logging.Abstractions.dll"
           }
         }
       },
@@ -186,7 +200,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Options.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Options.dll"
           }
         }
       },
@@ -194,7 +209,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Primitives.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "Microsoft.Extensions.Primitives.dll"
           }
         }
       },
@@ -206,7 +222,8 @@
         "runtime": {
           "lib/net8.0/Microsoft.Identity.Client.dll": {
             "assemblyVersion": "4.84.2.0",
-            "fileVersion": "4.84.2.0"
+            "fileVersion": "4.84.2.0",
+            "localPath": "Microsoft.Identity.Client.dll"
           }
         }
       },
@@ -218,7 +235,8 @@
         "runtime": {
           "lib/net8.0/Microsoft.Identity.Client.Extensions.Msal.dll": {
             "assemblyVersion": "4.84.2.0",
-            "fileVersion": "4.84.2.0"
+            "fileVersion": "4.84.2.0",
+            "localPath": "Microsoft.Identity.Client.Extensions.Msal.dll"
           }
         }
       },
@@ -226,7 +244,8 @@
         "runtime": {
           "lib/net35/microsoft.identitymodel.dll": {
             "assemblyVersion": "3.5.0.0",
-            "fileVersion": "6.1.7601.24479"
+            "fileVersion": "6.1.7601.24479",
+            "localPath": "microsoft.identitymodel.dll"
           }
         }
       },
@@ -234,7 +253,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Abstractions.dll": {
             "assemblyVersion": "8.14.0.0",
-            "fileVersion": "8.14.0.60815"
+            "fileVersion": "8.14.0.60815",
+            "localPath": "Microsoft.IdentityModel.Abstractions.dll"
           }
         }
       },
@@ -245,7 +265,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.JsonWebTokens.dll"
           }
         }
       },
@@ -256,7 +277,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Logging.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Logging.dll"
           }
         }
       },
@@ -267,7 +289,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Protocols.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Protocols.dll"
           }
         }
       },
@@ -279,7 +302,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
           }
         }
       },
@@ -290,7 +314,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Tokens.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Tokens.dll"
           }
         }
       },
@@ -306,7 +331,8 @@
         "runtime": {
           "lib/net9.0/System.ClientModel.dll": {
             "assemblyVersion": "1.14.0.0",
-            "fileVersion": "1.1400.26.30307"
+            "fileVersion": "1.1400.26.30307",
+            "localPath": "System.ClientModel.dll"
           }
         }
       },
@@ -314,7 +340,8 @@
         "runtime": {
           "lib/net9.0/System.Diagnostics.DiagnosticSource.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.Diagnostics.DiagnosticSource.dll"
           }
         }
       },
@@ -326,7 +353,8 @@
         "runtime": {
           "lib/net9.0/System.IdentityModel.Tokens.Jwt.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "System.IdentityModel.Tokens.Jwt.dll"
           }
         }
       },
@@ -334,7 +362,8 @@
         "runtime": {
           "lib/net9.0/System.IO.Hashing.dll": {
             "assemblyVersion": "10.0.0.9",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.IO.Hashing.dll"
           }
         }
       },
@@ -342,7 +371,8 @@
         "runtime": {
           "lib/net9.0/System.IO.Pipelines.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.IO.Pipelines.dll"
           }
         }
       },
@@ -353,7 +383,8 @@
         "runtime": {
           "lib/net9.0/System.Memory.Data.dll": {
             "assemblyVersion": "10.0.0.9",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.Memory.Data.dll"
           }
         }
       },
@@ -361,7 +392,8 @@
         "runtime": {
           "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
             "assemblyVersion": "4.0.3.0",
-            "fileVersion": "4.6.26515.6"
+            "fileVersion": "4.6.26515.6",
+            "localPath": "System.Security.Cryptography.ProtectedData.dll"
           }
         },
         "runtimeTargets": {
@@ -369,7 +401,8 @@
             "rid": "win",
             "assetType": "runtime",
             "assemblyVersion": "4.0.3.0",
-            "fileVersion": "4.6.26515.6"
+            "fileVersion": "4.6.26515.6",
+            "localPath": "runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll"
           }
         }
       },
@@ -377,7 +410,8 @@
         "runtime": {
           "lib/net9.0/System.Text.Encodings.Web.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.Text.Encodings.Web.dll"
           }
         },
         "runtimeTargets": {
@@ -385,13 +419,15 @@
             "rid": "browser",
             "assetType": "runtime",
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll"
           },
           "runtimes/win/lib/net9.0/System.Text.Encodings.Web.dll": {
             "rid": "win",
             "assetType": "runtime",
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "runtimes/win/lib/net9.0/System.Text.Encodings.Web.dll"
           }
         }
       },
@@ -403,7 +439,8 @@
         "runtime": {
           "lib/net9.0/System.Text.Json.dll": {
             "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.926.27113"
+            "fileVersion": "10.0.926.27113",
+            "localPath": "System.Text.Json.dll"
           }
         }
       },

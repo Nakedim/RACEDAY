@@ -1,0 +1,22 @@
+# Ignore build artifacts and IDE caches
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+
+# Ignore Git and Docker files
+.git/
+.gitignore
+.dockerignore
+**/Dockerfile*
+**/docker-compose*
+
+# Ignore sensitive local environment/secret files
+**/.env
+**/appsettings.Development.json
+**/secrets.json
+
+# Ignore front-end node packages and test results
+**/node_modules/
+**/TestResults/

@@ -22,7 +22,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
             "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52903"
+            "fileVersion": "9.0.24.52903",
+            "localPath": "Microsoft.AspNetCore.Authentication.JwtBearer.dll"
           }
         }
       },
@@ -30,7 +31,8 @@
         "runtime": {
           "lib/net35/microsoft.identitymodel.dll": {
             "assemblyVersion": "3.5.0.0",
-            "fileVersion": "6.1.7601.24479"
+            "fileVersion": "6.1.7601.24479",
+            "localPath": "microsoft.identitymodel.dll"
           }
         }
       },
@@ -38,7 +40,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Abstractions.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Abstractions.dll"
           }
         }
       },
@@ -49,7 +52,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.JsonWebTokens.dll"
           }
         }
       },
@@ -60,7 +64,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Logging.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Logging.dll"
           }
         }
       },
@@ -71,7 +76,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Protocols.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Protocols.dll"
           }
         }
       },
@@ -83,7 +89,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
           }
         }
       },
@@ -94,7 +101,8 @@
         "runtime": {
           "lib/net9.0/Microsoft.IdentityModel.Tokens.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "Microsoft.IdentityModel.Tokens.dll"
           }
         }
       },
@@ -106,7 +114,8 @@
         "runtime": {
           "lib/net9.0/System.IdentityModel.Tokens.Jwt.dll": {
             "assemblyVersion": "8.0.1.0",
-            "fileVersion": "8.0.1.50722"
+            "fileVersion": "8.0.1.50722",
+            "localPath": "System.IdentityModel.Tokens.Jwt.dll"
           }
         }
       }

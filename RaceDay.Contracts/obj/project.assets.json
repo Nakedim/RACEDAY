@@ -347,11 +347,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Contracts\\RaceDay.Contracts.csproj",
+      "projectUniqueName": "C:\\Users\\nmontsho\\source\\repos\\RaceDay-MonoRepo\\RaceDay.Contracts\\RaceDay.Contracts.csproj",
       "projectName": "RaceDay.Contracts",
-      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Contracts\\RaceDay.Contracts.csproj",
+      "projectPath": "C:\\Users\\nmontsho\\source\\repos\\RaceDay-MonoRepo\\RaceDay.Contracts\\RaceDay.Contracts.csproj",
       "packagesPath": "C:\\Users\\nmontsho\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nmontsho\\source\\repos\\RACEDAY\\RaceDay.Contracts\\obj\\",
+      "outputPath": "C:\\Users\\nmontsho\\source\\repos\\RaceDay-MonoRepo\\RaceDay.Contracts\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -385,7 +385,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.400"
+      "SdkAnalysisLevel": "11.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -412,26 +412,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[9.0.20, 9.0.20]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[9.0.20, 9.0.20]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[9.0.20, 9.0.20]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\11.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

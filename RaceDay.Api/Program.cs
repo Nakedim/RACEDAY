@@ -1,24 +1,26 @@
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// ==========================================
-// 1. CONTROLLERS & JSON CONFIGURATION
-// ==========================================
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    });
-
+{
+    // Prevents HTTP 500 crashes when navigation properties reference each other
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddEndpointsApiExplorer();
+
+// Share Data Protection keys with the MVC app
+builder.Services.AddDataProtection()
+    .SetApplicationName("RaceDaySharedAuth");
 
 // ==========================================
 // 2. DATABASE CONFIGURATION
@@ -30,7 +32,7 @@ builder.Services.AddDbContext<RacedayDbContext>(options =>
     .ConfigureWarnings(warnings =>
         warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
-// ============================aa==============
+// ==========================================
 // 3. ASP.NET CORE IDENTITY
 // ==========================================
 
@@ -44,7 +46,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 })
 .AddEntityFrameworkStores<RacedayDbContext>()
 .AddDefaultTokenProviders();
-
 // ==========================================
 // 4. HTTP CLIENT
 // ==========================================

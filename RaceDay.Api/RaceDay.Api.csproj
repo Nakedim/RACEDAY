@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+		<ProjectReference Include="..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
 	</ItemGroup>
 
 </Project>

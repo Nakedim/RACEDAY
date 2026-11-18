@@ -31,36 +31,61 @@ namespace RaceDay.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<RaceEvent>>> ListAllEvents()
+        public async Task<IActionResult> ListAllEvents()
         {
-            var eventsList = await _context.RaceEvents.ToListAsync();
-            if (eventsList == null)
-            {
-                return NotFound();
-            }
+            // Projecting with .Select prevents lazy-loading loops and hides ApplicationUser secrets
+            var eventsList = await _context.RaceEvents
+                .Select(e => new
+                {
+                    e.EventID,
+                    e.Title,
+                    e.Description,
+                    e.Location,
+                    e.CategoryID,
+                    e.EventType,
+                    e.OrganiserID,
+                    OrganiserName = e.Organiser != null ? e.Organiser.FirstName + " " + e.Organiser.Surname : null
+                })
+                .ToListAsync();
+
             return Ok(eventsList);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RaceEvent>> GetRaceById(int id)
+        public async Task<IActionResult> GetRaceById(int id)
         {
-            var eventsList = await _context.RaceEvents.FindAsync(id);
-            if (eventsList == null)
+            var raceEvent = await _context.RaceEvents
+                .Where(e => e.EventID == id)
+                .Select(e => new
+                {
+                    e.EventID,
+                    e.Title,
+                    e.Description,
+                    e.Location,
+                    e.CategoryID,
+                    e.EventType,
+                    e.OrganiserID,
+                    OrganiserName = e.Organiser != null ? e.Organiser.FirstName + " " + e.Organiser.Surname : null
+                })
+                .FirstOrDefaultAsync();
+
+            if (raceEvent == null)
             {
                 return NotFound();
             }
-            return Ok(eventsList);
+
+            return Ok(raceEvent);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<RaceEvent>> createEvent([FromBody] EventsCreateDTO eventDTO)
+        public async Task<IActionResult> CreateEvent([FromBody] EventsCreateDTO eventDTO)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
 
@@ -69,64 +94,98 @@ namespace RaceDay.Api.Controllers
             {
                 return Forbid();
             }
-            var RaceEvents = new RaceEvent
+
+            var organiser = await _context.Organisers
+                .FirstOrDefaultAsync(o => o.ApplicationUserId == caller.Id);
+
+            if (organiser == null)
+            {
+                return BadRequest("No Organiser record exists for this user account.");
+            }
+
+            var raceEvent = new RaceEvent
             {
                 Title = eventDTO.Title,
                 Description = eventDTO.Description,
                 Location = eventDTO.Location,
                 CategoryID = eventDTO.CategoryID,
                 EventType = eventDTO.EventType,
-                OrganiserID = eventDTO.OrganiserID
+                OrganiserID = organiser.OrganiserID
             };
-            _context.RaceEvents.Add(RaceEvents);
+
+            _context.RaceEvents.Add(raceEvent);
             await _context.SaveChangesAsync();
 
+            // Return a clean DTO instead of the raw entity so CreatedAtAction doesn't trigger lazy loading
             return CreatedAtAction(nameof(GetRaceById),
-                new { id = RaceEvents.EventID },
-                RaceEvents
-                );
+                new { id = raceEvent.EventID },
+                new
+                {
+                    raceEvent.EventID,
+                    raceEvent.Title,
+                    raceEvent.Description,
+                    raceEvent.Location,
+                    raceEvent.CategoryID,
+                    raceEvent.EventType,
+                    raceEvent.OrganiserID
+                }
+            );
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize]
-       public async Task<IActionResult> updateEventsAsync(int id, [FromBody] UpdateEventDTO update)
+        public async Task<IActionResult> UpdateEventsAsync(int id, [FromBody] UpdateEventDTO update)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(authenticatedUserId))
             {
                 return Unauthorized();
             }
 
-            // 2. Fetch the profile record
+            // 1. Verify the user has the Organiser role
             var user = await _userManager.FindByIdAsync(authenticatedUserId);
             if (user == null || user.ProfileRole != ProfileRole.Organiser)
             {
-                return Forbid("Only registered organisers can modify this profile.");
+                return Forbid("Only registered organisers can modify events.");
             }
 
-            var eventlookup = await _context.RaceEvents.FindAsync(id);
-            if (eventlookup == null)
+            // 2. Verify an Organiser profile exists for this account
+            var organiser = await _context.Organisers
+                .FirstOrDefaultAsync(o => o.ApplicationUserId == user.Id);
+
+            if (organiser == null)
             {
-                return NotFound(new { message = "Event not exits or wrong id provided" });
+                return BadRequest("No Organiser record exists for this user account.");
             }
 
-            var newEvent = new UpdateEventDTO
+            // 3. Find the event
+            var eventLookup = await _context.RaceEvents.FindAsync(id);
+            if (eventLookup == null)
             {
-                Title = update.Title,
-                Description = update.Description,
-                Location = update.Location,
-                CategoryID = update.CategoryID,
-                EventType = update.EventType,
-                OrganiserID = update.OrganiserID
-            };
-            return Ok();
-            
+                return NotFound(new { message = "Event does not exist or wrong id provided." });
+            }
+
+            // 4. Ensure this organiser owns the event
+            if (eventLookup.OrganiserID != organiser.OrganiserID)
+            {
+                return Forbid("You can only edit events created by your own organiser account.");
+            }
+
+            // 5. Update event details (keeping the original OrganiserID intact)
+            eventLookup.Title = update.Title;
+            eventLookup.Description = update.Description;
+            eventLookup.Location = update.Location;
+            eventLookup.CategoryID = update.CategoryID;
+            eventLookup.EventType = update.EventType;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Event updated successfully." });
         }
-        
     }
-
-}
+    }

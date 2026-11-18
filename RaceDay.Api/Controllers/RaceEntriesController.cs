@@ -1,92 +1,161 @@
-
-using Microsoft.AspNetCore.Identity;
-
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
-using RaceDay.Contracts.EntryRequest;
 using RaceDay.Api.Models;
-using RaceDay.Contracts.RacesEntry;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-
-
-
-namespace RaceDay.Api.Models
+namespace RaceDay.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RaceEntriesController : ControllerBase
     {
         private readonly RacedayDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        // Injected UserManager to handle programmatic enum validation
         public RaceEntriesController(RacedayDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<RaceEntries>> CreateEvent([FromBody] CreateRaceEventEntryDTO raceEntryDTO)
-        { 
+        // GET: api/RaceEntries (For Organisers or general listing)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllEntries()
+        {
+            var entries = await _context.RaceEntries
+                .Select(e => new
+                {
+                    e.RaceEntryID,
+                    e.RaceEventID,
+                    EventTitle = e.RaceEvent.Title,
+                    e.ParticipantID,
+                    ParticipantName = e.Participant.FirstName + " " + e.Participant.Surname,
+                    e.CategoryID,
+                    CategoryName = e.Category.CategoryName,
+                    e.RegistrationDate
+                })
+                .ToListAsync();
 
+            return Ok(entries);
+        }
+
+        // GET: api/RaceEntries/my-entries (For the logged-in Participant)
+        [HttpGet("my-entries")]
+        public async Task<IActionResult> GetMyEntries()
+        {
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
+
+            var runner = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (runner == null || runner.ProfileRole != ProfileRole.Participant)
+            {
+                return Forbid("Only registered participants can view personal race entries.");
+            }
+
+            var myEntries = await _context.RaceEntries
+                .Where(e => e.ParticipantID == runner.Id)
+                .Select(e => new
+                {
+                    e.RaceEntryID,
+                    e.RaceEventID,
+                    EventTitle = e.RaceEvent.Title,
+                    e.ParticipantID,
+                    ParticipantName = runner.FirstName + " " + runner.Surname,
+                    e.CategoryID,
+                    CategoryName = e.Category.CategoryName,
+                    e.RegistrationDate
+                })
+                .ToListAsync();
+
+            return Ok(myEntries);
+        }
+
+        // POST: api/RaceEntries (Registers the logged-in Participant)
+        [HttpPost]
+        public async Task<IActionResult> CreateEntry([FromBody] CreateRaceEntryRequest request)
+        {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            //check if the user is loggedin
-            var authenticatedUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(authenticatedUserId))
+
+            // 1. Verify caller is a logged-in Participant
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           
+            if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
+
+            var runner = await _userManager.FindByIdAsync(authenticatedUserId);
+            if (runner == null || runner.ProfileRole != ProfileRole.Participant)
             {
-                return Unauthorized(new { Error = "User identification missing from authentication token." });
+                return Forbid("Only registered participants can enter a race event.");
             }
-            var user = await _userManager.FindByIdAsync(authenticatedUserId);
-            if (user == null)
+
+            // 2. Verify a Participant profile record exists (mirrors your Organiser check)
+            var participantProfileExists = await _context.Participants
+                .AnyAsync(p => p.ApplicationUserId == runner.Id);
+
+            if (!participantProfileExists)
             {
-                return NotFound(new { Error = "User profile context not found." });
+                return BadRequest("No Participant profile record exists for this user account.");
             }
-            //if role is not participant disallow
-            if (user.ProfileRole != ProfileRole.Participant)
+
+            // 3. Validate RaceEvent and Category
+            if (!await _context.RaceEvents.AnyAsync(e => e.EventID == request.RaceEventID))
             {
-                return StatusCode(StatusCodes.Status403Forbidden, new { Error = "Access denied. Only participants are allowed." });
+                return BadRequest("Selected race event does not exist.");
             }
-            
-            var newEntry = new RaceEntries
+
+            if (!await _context.Categories.AnyAsync(c => c.CategoryId == request.CategoryID))
             {
-                RaceEventID = raceEntryDTO.RaceEventID,
-                CategoryID = raceEntryDTO.CategoryID,
-                ParticipantID = user.Id,
+                return BadRequest("Selected category does not exist.");
+            }
+
+            // 4. Prevent duplicate registration
+            if (await _context.RaceEntries.AnyAsync(e => e.RaceEventID == request.RaceEventID && e.ParticipantID == runner.Id))
+            {
+                return BadRequest("You are already registered for this race event.");
+            }
+
+            // 5. Save using runner.Id (ApplicationUser.Id)
+            var entry = new RaceEntries
+            {
+                RaceEventID = request.RaceEventID,
+                ParticipantID = runner.Id,
+                CategoryID = request.CategoryID,
                 RegistrationDate = DateTime.UtcNow
             };
-            _context.RaceEntries.Add(newEntry);
+
+            _context.RaceEntries.Add(entry);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEntriesById), new { id = newEntry.RaceEntryID }, newEntry);
 
-        }
-
-        [HttpGet("search/{all}")]
-        [Authorize]
-        public async Task<ActionResult<RaceEntries>> GetAllEntries()
-        {
-
-            var entries = await _context.RaceEntries.ToListAsync();
-            return Ok(entries);
-        }
-
-        [HttpGet("{id:int}")]
-     
-        public async Task<ActionResult<List<RaceEntries>>> GetEntriesById(int id)
-        {
-            var entry = await _context.RaceEntries.FindAsync(id);
-            if (entry == null)
+            return Ok(new
             {
-                return NotFound();
-            }
-            return Ok(entry);
+                entry.RaceEntryID,
+                entry.RaceEventID,
+                entry.ParticipantID,
+                entry.CategoryID,
+                entry.RegistrationDate
+            });
         }
+    }
 
+    public class CreateRaceEntryRequest
+    {
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int RaceEventID { get; set; }
+
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int CategoryID { get; set; }
     }
 }

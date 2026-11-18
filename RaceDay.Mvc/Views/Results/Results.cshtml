@@ -1,78 +1,61 @@
-﻿@model RaceDay.Mvc.Models.EnterResultsModel
+﻿@model IEnumerable<RaceDay.Mvc.Models.RaceResultModel>
 @{
     ViewData["Title"] = "Race Results";
-
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-lg-10">
 
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">@ViewData["Title"]</h2>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="fw-bold mb-0">Race Results</h2>
+                <a asp-controller="Participant" asp-action="Dashboard" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header text-white fw-semibold" style="background-color: #7cb305;">
+                    Official Race Results
                 </div>
 
-                <div class="card-body">
-                    <form asp-action="@(Model?.ResultID == 0 ? "Create" : "Edit")" method="post">
-
-                        @* Validation Summary *@
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        @* Hidden field for Key ID during Edits *@
-                        @if (Model?.ResultID > 0)
-                        {
-                            <input type="hidden" asp-for="ResultID" />
-                        }
-
-                        @* Race Selection dropdown *@
-                        <div class="mb-3">
-                            <label asp-for="RaceID" class="form-label">Race</label>
-                            <select asp-for="RaceID" class="form-select" asp-items="ViewBag.Races">
-                                <option value="">-- Select Race --</option>
-                            </select>
-                            <span asp-validation-for="RaceID" class="text-danger small"></span>
+                <div class="card-body p-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Race ID</th>
+                                        <th>Participant ID</th>
+                                        <th>Finish Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderBy(r => r.Position))
+                                    {
+                                        <tr>
+                                            <td class="fw-bold">@item.Position</td>
+                                            <td>@item.RaceID</td>
+                                            <td>@item.ParticipantID</td>
+                                            <td>@item.FinishTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-
-                        @* Participant Selection dropdown *@
-                        <div class="mb-3">
-                            <label asp-for="ParticipantID" class="form-label">Participant</label>
-                            <select asp-for="ParticipantID" class="form-select" asp-items="ViewBag.Participants">
-                                <option value="">-- Select Participant --</option>
-                            </select>
-                            <span asp-validation-for="ParticipantID" class="text-danger small"></span>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            No race results available yet.
                         </div>
-
-                        @* Finish Time input *@
-                        <div class="mb-3">
-                            <label asp-for="FinishTime" class="form-label">Finish Time</label>
-                            <input asp-for="FinishTime" type="datetime-local" class="form-control" />
-                            <span asp-validation-for="FinishTime" class="text-danger small"></span>
-                        </div>
-
-                        @* Position input *@
-                        <div class="mb-3">
-                            <label asp-for="Position" class="form-label">Finishing Position</label>
-                            <input asp-for="Position" type="number" min="1" class="form-control" placeholder="e.g. 1" />
-                            <span asp-validation-for="Position" class="text-danger small"></span>
-                        </div>
-
-                        @* Form Actions *@
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
-                            <button type="submit" class="btn btn-primary px-4">Save Result</button>
-                        </div>
-
-                    </form>
+                    }
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

@@ -55,38 +55,35 @@ namespace RaceDay.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEvent(RaceEventModel newEvent)
         {
-            if (newEvent == null)
-            {
-                return BadRequest("Event data cannot be null.");
-            }
-
             if (!ModelState.IsValid)
             {
                 await LoadCategories();
-                return View("CreateEvent", newEvent);
+                return View("~/Views/Events/CreateEvent.cshtml", newEvent);
             }
 
-            //try
-            //{
-            //    bool isSaved = await _apiClient.CreateEventAsync(newEvent);
-            //    if (isSaved)
-            //    {
-            //        TempData["SuccessMessage"] = "Event created successfully.";
-            //        return RedirectToAction(nameof(Events));
-            //    }
+            // Set the logged-in Organiser's ID from claims
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out int organiserId))
+            {
+                newEvent.OrganiserID = organiserId;
+            }
 
-            //    ModelState.AddModelError(string.Empty, "The API server failed to save this event.");
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Consider logging the actual exception (ex) here
-            //    ModelState.AddModelError(string.Empty, "An error occurred while communicating with the server.");
-            //}
+            string? errorMessage = await _apiClient.CreateEventAsync(newEvent);
 
+            if (errorMessage == null)
+            {
+                TempData["SuccessMessage"] = "Event created successfully.";
+                return RedirectToAction(nameof(OrganiserDash));
+            }
+
+            // Display the exact error returned by the API if it fails
+            ModelState.AddModelError(string.Empty, errorMessage);
             await LoadCategories();
-            return View("CreateEvent", newEvent);
+            return View("~/Views/Events/CreateEvent.cshtml", newEvent);
         }
 
+
+        //Organiser's pages
 
         [Authorize(Roles = "Organiser")]
         [HttpGet]
@@ -115,6 +112,7 @@ namespace RaceDay.Mvc.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        //list of results 
         public IActionResult Results()
         {
             return View("~/Views/Results/Results.cshtml");
@@ -126,6 +124,7 @@ namespace RaceDay.Mvc.Controllers
         {
             return View("~/Views/Races/Races.cshtml");
         }
+        //list of events
 
         [AllowAnonymous]
         [HttpGet]
@@ -133,6 +132,8 @@ namespace RaceDay.Mvc.Controllers
         {
             return View("~/Views/Events/RaceEvents.cshtml");
         }
+
+        //see all events
 
         [AllowAnonymous]
         [HttpGet]

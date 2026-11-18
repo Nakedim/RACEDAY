@@ -1,20 +1,22 @@
-
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using RaceDay.Mvc.Services;
-// Add this line directly ABOVE WebApplication.CreateBuilder(args)
-Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
+Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================
-// MVC SERVICES
+// 1. MVC & APPLICATION SERVICES
 // ==========================================
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<RaceDay.Mvc.Services.ApiService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ApiService>();
+builder.Services.AddTransient<CookieForwardingHandler>();
+
 // ==========================================
-// SESSION CONFIGURATION
+// 2. SESSION CONFIGURATION
 // ==========================================
 
 builder.Services.AddDistributedMemoryCache();
@@ -22,7 +24,6 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
-
     options.Cookie.Name = "RaceDay.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
@@ -30,19 +31,20 @@ builder.Services.AddSession(options =>
 });
 
 // ==========================================
-// AUTHENTICATION
+// 3. DATA PROTECTION, AUTHENTICATION & AUTHORIZATION
 // ==========================================
 
+builder.Services.AddDataProtection()
+    .SetApplicationName("RaceDaySharedAuth");
+
 builder.Services
-    .AddAuthentication(
-        CookieAuthenticationDefaults.AuthenticationScheme
-    )
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/UsersAuth/Login";
         options.AccessDeniedPath = "/UsersAuth/AccessDenied";
 
-        options.Cookie.Name = "RaceDay.Auth";
+        options.Cookie.Name = "RaceDay.Auth"; // Matches RaceDay.Api cookie name
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
@@ -52,63 +54,23 @@ builder.Services
         options.SlidingExpiration = true;
     });
 
-// ==========================================
-// AUTHORIZATION
-// ==========================================
-
 builder.Services.AddAuthorization();
 
 // ==========================================
-// HTTP CONTEXT ACCESSOR
+// 4. RACE DAY API CLIENT
 // ==========================================
 
-builder.Services.AddHttpContextAccessor();
+var apiBaseUrl = builder.Configuration["RaceDayApi:BaseUrl"] ?? "https://localhost:7087/";
 
-// ==========================================
-// RACE DAY API CLIENT
-// ==========================================
-
-// Read API URL from configuration.
-// Falls back to your existing development API address.
-var apiBaseUrl =
-    builder.Configuration["RaceDayApi:BaseUrl"]
-    ?? "https://localhost:7087/";
-
-if (!Uri.TryCreate(
-        apiBaseUrl,
-        UriKind.Absolute,
-        out var apiUri))
+if (!Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var apiUri))
 {
-    throw new InvalidOperationException(
-        "The RaceDay API base URL is invalid."
-    );
+    throw new InvalidOperationException("The RaceDay API base URL is invalid.");
 }
 
 builder.Services.AddHttpClient<RaceDayApiClient>(client =>
 {
     client.BaseAddress = apiUri;
-
-    client.DefaultRequestHeaders.Accept.ParseAdd(
-        "application/json"
-    );
-
-    client.Timeout = TimeSpan.FromSeconds(30);
-})
-.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-{
-    UseCookies = false
-});
-builder.Services.AddTransient<CookieForwardingHandler>();
-
-// 2. Attach it to RaceDayApiClient
-builder.Services.AddHttpClient<RaceDayApiClient>(client =>
-{
-    client.BaseAddress = apiUri;
-
-    client.DefaultRequestHeaders.Accept.ParseAdd(
-        "application/json"
-    );
-
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
 })
 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
@@ -116,15 +78,12 @@ builder.Services.AddHttpClient<RaceDayApiClient>(client =>
     UseCookies = false
 })
 .AddHttpMessageHandler<CookieForwardingHandler>();
+
 // ==========================================
-// BUILD APPLICATION
+// 5. HTTP REQUEST PIPELINE
 // ==========================================
 
 var app = builder.Build();
-
-// ==========================================
-// HTTP REQUEST PIPELINE
-// ==========================================
 
 if (!app.Environment.IsDevelopment())
 {
@@ -133,22 +92,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
 
-// Session must be available before authentication
-// and authorization are processed.
 app.UseSession();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
-// ==========================================
-// ROUTING
-// ==========================================
 
 app.MapControllerRoute(
     name: "default",

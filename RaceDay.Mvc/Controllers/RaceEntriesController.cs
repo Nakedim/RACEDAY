@@ -1,9 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RaceDay.Mvc.Models;
 using RaceDay.Mvc.Services;
+using System.Security.Claims;
 
 namespace RaceDay.Mvc.Controllers
 {
@@ -18,74 +18,106 @@ namespace RaceDay.Mvc.Controllers
             _apiClient = apiClient;
         }
 
-
+        // GET: /RaceEntries/ViewEntries
         [HttpGet]
         public async Task<IActionResult> ViewEntries()
         {
-
             var entries = await _apiClient.GetEntriesAsync();
-
             return View(entries);
-           
         }
+
+        // GET: /RaceEntries/EnterRace
+        [HttpGet]
+        public async Task<IActionResult> EnterRace()
+        {
+            await LoadDropdownsAsync();
+            // If your Razor view is inside Views/Entries/ instead of Views/RaceEntries/, 
+            // change this to: return View("~/Views/Entries/CreateRaceEntries.cshtml", new EntriesModel());
+            return View("~/Views/Entries/CreateRaceEntries.cshtml", new EntriesModel());
+        }
+
+        // POST: /RaceEntries/EnterRace
+        [HttpGet]
+
+       
         // GET: /RaceEntries/CreateEntries
         [HttpGet]
         public async Task<IActionResult> CreateEntries()
         {
-            await LoadDropdowns();
-
-            return View("~/Views/Entries/CreateRaceEntries.cshtml",
-                new EntriesModel());
+            await LoadDropdownsAsync();
+            return View("~/Views/Entries/CreateEntries.cshtml", new EntriesModel());
         }
 
-        // POST: /RaceEntries/EnterRace
+        // POST: /RaceEntries/CreateEntries
         [HttpPost]
+        [Authorize(Roles = "Participant")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnterRace(EntriesModel model)
+        public async Task<IActionResult> CreateEntries(EntriesModel model)
         {
+            // 1. Get the logged-in Participant's ID from Claims or Session
+            var participantIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? HttpContext.Session.GetString("UserId");
+
+            if (!int.TryParse(participantIdClaim, out int participantId))
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Unable to identify the logged-in Participant.");
+                await LoadDropdownsAsync();
+                return View("~/Views/Entries/CreateEntries.cshtml", model);
+            } // <-- Close the failure block right here!
+
+            // 2. Assign ParticipantID and clear any prior ModelState error for it
+            model.ParticipantID = participantId;
+            ModelState.Remove(nameof(model.ParticipantID));
+
             if (!ModelState.IsValid)
             {
-                await LoadDropdowns();
-
-                return View(
-                    "~/Views/Entries/CreateRaceEntries.cshtml",
-                    model);
+                await LoadDropdownsAsync();
+                return View("~/Views/Entries/CreateEntries.cshtml", model);
             }
 
-            // API submission will be connected once
-            // the Entries API endpoint and model are confirmed.
+            // 3. Send to the API
+            var errorMessage = await _apiClient.CreateEntryAsync(model);
 
-            ModelState.AddModelError(
-                string.Empty,
-                "Race entry submission has not yet been connected to the API."
-            );
+            if (errorMessage != null)
+            {
+                ModelState.AddModelError(string.Empty, errorMessage);
+                await LoadDropdownsAsync();
+                return View("~/Views/Entries/CreateEntries.cshtml", model);
+            }
 
-            await LoadDropdowns();
-
-            return View(
-                "~/Views/Entries/CreateRaceEntries.cshtml",
-                model);
+            TempData["SuccessMessage"] = "Your race entry has been registered!";
+            return RedirectToAction("ParticipantDash", "Home");
         }
 
 
-        private async Task LoadDropdowns()
+        //help method
+        private async Task LoadDropdownsAsync()
         {
-            var events = await _apiClient.GetEventsAsync();
+            var events = await _apiClient.GetEventsAsync() ?? new List<RaceEventModel>();
+            var categories = await _apiClient.GetCategoriesAsync() ?? new List<CategoryModel>();
 
-            var categories = await _apiClient.GetCategoriesAsync();
+            // Using SelectListItem directly avoids reflection errors in MultiSelectList!
+            // If Visual Studio underlines EventName or CategoryID in red, accept IntelliSense's suggestion.
+            ViewBag.RaceEvents = events
+                .Where(e => e != null)
+                .Select(e => new SelectListItem
+                {
+                    Value = e.EventID.ToString(),
+                    Text = e.Title ?? "Unnamed Event",
+                    
+                })
+                .ToList();
 
-            ViewBag.RaceEvents = new SelectList(
-                events,
-                "RaceEventID",
-                "Name"
-            );
-
-            ViewBag.Categories = new SelectList(
-                categories ?? Enumerable.Empty<CategoryModel>(),
-                "CategoryId",
-                "CategoryName"
-            );
+            ViewBag.Categories = categories
+                .Where(c => c != null)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.CategoryName ?? "Unnamed Category"
+                })
+                .ToList();
         }
     }
 }
-

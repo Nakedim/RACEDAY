@@ -22,6 +22,6 @@ namespace RaceDay.Mvc.Models
         public int Distance { get; set; }
 
 
-        public string? OrganiserID { get; set; }
+        public int OrganiserID { get; set; }
     }
 }

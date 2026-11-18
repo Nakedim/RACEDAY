@@ -45,7 +45,7 @@
 
                     <!-- Registration Form -->
                     <form asp-controller="RaceEntries"
-                          asp-action="EnterRace"
+                          asp-action="CreateEntries"
                           method="post"
                           id="EnterRaceForm">
 
@@ -65,13 +65,11 @@
 
                             <select asp-for="RaceEventID"
                                     class="form-select"
-                                    asp-items="ViewBag.RaceEvents">
-
-                                <option value="">
-                                    -- Choose an Event --
-                                </option>
-
+                                    asp-items="@(ViewBag.RaceEvents as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())">
+                                <option value="">-- Choose an Event --</option>
                             </select>
+
+                         
 
                             <span asp-validation-for="RaceEventID"
                                   class="text-danger small">
@@ -123,7 +121,7 @@
                             </a>
 
                             <button type="submit"
-                                    class="btn btn-success px-4">
+                                    class="btn btn-success px-4"   >
                                 Submit Registration
                             </button>
 

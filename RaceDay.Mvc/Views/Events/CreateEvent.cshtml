@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
     <h1 class="h2">Create New Race Event</h1>
 </div>
-<form asp-controller="Home" asp-action="OrganiserDash" method="post" id="CreateRaceEventForm">
+<form asp-controller="Home" asp-action="CreateEvent" method="post" id="CreateRaceEventForm">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -55,6 +55,17 @@
                 @ViewBag.CategoryError
             </small>
         }
+    </div>
+    <div class="mb-3">
+        <label asp-for="EventType" class="form-label fw-bold">Event Type</label>
+        <select asp-for="EventType" class="form-select">
+            <option value="">-- Select Event Type --</option>
+            <option value="Marathon">Marathon</option>
+            <option value="Half Marathon">Half Marathon</option>
+            <option value="Fun Run">Fun Run</option>
+            <option value="Trail Run">Trail Run</option>
+        </select>
+        <span asp-validation-for="EventType" class="text-danger small"></span>
     </div>
 
     <!-- Form Actions -->
