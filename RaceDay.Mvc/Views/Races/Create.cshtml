@@ -2,6 +2,15 @@
 @{
     ViewData["Title"] = "Add New Race";
 }
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 
 <div class="container my-5" style="max-width: 700px;">
     <!-- Card wrapper context for form alignment alignment structural flow panels -->
@@ -17,7 +26,7 @@
         </div>
 
         <div class="card-body p-4">
-            <form asp-action="Create" method="post" autocomplete="off">
+            <form asp-controller="Races" asp-action= "Create"  method="post" autocomplete="off">
                 @Html.AntiForgeryToken()
 
                 <!-- Global Validation Summary Alert Box wrapper panel logic element components -->
@@ -36,17 +45,27 @@
                         <span asp-validation-for="RaceName" class="text-danger small"></span>
                     </div>
 
-                    <!-- Category ID selection parameter track indexers mapping elements -->
+                    <!-- Category Dropdown -->
                     <div class="col-md-6">
-                        <label asp-for="CategoryID" class="form-label fw-semibold text-secondary">Category Reference ID</label>
-                        <input asp-for="CategoryID" type="number" class="form-control" min="1" placeholder="e.g. 10" required />
+                        <label asp-for="CategoryID" class="form-label fw-semibold text-secondary">Racing Category</label>
+                        <select asp-for="CategoryID"
+                                class="form-select"
+                                asp-items="@(ViewBag.Categories as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())"
+                                required>
+                            <option value="">-- Choose a Category --</option>
+                        </select>
                         <span asp-validation-for="CategoryID" class="text-danger small"></span>
                     </div>
 
-                    <!-- Event ID mapping target configuration options indexing elements -->
+                    <!-- Event Dropdown -->
                     <div class="col-md-6">
-                        <label asp-for="EventID" class="form-label fw-semibold text-secondary">Parent Event Reference ID</label>
-                        <input asp-for="EventID" type="number" class="form-control" min="1" placeholder="e.g. 4" required />
+                        <label asp-for="EventID" class="form-label fw-semibold text-secondary">Parent Event</label>
+                        <select asp-for="EventID"
+                                class="form-select"
+                                asp-items="@(ViewBag.RaceEvents as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())"
+                                required>
+                            <option value="">-- Choose an Event --</option>
+                        </select>
                         <span asp-validation-for="EventID" class="text-danger small"></span>
                     </div>
 
@@ -79,7 +98,7 @@
 
                 <!-- Action Button Trigger Control Deck Panels Components Element Triggers Layout -->
                 <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                    <a asp-controller="Races" asp-action="Index" class="btn btn-outline-secondary px-4">
                         Cancel
                     </a>
                     <button type="submit" class="btn btn-dark px-4 fw-semibold shadow-sm">

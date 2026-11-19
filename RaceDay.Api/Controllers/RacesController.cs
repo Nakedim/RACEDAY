@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
-using RaceDay.Contracts;
 using RaceDay.Contracts.RaceRequestDTO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims; 
+using System.Security.Claims;
 using System.Threading.Tasks;
 using RaceDTO = RaceDay.Contracts.RaceRequestDTO.RaceDTO;
 
@@ -32,14 +31,17 @@ namespace RaceDay.Api.Controllers
         public async Task<ActionResult<List<RaceResponseDTO>>> GetAllRace()
         {
             return await _context.Races
-               .Select(re => new RaceResponseDTO
-               {
-                   RaceName = re.RaceName,
-                   StartTime = re.StartTime,
-                   Location = re.Location,
-                   Distance = re.Distance
-               })
-               .ToListAsync();
+       .Select(re => new RaceResponseDTO
+       {
+           RaceID = re.RaceID,
+           EventID = re.EventID,
+           //CategoryID = re.CategoryID,
+           RaceName = re.RaceName,
+           StartTime = re.StartTime,
+           Location = re.Location,
+           Distance = re.Distance
+       })
+       .ToListAsync();
         }
 
         [HttpGet("{id:int}", Name = "GetRaceByID")]

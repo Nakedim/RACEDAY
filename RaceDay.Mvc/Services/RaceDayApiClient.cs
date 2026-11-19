@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RaceDay.Mvc.Models;
 using System.Net.Http.Headers;
@@ -123,14 +124,20 @@ namespace RaceDay.Mvc.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(
-                    "api/authusers/login", model);
+                var response = await _httpClient.PostAsJsonAsync("api/authusers/login", model);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var error = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Login failed: {error}");
                     return null;
+                }
+
+                // Save the API's Identity cookie into MVC Session so it survives HttpClient handler recycling!
+                if (response.Headers.TryGetValues("Set-Cookie", out var cookies))
+                {
+                    var apiCookie = string.Join("; ", cookies.Select(c => c.Split(';')));
+                    _httpContextAccessor.HttpContext?.Session.SetString("ApiAuthCookie", apiCookie);
                 }
 
                 return await response.Content.ReadFromJsonAsync<LoginResultModel>();
@@ -173,23 +180,24 @@ namespace RaceDay.Mvc.Services
 
         public async Task LogoutAsync() => await _httpClient.PostAsync("api/authusers/logout", null);
 
-       
+
         // ==========================================
         // RESULTS METHODS
         // ==========================================
-        public async Task<List<EnterResultsModel>> GetResultsAsync()
+      
+        public async Task<List<RaceResultModel>> GetResultsAsync()
         {
-            try
+            var response = await _httpClient.GetAsync("api/Results");
+            if (!response.IsSuccessStatusCode)
             {
-                return await _httpClient.GetFromJsonAsync<List<EnterResultsModel>>(
-
-                    "api/RaceResults") ?? new List<EnterResultsModel>();
+                return new List<RaceResultModel>();
             }
-            catch
-            {
-                return new List<EnterResultsModel>();
-            }
+            return await response.Content.ReadFromJsonAsync<List<RaceResultModel>>()
+                   ?? new List<RaceResultModel>();
         }
+
+
+
         // ==========================================
         // RACE ENTRY METHODS
         // ==========================================
@@ -263,8 +271,89 @@ namespace RaceDay.Mvc.Services
             }
         }
 
-      
+        public async Task<string?> CreateRaceAsync(RaceModel model)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, "api/Races")
+                {
+                    Content = JsonContent.Create(model)
+                };
+
+                // Attach the saved API cookie first, or fall back to the browser's cookie header
+                var apiCookie = _httpContextAccessor.HttpContext?.Session.GetString("ApiAuthCookie");
+                if (!string.IsNullOrEmpty(apiCookie))
+                {
+                    request.Headers.Add("Cookie", apiCookie);
+                }
+                else
+                {
+                    var cookieHeader = _httpContextAccessor.HttpContext?.Request.Headers["Cookie"].ToString();
+                    if (!string.IsNullOrEmpty(cookieHeader))
+                    {
+                        request.Headers.Add("Cookie", cookieHeader);
+                    }
+                }
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                    return null;
+
+                var error = await response.Content.ReadAsStringAsync();
+                return $"HTTP {(int)response.StatusCode}: {error}";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        // ==========================================
+        // RESULTS METHODS
+        // ==========================================
+        
+
+        public async Task<string?> CreateResultAsync(EnterResultsModel model)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, "api/RaceResults")
+                {
+                    Content = JsonContent.Create(model)
+                };
+
+                var apiCookie = _httpContextAccessor.HttpContext?.Session.GetString("ApiAuthCookie");
+                if (!string.IsNullOrEmpty(apiCookie))
+                {
+                    request.Headers.Add("Cookie", apiCookie);
+                }
+                else
+                {
+                    var cookieHeader = _httpContextAccessor.HttpContext?.Request.Headers["Cookie"].ToString();
+                    if (!string.IsNullOrEmpty(cookieHeader))
+                    {
+                        request.Headers.Add("Cookie", cookieHeader);
+                    }
+                }
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                    return null;
+
+                var error = await response.Content.ReadAsStringAsync();
+                return $"HTTP {(int)response.StatusCode}: {error}";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
     }
-    
 
 }
+    
+
+

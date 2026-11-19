@@ -1,0 +1,9 @@
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\bin\Debug\net9.0\.msCoverageSourceRootsMapping_RaceDay.Api.Tests
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\bin\Debug\net9.0\CoverletSourceRootsMapping_RaceDay.Api.Tests
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.csproj.AssemblyReference.cache
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\MvcTestingAppManifest.json
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.AssemblyInfoInputs.cache
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.AssemblyInfo.cs
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.csproj.CoreCompileInputs.cache
+C:\Users\nmontsho\source\repos\RaceDay-MonoRepo\RaceDay.Api.Tests\obj\Debug\net9.0\RaceDay.Api.Tests.sourcelink.json

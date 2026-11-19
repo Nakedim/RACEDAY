@@ -4,6 +4,8 @@ namespace RaceDay.Mvc.Models
 {
     public class RaceModel
     {
+
+        public int RaceID { get; set; }
         public string RaceName { get; set; } = string.Empty;
 
         public int CategoryID { get; set; }

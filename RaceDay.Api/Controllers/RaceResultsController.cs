@@ -54,7 +54,6 @@ namespace RaceDay.Api.Controllers
 
             if (string.IsNullOrEmpty(authenticatedUserId)) return Unauthorized();
 
-            // 💡 FIX: FindByIdAsync requires a string token parameter argument, which it then parses internally to an integer under the hood.
             var caller = await _userManager.FindByIdAsync(authenticatedUserId);
             if (caller == null || caller.ProfileRole != ProfileRole.Organiser)
             {
@@ -62,7 +61,6 @@ namespace RaceDay.Api.Controllers
             }
 
 
-            // 2. Verify that the targeted participant account exists in the system
             var participantExists = await _context.Participants
                .Include(p => p.User) // Loads the ApplicationUser relation
                .AnyAsync(p => p.ParticipantID == resultsDto.ParticipantID

@@ -1,117 +1,100 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RaceDay.Mvc.Models;
-using System.Text;
-using System.Text.Json;
+using RaceDay.Mvc.Services;
+using System.Security.Claims;
 
 namespace RaceDay.Mvc.Controllers
 {
-    public class RacesController :Controller
+    [Route("[controller]/[action]")]
+    public class RacesController : Controller
     {
-        private readonly HttpClient _httpClient;
+        private readonly RaceDayApiClient _apiClient;
 
-        public RacesController(IHttpClientFactory httpClientFactory)
-        { 
-            _httpClient = httpClientFactory.CreateClient("RaceDayApi");
+        public RacesController(RaceDayApiClient apiClient)
+        {
+            _apiClient = apiClient;
         }
 
-        // GET: /Races
+        // GET: /Races/Index
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<RaceModel> races = new List<RaceModel>();
-
-            try
-            {
-                // Update this path to match your actual backend API endpoint routing
-                HttpResponseMessage response = await _httpClient.GetAsync("api/races");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    var apiData = JsonSerializer.Deserialize<List<RaceModel>>(jsonResponse, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                    if (apiData != null)
-                    {
-                        races = apiData;
-                    }
-                }
-                else
-                {
-                 ModelState.AddModelError(string.Empty, $"Server responded with an error: {response.ReasonPhrase}");
-                }
-            }
-            catch (HttpRequestException)
-            {
-                ModelState.AddModelError(string.Empty, "Unable to connect to the backend API registry.");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An unexpected system exception occurred: {ex.Message}");
-            }
-
+            var races = await _apiClient.GetRacesAsync();
             return View(races);
         }
+
         // GET: /Races/Create
         [HttpGet]
-        public IActionResult Create()
+        [Authorize(Roles = "Organiser")]
+        public async Task<IActionResult> Create()
         {
-            // Initializes the form with a default start time set to right now
-            var model = new RaceModel { StartTime = DateTime.Now };
-            return View(model);
+            await LoadDropdownsAsync();
+            return View(new RaceModel());
         }
 
-        // POST: /Races/Create
         [HttpPost]
+        [Authorize(Roles = "Organiser")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RaceModel model)
         {
+            var organiserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? HttpContext.Session.GetString("UserId");
+
+            if (!int.TryParse(organiserIdClaim, out int organiserId))
+            {
+                ModelState.AddModelError(string.Empty, "Unable to identify the logged-in Organiser.");
+                await LoadDropdownsAsync();
+                return View(model);
+            }
+
+            model.OrganiserID = organiserId;
+            ModelState.Remove(nameof(model.OrganiserID));
+
             if (!ModelState.IsValid)
             {
+                await LoadDropdownsAsync();
                 return View(model);
             }
 
-            // Simple validation rules
-            if (model.StartTime < DateTime.Now)
+            // Calls POST api/Races and returns null on success, or an error string on failure
+            var errorMessage = await _apiClient.CreateRaceAsync(model);
+
+            if (errorMessage != null)
             {
-                ModelState.AddModelError("StartTime", "The start time cannot be in the past.");
+                ModelState.AddModelError(string.Empty, errorMessage);
+                await LoadDropdownsAsync();
                 return View(model);
             }
 
-            try
-            {
-                // Serialize model into a JSON string payload matching the API properties
-                string jsonPayload = JsonSerializer.Serialize(model);
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            // If we reach here, errorMessage is null (save succeeded!)
+            TempData["SuccessMessage"] = "Race saved";
+            return RedirectToAction(nameof(Index));
+        }
 
-                // Send POST request out to the API backend
-                HttpResponseMessage response = await _httpClient.PostAsync("api/races", content);
+        private async Task LoadDropdownsAsync()
+        {
+            var events = await _apiClient.GetEventsAsync() ?? new List<RaceEventModel>();
+            var categories = await _apiClient.GetCategoriesAsync() ?? new List<CategoryModel>();
 
-                if (response.IsSuccessStatusCode)
+            ViewBag.RaceEvents = events
+                .Where(e => e != null)
+                .Select(e => new SelectListItem
                 {
-                    TempData["SuccessMessage"] = "Race created successfully!";
-                    return RedirectToAction(nameof(Index));
-                }
+                    Value = e.EventID.ToString(),
+                    Text = e.Title ?? "Unnamed Event"
+                })
+                .ToList();
 
-                // Parse server side API exception drops if transmission criteria fails
-                string apiError = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"API Server Error: {apiError}");
-            }
-            catch (HttpRequestException)
-            {
-                ModelState.AddModelError(string.Empty, "Unable to establish communication connections with the RaceDay API.");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An unexpected structural execution error occurred: {ex.Message}");
-            }
-
-            return View(model);
+            ViewBag.Categories = categories
+                .Where(c => c != null)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.CategoryName ?? "Unnamed Category"
+                })
+                .ToList();
         }
     }
 }
-    
-    
-
